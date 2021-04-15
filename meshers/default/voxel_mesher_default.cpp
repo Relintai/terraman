@@ -29,23 +29,23 @@ SOFTWARE.
 #include visual_server_h
 #include mesh_instance_h
 
-_FORCE_INLINE_ int VoxelMesherDefault::get_build_flags() const {
+_FORCE_INLINE_ int TerraMesherDefault::get_build_flags() const {
 	return _build_flags;
 }
-_FORCE_INLINE_ void VoxelMesherDefault::set_build_flags(const int flags) {
+_FORCE_INLINE_ void TerraMesherDefault::set_build_flags(const int flags) {
 	_build_flags = flags;
 
-	if ((_build_flags & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
+	if ((_build_flags & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
 		_format |= VisualServer::ARRAY_FORMAT_COLOR;
 	} else {
 		_format ^= VisualServer::ARRAY_FORMAT_COLOR;
 	}
 }
 
-void VoxelMesherDefault::_bake_colors(Ref<VoxelChunk> chunk) {
+void TerraMesherDefault::_bake_colors(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	//if ((get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) == 0)
+	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) == 0)
 	//	return;
 
 	if (_vertices.size() == 0)
@@ -68,12 +68,12 @@ void VoxelMesherDefault::_bake_colors(Ref<VoxelChunk> chunk) {
 
 		if (chunk->validate_data_position(x, y, z)) {
 			Color light = Color(
-					chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
-					chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
-					chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
+					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
+					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
+					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
 
-			float ao = (chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
-			float rao = chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
+			float ao = (chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
+			float rao = chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
 
 			ao += rao;
 
@@ -101,10 +101,10 @@ void VoxelMesherDefault::_bake_colors(Ref<VoxelChunk> chunk) {
 	}
 }
 
-void VoxelMesherDefault::_bake_liquid_colors(Ref<VoxelChunk> chunk) {
+void TerraMesherDefault::_bake_liquid_colors(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	if ((get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) == 0)
+	if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) == 0)
 		return;
 
 	if (_vertices.size() == 0)
@@ -127,12 +127,12 @@ void VoxelMesherDefault::_bake_liquid_colors(Ref<VoxelChunk> chunk) {
 
 		if (chunk->validate_data_position(x, y, z)) {
 			Color light = Color(
-					chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
-					chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
-					chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
+					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
+					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
+					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
 
-			float ao = (chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
-			float rao = chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
+			float ao = (chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
+			float rao = chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
 
 			ao += rao;
 
@@ -160,20 +160,20 @@ void VoxelMesherDefault::_bake_liquid_colors(Ref<VoxelChunk> chunk) {
 	}
 }
 
-VoxelMesherDefault::VoxelMesherDefault() {
-	_build_flags = VoxelChunkDefault::BUILD_FLAG_CREATE_COLLIDER | VoxelChunkDefault::BUILD_FLAG_CREATE_LODS;
+TerraMesherDefault::TerraMesherDefault() {
+	_build_flags = TerraChunkDefault::BUILD_FLAG_CREATE_COLLIDER | TerraChunkDefault::BUILD_FLAG_CREATE_LODS;
 
 	_format = VisualServer::ARRAY_FORMAT_NORMAL | VisualServer::ARRAY_FORMAT_TEX_UV;
 }
 
-VoxelMesherDefault::~VoxelMesherDefault() {
+TerraMesherDefault::~TerraMesherDefault() {
 }
 
-void VoxelMesherDefault::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_bake_colors", "chunk"), &VoxelMesherDefault::_bake_colors);
-	ClassDB::bind_method(D_METHOD("_bake_liquid_colors", "chunk"), &VoxelMesherDefault::_bake_liquid_colors);
+void TerraMesherDefault::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_bake_colors", "chunk"), &TerraMesherDefault::_bake_colors);
+	ClassDB::bind_method(D_METHOD("_bake_liquid_colors", "chunk"), &TerraMesherDefault::_bake_liquid_colors);
 
-	ClassDB::bind_method(D_METHOD("get_build_flags"), &VoxelMesherDefault::get_build_flags);
-	ClassDB::bind_method(D_METHOD("set_build_flags", "value"), &VoxelMesherDefault::set_build_flags);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "build_flags", PROPERTY_HINT_FLAGS, VoxelChunkDefault::BINDING_STRING_BUILD_FLAGS), "set_build_flags", "get_build_flags");
+	ClassDB::bind_method(D_METHOD("get_build_flags"), &TerraMesherDefault::get_build_flags);
+	ClassDB::bind_method(D_METHOD("set_build_flags", "value"), &TerraMesherDefault::set_build_flags);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "build_flags", PROPERTY_HINT_FLAGS, TerraChunkDefault::BINDING_STRING_BUILD_FLAGS), "set_build_flags", "get_build_flags");
 }

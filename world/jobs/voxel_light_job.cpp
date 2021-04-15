@@ -30,21 +30,21 @@ SOFTWARE.
 #include "../../meshers/voxel_mesher.h"
 #include "../default/voxel_chunk_default.h"
 
-void VoxelLightJob::phase_light() {
-	Ref<VoxelChunkDefault> chunk = _chunk;
+void TerraLightJob::phase_light() {
+	Ref<TerraChunkDefault> chunk = _chunk;
 
-	if ((chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
-		if (!chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_AO))
+	if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
+		if (!chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_AO))
 			generate_ao();
 
-	bool gr = (chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_AUTO_GENERATE_RAO) != 0;
+	bool gr = (chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_AUTO_GENERATE_RAO) != 0;
 
-	if (!gr && (chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) == 0) {
+	if (!gr && (chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) == 0) {
 		next_phase();
 		return;
 	}
 
-	bool bl = (chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_BAKE_LIGHTS) != 0;
+	bool bl = (chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_BAKE_LIGHTS) != 0;
 
 	if (bl && should_do()) {
 		chunk->clear_baked_lights();
@@ -71,10 +71,10 @@ void VoxelLightJob::phase_light() {
 	next_phase();
 }
 
-void VoxelLightJob::_execute_phase() {
+void TerraLightJob::_execute_phase() {
 	ERR_FAIL_COND(!_chunk.is_valid());
 
-	Ref<VoxelmanLibrary> library = _chunk->get_library();
+	Ref<TerramanLibrary> library = _chunk->get_library();
 
 	ERR_FAIL_COND(!library.is_valid());
 
@@ -83,11 +83,11 @@ void VoxelLightJob::_execute_phase() {
 	next_job();
 }
 
-VoxelLightJob::VoxelLightJob() {
+TerraLightJob::TerraLightJob() {
 }
 
-VoxelLightJob::~VoxelLightJob() {
+TerraLightJob::~TerraLightJob() {
 }
 
-void VoxelLightJob::_bind_methods() {
+void TerraLightJob::_bind_methods() {
 }

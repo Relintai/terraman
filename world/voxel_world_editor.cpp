@@ -42,7 +42,7 @@ SOFTWARE.
 #include spatial_editor_plugin_h
 #include camera_h
 
-bool VoxelWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<InputEvent> &p_event) {
+bool TerraWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<InputEvent> &p_event) {
 	if (!_world || !_world->get_editable()) {
 		return false;
 	}
@@ -51,7 +51,7 @@ bool VoxelWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<I
 
 	if (mb.is_valid()) {
 		if (mb->is_pressed()) {
-			Ref<VoxelmanLibrary> lib = _world->get_library();
+			Ref<TerramanLibrary> lib = _world->get_library();
 
 			if (!lib.is_valid())
 				return false;
@@ -69,7 +69,7 @@ bool VoxelWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<I
 	return false;
 }
 
-bool VoxelWorldEditor::do_input_action(Camera *p_camera, const Point2 &p_point, bool p_click) {
+bool TerraWorldEditor::do_input_action(Camera *p_camera, const Point2 &p_point, bool p_click) {
 	if (!spatial_editor || !_world || !_world->is_inside_world())
 		return false;
 
@@ -114,14 +114,14 @@ bool VoxelWorldEditor::do_input_action(Camera *p_camera, const Point2 &p_point, 
 	return false;
 }
 
-void VoxelWorldEditor::edit(VoxelWorld *p_world) {
+void TerraWorldEditor::edit(TerraWorld *p_world) {
 	_world = p_world;
 
 	if (!_world)
 		return;
 
-	_channel_type = _world->get_channel_index_info(VoxelWorld::CHANNEL_TYPE_INFO_TYPE);
-	_channel_isolevel = _world->get_channel_index_info(VoxelWorld::CHANNEL_TYPE_INFO_ISOLEVEL);
+	_channel_type = _world->get_channel_index_info(TerraWorld::CHANNEL_TYPE_INFO_TYPE);
+	_channel_isolevel = _world->get_channel_index_info(TerraWorld::CHANNEL_TYPE_INFO_ISOLEVEL);
 
 	if (_channel_isolevel == -1) {
 		_isolevel_slider->hide();
@@ -139,7 +139,7 @@ void VoxelWorldEditor::edit(VoxelWorld *p_world) {
 		}
 	}
 
-	Ref<VoxelmanLibrary> library = _world->get_library();
+	Ref<TerramanLibrary> library = _world->get_library();
 
 	if (!library.is_valid())
 		return;
@@ -149,7 +149,7 @@ void VoxelWorldEditor::edit(VoxelWorld *p_world) {
 
 	bool f = false;
 	for (int i = 0; i < library->voxel_surface_get_num(); ++i) {
-		Ref<VoxelSurface> surface = library->voxel_surface_get(i);
+		Ref<TerraSurface> surface = library->voxel_surface_get(i);
 
 		if (!surface.is_valid())
 			continue;
@@ -164,7 +164,7 @@ void VoxelWorldEditor::edit(VoxelWorld *p_world) {
 		button->set_button_group(_surfaces_button_group);
 		button->set_h_size_flags(SIZE_EXPAND_FILL);
 
-		button->CONNECT("button_up", this, VoxelWorldEditor, _on_surface_button_pressed);
+		button->CONNECT("button_up", this, TerraWorldEditor, _on_surface_button_pressed);
 
 		_surfaces_vbox_container->add_child(button);
 
@@ -175,7 +175,7 @@ void VoxelWorldEditor::edit(VoxelWorld *p_world) {
 	}
 }
 
-VoxelWorldEditor::VoxelWorldEditor() {
+TerraWorldEditor::TerraWorldEditor() {
 	_world = NULL;
 	_selected_type = 0;
 	_channel_type = -1;
@@ -184,7 +184,7 @@ VoxelWorldEditor::VoxelWorldEditor() {
 	_editor = NULL;
 	_tool_mode = TOOL_MODE_ADD;
 }
-VoxelWorldEditor::VoxelWorldEditor(EditorNode *p_editor) {
+TerraWorldEditor::TerraWorldEditor(EditorNode *p_editor) {
 	_world = NULL;
 	_selected_type = 0;
 	_channel_type = -1;
@@ -208,7 +208,7 @@ VoxelWorldEditor::VoxelWorldEditor(EditorNode *p_editor) {
 	add_button->set_button_group(_tool_button_group);
 	add_button->set_meta("tool_mode", TOOL_MODE_ADD);
 
-	add_button->CONNECT("button_up", this, VoxelWorldEditor, _on_tool_button_pressed);
+	add_button->CONNECT("button_up", this, TerraWorldEditor, _on_tool_button_pressed);
 
 	add_button->set_shortcut(ED_SHORTCUT("voxelman_world_editor/add_mode", "Add Mode", KEY_A));
 	spatial_editor_hb->add_child(add_button);
@@ -219,7 +219,7 @@ VoxelWorldEditor::VoxelWorldEditor(EditorNode *p_editor) {
 	remove_button->set_button_group(_tool_button_group);
 	remove_button->set_meta("tool_mode", TOOL_MODE_REMOVE);
 
-	remove_button->CONNECT("button_up", this, VoxelWorldEditor, _on_tool_button_pressed);
+	remove_button->CONNECT("button_up", this, TerraWorldEditor, _on_tool_button_pressed);
 
 	remove_button->set_shortcut(ED_SHORTCUT("voxelman_world_editor/remove_mode", "Remove Mode", KEY_S));
 	spatial_editor_hb->add_child(remove_button);
@@ -227,7 +227,7 @@ VoxelWorldEditor::VoxelWorldEditor(EditorNode *p_editor) {
 	ToolButton *insert_buton = memnew(ToolButton);
 	insert_buton->set_text("Insert");
 
-	insert_buton->CONNECT("button_up", this, VoxelWorldEditor, _on_insert_block_at_camera_button_pressed);
+	insert_buton->CONNECT("button_up", this, TerraWorldEditor, _on_insert_block_at_camera_button_pressed);
 
 	insert_buton->set_shortcut(ED_SHORTCUT("voxelman_world_editor/instert_block_at_camera", "Insert at camera", KEY_B));
 	spatial_editor_hb->add_child(insert_buton);
@@ -242,7 +242,7 @@ VoxelWorldEditor::VoxelWorldEditor(EditorNode *p_editor) {
 	_isolevel_slider->set_v_size_flags(SIZE_EXPAND_FILL);
 	spatial_editor_hb->add_child(_isolevel_slider);
 
-	_isolevel_slider->CONNECT("value_changed", this, VoxelWorldEditor, _on_isolevel_slider_value_changed);
+	_isolevel_slider->CONNECT("value_changed", this, TerraWorldEditor, _on_isolevel_slider_value_changed);
 
 	_isolevel_slider->hide();
 
@@ -258,18 +258,18 @@ VoxelWorldEditor::VoxelWorldEditor(EditorNode *p_editor) {
 
 	_surfaces_button_group.instance();
 }
-VoxelWorldEditor::~VoxelWorldEditor() {
+TerraWorldEditor::~TerraWorldEditor() {
 	_world = NULL;
 
 	_surfaces_button_group.unref();
 }
 
-void VoxelWorldEditor::_node_removed(Node *p_node) {
+void TerraWorldEditor::_node_removed(Node *p_node) {
 	if (p_node == _world)
 		_world = NULL;
 }
 
-void VoxelWorldEditor::_on_surface_button_pressed() {
+void TerraWorldEditor::_on_surface_button_pressed() {
 	BaseButton *button = _surfaces_button_group->get_pressed_button();
 
 	if (button) {
@@ -277,15 +277,15 @@ void VoxelWorldEditor::_on_surface_button_pressed() {
 	}
 }
 
-void VoxelWorldEditor::_on_tool_button_pressed() {
+void TerraWorldEditor::_on_tool_button_pressed() {
 	BaseButton *button = _tool_button_group->get_pressed_button();
 
 	if (button) {
-		_tool_mode = static_cast<VoxelWorldEditorToolMode>(static_cast<int>(button->get_meta("tool_mode")));
+		_tool_mode = static_cast<TerraWorldEditorToolMode>(static_cast<int>(button->get_meta("tool_mode")));
 	}
 }
 
-void VoxelWorldEditor::_on_insert_block_at_camera_button_pressed() {
+void TerraWorldEditor::_on_insert_block_at_camera_button_pressed() {
 	int selected_voxel = 0;
 	int channel = 0;
 
@@ -315,19 +315,19 @@ void VoxelWorldEditor::_on_insert_block_at_camera_button_pressed() {
 	}
 }
 
-void VoxelWorldEditor::_on_isolevel_slider_value_changed(float value) {
+void TerraWorldEditor::_on_isolevel_slider_value_changed(float value) {
 	_current_isolevel = value;
 }
 
-void VoxelWorldEditor::_bind_methods() {
-	ClassDB::bind_method("_node_removed", &VoxelWorldEditor::_node_removed);
-	ClassDB::bind_method("_on_surface_button_pressed", &VoxelWorldEditor::_on_surface_button_pressed);
-	ClassDB::bind_method("_on_tool_button_pressed", &VoxelWorldEditor::_on_tool_button_pressed);
-	ClassDB::bind_method("_on_insert_block_at_camera_button_pressed", &VoxelWorldEditor::_on_insert_block_at_camera_button_pressed);
-	ClassDB::bind_method("_on_isolevel_slider_value_changed", &VoxelWorldEditor::_on_isolevel_slider_value_changed);
+void TerraWorldEditor::_bind_methods() {
+	ClassDB::bind_method("_node_removed", &TerraWorldEditor::_node_removed);
+	ClassDB::bind_method("_on_surface_button_pressed", &TerraWorldEditor::_on_surface_button_pressed);
+	ClassDB::bind_method("_on_tool_button_pressed", &TerraWorldEditor::_on_tool_button_pressed);
+	ClassDB::bind_method("_on_insert_block_at_camera_button_pressed", &TerraWorldEditor::_on_insert_block_at_camera_button_pressed);
+	ClassDB::bind_method("_on_isolevel_slider_value_changed", &TerraWorldEditor::_on_isolevel_slider_value_changed);
 }
 
-void VoxelWorldEditorPlugin::_notification(int p_what) {
+void TerraWorldEditorPlugin::_notification(int p_what) {
 	if (p_what == EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED) {
 		switch ((int)EditorSettings::get_singleton()->get("editors/voxelman/editor_side")) {
 			case 0: { // Left.
@@ -340,20 +340,20 @@ void VoxelWorldEditorPlugin::_notification(int p_what) {
 	}
 }
 
-void VoxelWorldEditorPlugin::edit(Object *p_object) {
-	voxel_world_editor->edit(Object::cast_to<VoxelWorld>(p_object));
+void TerraWorldEditorPlugin::edit(Object *p_object) {
+	voxel_world_editor->edit(Object::cast_to<TerraWorld>(p_object));
 }
 
-bool VoxelWorldEditorPlugin::handles(Object *p_object) const {
-	if (!p_object->is_class("VoxelWorld"))
+bool TerraWorldEditorPlugin::handles(Object *p_object) const {
+	if (!p_object->is_class("TerraWorld"))
 		return false;
 
-	VoxelWorld *w = Object::cast_to<VoxelWorld>(p_object);
+	TerraWorld *w = Object::cast_to<TerraWorld>(p_object);
 
 	return w->get_editable();
 }
 
-void VoxelWorldEditorPlugin::make_visible(bool p_visible) {
+void TerraWorldEditorPlugin::make_visible(bool p_visible) {
 	if (p_visible) {
 		voxel_world_editor->show();
 		voxel_world_editor->spatial_editor_hb->show();
@@ -366,13 +366,13 @@ void VoxelWorldEditorPlugin::make_visible(bool p_visible) {
 	}
 }
 
-VoxelWorldEditorPlugin::VoxelWorldEditorPlugin(EditorNode *p_node) {
+TerraWorldEditorPlugin::TerraWorldEditorPlugin(EditorNode *p_node) {
 	editor = p_node;
 
 	EDITOR_DEF("editors/voxelman/editor_side", 1);
 	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::INT, "editors/voxelman/editor_side", PROPERTY_HINT_ENUM, "Left,Right"));
 
-	voxel_world_editor = memnew(VoxelWorldEditor(editor));
+	voxel_world_editor = memnew(TerraWorldEditor(editor));
 	switch ((int)EditorSettings::get_singleton()->get("editors/voxelman/editor_side")) {
 		case 0: { // Left.
 			add_control_to_container(CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, voxel_world_editor);
@@ -384,5 +384,5 @@ VoxelWorldEditorPlugin::VoxelWorldEditorPlugin(EditorNode *p_node) {
 	voxel_world_editor->hide();
 }
 
-VoxelWorldEditorPlugin::~VoxelWorldEditorPlugin() {
+TerraWorldEditorPlugin::~TerraWorldEditorPlugin() {
 }

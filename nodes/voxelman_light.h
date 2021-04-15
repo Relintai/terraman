@@ -35,15 +35,15 @@ SOFTWARE.
 
 #include "core/math/vector3.h"
 
-class VoxelmanLight : public Spatial {
-	GDCLASS(VoxelmanLight, Spatial);
+class TerramanLight : public Spatial {
+	GDCLASS(TerramanLight, Spatial);
 	OBJ_CATEGORY("Props");
 
 public:
 	//make it turn into a normal light if voxelman isn't present?
 
-	VoxelmanLight();
-	~VoxelmanLight();
+	TerramanLight();
+	~TerramanLight();
 
 protected:
 	static void _bind_methods();

@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_MESHER_MARCHING_CUBES_H
-#define VOXEL_MESHER_MARCHING_CUBES_H
+#ifndef TERRA_MESHER_MARCHING_CUBES_H
+#define TERRA_MESHER_MARCHING_CUBES_H
 
 #include "core/version.h"
 
@@ -39,45 +39,45 @@ SOFTWARE.
 
 using namespace MarchingCubes;
 
-class VoxelMesherMarchingCubes : public VoxelMesherDefault {
-	GDCLASS(VoxelMesherMarchingCubes, VoxelMesherDefault)
+class TerraMesherMarchingCubes : public TerraMesherDefault {
+	GDCLASS(TerraMesherMarchingCubes, TerraMesherDefault)
 
 public:
-	static const String BINDING_STRING_VOXEL_ENTRY_INDICES;
-	static const String BINDING_STRING_VOXEL_ENTRY_MASK;
+	static const String BINDING_STRING_TERRA_ENTRY_INDICES;
+	static const String BINDING_STRING_TERRA_ENTRY_MASK;
 
-	enum VoxelEntryIndices {
-		VOXEL_ENTRY_INDEX_000 = 0,
-		VOXEL_ENTRY_INDEX_100 = 1,
-		VOXEL_ENTRY_INDEX_001 = 2,
-		VOXEL_ENTRY_INDEX_101 = 3,
+	enum TerraEntryIndices {
+		TERRA_ENTRY_INDEX_000 = 0,
+		TERRA_ENTRY_INDEX_100 = 1,
+		TERRA_ENTRY_INDEX_001 = 2,
+		TERRA_ENTRY_INDEX_101 = 3,
 
-		VOXEL_ENTRY_INDEX_010 = 4,
-		VOXEL_ENTRY_INDEX_110 = 5,
-		VOXEL_ENTRY_INDEX_011 = 6,
-		VOXEL_ENTRY_INDEX_111 = 7,
+		TERRA_ENTRY_INDEX_010 = 4,
+		TERRA_ENTRY_INDEX_110 = 5,
+		TERRA_ENTRY_INDEX_011 = 6,
+		TERRA_ENTRY_INDEX_111 = 7,
 
-		VOXEL_ENTRIES_SIZE = 8,
+		TERRA_ENTRIES_SIZE = 8,
 	};
 
-	enum VoxelEntryMask {
-		VOXEL_ENTRY_MASK_000 = 1 << 0,
-		VOXEL_ENTRY_MASK_100 = 1 << 1,
-		VOXEL_ENTRY_MASK_001 = 1 << 2,
-		VOXEL_ENTRY_MASK_101 = 1 << 3,
+	enum TerraEntryMask {
+		TERRA_ENTRY_MASK_000 = 1 << 0,
+		TERRA_ENTRY_MASK_100 = 1 << 1,
+		TERRA_ENTRY_MASK_001 = 1 << 2,
+		TERRA_ENTRY_MASK_101 = 1 << 3,
 
-		VOXEL_ENTRY_MASK_010 = 1 << 4,
-		VOXEL_ENTRY_MASK_110 = 1 << 5,
-		VOXEL_ENTRY_MASK_011 = 1 << 6,
-		VOXEL_ENTRY_MASK_111 = 1 << 7,
+		TERRA_ENTRY_MASK_010 = 1 << 4,
+		TERRA_ENTRY_MASK_110 = 1 << 5,
+		TERRA_ENTRY_MASK_011 = 1 << 6,
+		TERRA_ENTRY_MASK_111 = 1 << 7,
 	};
 
 	//arr should have a size of 8
-	void get_voxel_type_array(int *arr, Ref<VoxelChunk> chunk, const int x, const int y, const int z, const int size = 1);
+	void get_voxel_type_array(int *arr, Ref<TerraChunk> chunk, const int x, const int y, const int z, const int size = 1);
 	int get_case_code_from_arr(const int *data);
-	int get_case_code(Ref<VoxelChunk> chunk, const int x, const int y, const int z, const int size = 1);
-	int get_voxel_type(Ref<VoxelChunk> chunk, const int x, const int y, const int z, const int size = 1);
-	void _add_chunk(Ref<VoxelChunk> p_chunk);
+	int get_case_code(Ref<TerraChunk> chunk, const int x, const int y, const int z, const int size = 1);
+	int get_voxel_type(Ref<TerraChunk> chunk, const int x, const int y, const int z, const int size = 1);
+	void _add_chunk(Ref<TerraChunk> p_chunk);
 
 	Vector3 corner_id_to_vertex(int corner_id) const;
 
@@ -92,8 +92,8 @@ public:
 	Vector3 get_regular_vertex_second_position(int index1, int index2) const;
 	Vector3 get_regular_vertex_direction(int index1, int index2) const;
 
-	VoxelMesherMarchingCubes();
-	~VoxelMesherMarchingCubes();
+	TerraMesherMarchingCubes();
+	~TerraMesherMarchingCubes();
 
 protected:
 	static void _bind_methods();
@@ -101,7 +101,7 @@ protected:
 	Ref<MarchingCubesCellData> _regular_cell_datas[16];
 };
 
-VARIANT_ENUM_CAST(VoxelMesherMarchingCubes::VoxelEntryIndices);
-VARIANT_ENUM_CAST(VoxelMesherMarchingCubes::VoxelEntryMask);
+VARIANT_ENUM_CAST(TerraMesherMarchingCubes::TerraEntryIndices);
+VARIANT_ENUM_CAST(TerraMesherMarchingCubes::TerraEntryMask);
 
-#endif // VOXEL_MESHER_SMOOTH_H
+#endif // TERRA_MESHER_SMOOTH_H

@@ -22,50 +22,50 @@ SOFTWARE.
 
 #include "voxel_surface.h"
 
-int VoxelSurface::get_id() const {
+int TerraSurface::get_id() const {
 	return _id;
 }
-void VoxelSurface::set_id(const int value) {
+void TerraSurface::set_id(const int value) {
 	_id = value;
 }
 
-int VoxelSurface::get_mesher_index() const {
+int TerraSurface::get_mesher_index() const {
 	return _mesher_index;
 }
-void VoxelSurface::set_mesher_index(const int value) {
+void TerraSurface::set_mesher_index(const int value) {
 	_mesher_index = value;
 }
 
-bool VoxelSurface::get_transparent() const {
+bool TerraSurface::get_transparent() const {
 	return _transparent;
 }
-void VoxelSurface::set_transparent(const bool transparent) {
+void TerraSurface::set_transparent(const bool transparent) {
 	_transparent = transparent;
 }
 
-bool VoxelSurface::get_liquid() const {
+bool TerraSurface::get_liquid() const {
 	return _liquid;
 }
-void VoxelSurface::set_liquid(const bool value) {
+void TerraSurface::set_liquid(const bool value) {
 	_liquid = value;
 }
 
-Rect2 VoxelSurface::get_rect(const VoxelSurfaceSides side) const {
+Rect2 TerraSurface::get_rect(const TerraSurfaceSides side) const {
 	return _rects[side];
 }
-void VoxelSurface::set_rect(const VoxelSurfaceSides side, const Rect2 &rect) {
+void TerraSurface::set_rect(const TerraSurfaceSides side, const Rect2 &rect) {
 	_rects[side] = rect;
 }
 
-Ref<VoxelmanLibrary> VoxelSurface::get_library() const {
-	return Ref<VoxelmanLibrary>(_library);
+Ref<TerramanLibrary> TerraSurface::get_library() const {
+	return Ref<TerramanLibrary>(_library);
 }
 
-void VoxelSurface::set_library(Ref<VoxelmanLibrary> library) {
+void TerraSurface::set_library(Ref<TerramanLibrary> library) {
 	_library = (*library);
 }
 
-_FORCE_INLINE_ Vector2 VoxelSurface::transform_uv(const VoxelSurfaceSides p_side, const Vector2 &p_uv) const {
+_FORCE_INLINE_ Vector2 TerraSurface::transform_uv(const TerraSurfaceSides p_side, const Vector2 &p_uv) const {
 	Vector2 uv = p_uv;
 
 	Rect2 r = _rects[p_side];
@@ -78,7 +78,7 @@ _FORCE_INLINE_ Vector2 VoxelSurface::transform_uv(const VoxelSurfaceSides p_side
 	return uv;
 }
 
-_FORCE_INLINE_ Vector2 VoxelSurface::transform_uv_scaled(const VoxelSurfaceSides p_side, const Vector2 &p_uv, const int p_current_x, const int p_current_y, const int p_max) const {
+_FORCE_INLINE_ Vector2 TerraSurface::transform_uv_scaled(const TerraSurfaceSides p_side, const Vector2 &p_uv, const int p_current_x, const int p_current_y, const int p_max) const {
 	Vector2 uv = p_uv;
 
 	Rect2 r = _rects[p_side];
@@ -95,10 +95,10 @@ _FORCE_INLINE_ Vector2 VoxelSurface::transform_uv_scaled(const VoxelSurfaceSides
 	return uv;
 }
 
-void VoxelSurface::refresh_rects() {
+void TerraSurface::refresh_rects() {
 }
 
-VoxelSurface::VoxelSurface() {
+TerraSurface::TerraSurface() {
 	_id = 0;
 	_mesher_index = 0;
 	_transparent = false;
@@ -106,40 +106,40 @@ VoxelSurface::VoxelSurface() {
 	_library = NULL;
 }
 
-VoxelSurface::~VoxelSurface() {
+TerraSurface::~TerraSurface() {
 	_library = NULL;
 }
 
-void VoxelSurface::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_id"), &VoxelSurface::get_id);
-	ClassDB::bind_method(D_METHOD("set_id", "value"), &VoxelSurface::set_id);
+void TerraSurface::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_id"), &TerraSurface::get_id);
+	ClassDB::bind_method(D_METHOD("set_id", "value"), &TerraSurface::set_id);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "id"), "set_id", "get_id");
 
-	ClassDB::bind_method(D_METHOD("get_mesher_index"), &VoxelSurface::get_mesher_index);
-	ClassDB::bind_method(D_METHOD("set_mesher_index", "value"), &VoxelSurface::set_mesher_index);
+	ClassDB::bind_method(D_METHOD("get_mesher_index"), &TerraSurface::get_mesher_index);
+	ClassDB::bind_method(D_METHOD("set_mesher_index", "value"), &TerraSurface::set_mesher_index);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "mesher_index"), "set_mesher_index", "get_mesher_index");
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "voxel_name"), "set_name", "get_name");
 
-	ClassDB::bind_method(D_METHOD("get_transparent"), &VoxelSurface::get_transparent);
-	ClassDB::bind_method(D_METHOD("set_transparent", "transparent"), &VoxelSurface::set_transparent);
+	ClassDB::bind_method(D_METHOD("get_transparent"), &TerraSurface::get_transparent);
+	ClassDB::bind_method(D_METHOD("set_transparent", "transparent"), &TerraSurface::set_transparent);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "transparent"), "set_transparent", "get_transparent");
 
-	ClassDB::bind_method(D_METHOD("get_liquid"), &VoxelSurface::get_liquid);
-	ClassDB::bind_method(D_METHOD("set_liquid", "transparent"), &VoxelSurface::set_liquid);
+	ClassDB::bind_method(D_METHOD("get_liquid"), &TerraSurface::get_liquid);
+	ClassDB::bind_method(D_METHOD("set_liquid", "transparent"), &TerraSurface::set_liquid);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "liquid"), "set_liquid", "get_liquid");
 
-	ClassDB::bind_method(D_METHOD("get_rect", "side"), &VoxelSurface::get_rect);
-	ClassDB::bind_method(D_METHOD("set_rect", "side", "rect"), &VoxelSurface::set_rect);
+	ClassDB::bind_method(D_METHOD("get_rect", "side"), &TerraSurface::get_rect);
+	ClassDB::bind_method(D_METHOD("set_rect", "side", "rect"), &TerraSurface::set_rect);
 
-	ClassDB::bind_method(D_METHOD("transform_uv", "side", "uv"), &VoxelSurface::transform_uv);
-	ClassDB::bind_method(D_METHOD("transform_uv_scaled", "side", "uv", "p_current_x", "p_current_y", "max"), &VoxelSurface::transform_uv_scaled);
+	ClassDB::bind_method(D_METHOD("transform_uv", "side", "uv"), &TerraSurface::transform_uv);
+	ClassDB::bind_method(D_METHOD("transform_uv_scaled", "side", "uv", "p_current_x", "p_current_y", "max"), &TerraSurface::transform_uv_scaled);
 
-	ClassDB::bind_method(D_METHOD("refresh_rects"), &VoxelSurface::refresh_rects);
+	ClassDB::bind_method(D_METHOD("refresh_rects"), &TerraSurface::refresh_rects);
 
-	BIND_ENUM_CONSTANT(VOXEL_SIDE_TOP);
-	BIND_ENUM_CONSTANT(VOXEL_SIDE_BOTTOM);
-	BIND_ENUM_CONSTANT(VOXEL_SIDE_SIDE);
+	BIND_ENUM_CONSTANT(TERRA_SIDE_TOP);
+	BIND_ENUM_CONSTANT(TERRA_SIDE_BOTTOM);
+	BIND_ENUM_CONSTANT(TERRA_SIDE_SIDE);
 
-	BIND_CONSTANT(VOXEL_SIDES_COUNT);
+	BIND_CONSTANT(TERRA_SIDES_COUNT);
 }

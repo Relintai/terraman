@@ -22,88 +22,88 @@ SOFTWARE.
 
 #include "voxel_structure.h"
 
-bool VoxelStructure::get_use_aabb() const {
+bool TerraStructure::get_use_aabb() const {
 	return _use_aabb;
 }
-void VoxelStructure::set_use_aabb(const bool value) {
+void TerraStructure::set_use_aabb(const bool value) {
 	_use_aabb = value;
 }
 
-AABB VoxelStructure::get_chunk_aabb() const {
+AABB TerraStructure::get_chunk_aabb() const {
 	return _chunk_aabb;
 }
-void VoxelStructure::set_chunk_aabb(const AABB &value) {
+void TerraStructure::set_chunk_aabb(const AABB &value) {
 	_chunk_aabb = value;
 }
 
-int VoxelStructure::get_position_x() const {
+int TerraStructure::get_position_x() const {
 	return _position_x;
 }
-void VoxelStructure::set_position_x(const int value) {
+void TerraStructure::set_position_x(const int value) {
 	_position_x = value;
 }
 
-int VoxelStructure::get_position_y() const {
+int TerraStructure::get_position_y() const {
 	return _position_y;
 }
-void VoxelStructure::set_position_y(const int value) {
+void TerraStructure::set_position_y(const int value) {
 	_position_y = value;
 }
 
-int VoxelStructure::get_position_z() const {
+int TerraStructure::get_position_z() const {
 	return _position_z;
 }
-void VoxelStructure::set_position_z(const int value) {
+void TerraStructure::set_position_z(const int value) {
 	_position_z = value;
 }
 
-void VoxelStructure::set_position(const int x, const int y, const int z) {
+void TerraStructure::set_position(const int x, const int y, const int z) {
 	_position_x = x;
 	_position_y = y;
 	_position_z = z;
 }
 
-void VoxelStructure::write_to_chunk(Ref<VoxelChunk> chunk) {
+void TerraStructure::write_to_chunk(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
 	if (has_method("_write_to_chunk"))
 		call("_write_to_chunk", chunk);
 }
 
-VoxelStructure::VoxelStructure() {
+TerraStructure::TerraStructure() {
 	_use_aabb = true;
 	_position_x = 0;
 	_position_y = 0;
 	_position_z = 0;
 }
 
-VoxelStructure::~VoxelStructure() {
+TerraStructure::~TerraStructure() {
 }
 
-void VoxelStructure::_bind_methods() {
-	BIND_VMETHOD(MethodInfo("_write_to_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "VoxelChunk")));
+void TerraStructure::_bind_methods() {
+	BIND_VMETHOD(MethodInfo("_write_to_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 
-	ClassDB::bind_method(D_METHOD("get_use_aabb"), &VoxelStructure::get_use_aabb);
-	ClassDB::bind_method(D_METHOD("set_use_aabb", "value"), &VoxelStructure::set_use_aabb);
+	ClassDB::bind_method(D_METHOD("get_use_aabb"), &TerraStructure::get_use_aabb);
+	ClassDB::bind_method(D_METHOD("set_use_aabb", "value"), &TerraStructure::set_use_aabb);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_aabb"), "set_use_aabb", "get_use_aabb");
 
-	ClassDB::bind_method(D_METHOD("get_chunk_aabb"), &VoxelStructure::get_chunk_aabb);
-	ClassDB::bind_method(D_METHOD("set_chunk_aabb", "value"), &VoxelStructure::set_chunk_aabb);
+	ClassDB::bind_method(D_METHOD("get_chunk_aabb"), &TerraStructure::get_chunk_aabb);
+	ClassDB::bind_method(D_METHOD("set_chunk_aabb", "value"), &TerraStructure::set_chunk_aabb);
 	ADD_PROPERTY(PropertyInfo(Variant::AABB, "chunk_aabb"), "set_chunk_aabb", "get_chunk_aabb");
 
-	ClassDB::bind_method(D_METHOD("get_position_x"), &VoxelStructure::get_position_x);
-	ClassDB::bind_method(D_METHOD("set_position_x", "value"), &VoxelStructure::set_position_x);
+	ClassDB::bind_method(D_METHOD("get_position_x"), &TerraStructure::get_position_x);
+	ClassDB::bind_method(D_METHOD("set_position_x", "value"), &TerraStructure::set_position_x);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "position_x"), "set_position_x", "get_position_x");
 
-	ClassDB::bind_method(D_METHOD("get_position_y"), &VoxelStructure::get_position_y);
-	ClassDB::bind_method(D_METHOD("set_position_y", "value"), &VoxelStructure::set_position_y);
+	ClassDB::bind_method(D_METHOD("get_position_y"), &TerraStructure::get_position_y);
+	ClassDB::bind_method(D_METHOD("set_position_y", "value"), &TerraStructure::set_position_y);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "position_y"), "set_position_y", "get_position_y");
 
-	ClassDB::bind_method(D_METHOD("get_position_z"), &VoxelStructure::get_position_z);
-	ClassDB::bind_method(D_METHOD("set_position_z", "value"), &VoxelStructure::set_position_z);
+	ClassDB::bind_method(D_METHOD("get_position_z"), &TerraStructure::get_position_z);
+	ClassDB::bind_method(D_METHOD("set_position_z", "value"), &TerraStructure::set_position_z);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "position_z"), "set_position_z", "get_position_z");
 
-	ClassDB::bind_method(D_METHOD("set_position", "x", "y", "z"), &VoxelStructure::set_position);
+	ClassDB::bind_method(D_METHOD("set_position", "x", "y", "z"), &TerraStructure::set_position);
 
-	ClassDB::bind_method(D_METHOD("write_to_chunk", "chunk"), &VoxelStructure::write_to_chunk);
+	ClassDB::bind_method(D_METHOD("write_to_chunk", "chunk"), &TerraStructure::write_to_chunk);
 }

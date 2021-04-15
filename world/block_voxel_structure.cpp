@@ -22,21 +22,21 @@ SOFTWARE.
 
 #include "block_voxel_structure.h"
 
-int BlockVoxelStructure::get_channel_type() const {
+int BlockTerraStructure::get_channel_type() const {
 	return _channel_type;
 }
-void BlockVoxelStructure::set_channel_type(const int value) {
+void BlockTerraStructure::set_channel_type(const int value) {
 	_channel_type = value;
 }
 
-int BlockVoxelStructure::get_channel_isolevel() const {
+int BlockTerraStructure::get_channel_isolevel() const {
 	return _channel_isolevel;
 }
-void BlockVoxelStructure::set_channel_isolevel(const int value) {
+void BlockTerraStructure::set_channel_isolevel(const int value) {
 	_channel_isolevel = value;
 }
 
-int BlockVoxelStructure::get_voxel_type(int p_x, int p_y, int p_z) const {
+int BlockTerraStructure::get_voxel_type(int p_x, int p_y, int p_z) const {
 	DataEntry p;
 
 	for (int i = 0; i < _data.size(); ++i) {
@@ -49,7 +49,7 @@ int BlockVoxelStructure::get_voxel_type(int p_x, int p_y, int p_z) const {
 
 	return 0;
 }
-int BlockVoxelStructure::get_voxel_isolevel(int p_x, int p_y, int p_z) const {
+int BlockTerraStructure::get_voxel_isolevel(int p_x, int p_y, int p_z) const {
 	DataEntry p;
 
 	for (int i = 0; i < _data.size(); ++i) {
@@ -63,7 +63,7 @@ int BlockVoxelStructure::get_voxel_isolevel(int p_x, int p_y, int p_z) const {
 	return 0;
 }
 
-void BlockVoxelStructure::set_voxel(int p_x, int p_y, int p_z, int p_type, int p_isolevel) {
+void BlockTerraStructure::set_voxel(int p_x, int p_y, int p_z, int p_type, int p_isolevel) {
 	DataEntry p;
 	p.x = p_x;
 	p.y = p_y;
@@ -74,36 +74,36 @@ void BlockVoxelStructure::set_voxel(int p_x, int p_y, int p_z, int p_type, int p
 	_data.push_back(p);
 }
 
-void BlockVoxelStructure::_write_to_chunk(Ref<VoxelChunk> chunk) {
-	//Ref<VoxelChunk> c = Object::cast_to<VoxelChunk>(chunk);
+void BlockTerraStructure::_write_to_chunk(Ref<TerraChunk> chunk) {
+	//Ref<TerraChunk> c = Object::cast_to<TerraChunk>(chunk);
 }
 
-void BlockVoxelStructure::clear() {
+void BlockTerraStructure::clear() {
 	_data.clear();
 }
 
-BlockVoxelStructure::BlockVoxelStructure() {
+BlockTerraStructure::BlockTerraStructure() {
 	_channel_type = 0;
 	_channel_isolevel = 0;
 }
 
-BlockVoxelStructure::~BlockVoxelStructure() {
+BlockTerraStructure::~BlockTerraStructure() {
 	_data.clear();
 }
 
-void BlockVoxelStructure::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_channel_type"), &BlockVoxelStructure::get_channel_type);
-	ClassDB::bind_method(D_METHOD("set_channel_type", "value"), &BlockVoxelStructure::set_channel_type);
+void BlockTerraStructure::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_channel_type"), &BlockTerraStructure::get_channel_type);
+	ClassDB::bind_method(D_METHOD("set_channel_type", "value"), &BlockTerraStructure::set_channel_type);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "channel_type"), "set_channel_type", "get_channel_type");
 
-	ClassDB::bind_method(D_METHOD("get_channel_isolevel"), &BlockVoxelStructure::get_channel_isolevel);
-	ClassDB::bind_method(D_METHOD("set_channel_isolevel", "value"), &BlockVoxelStructure::set_channel_isolevel);
+	ClassDB::bind_method(D_METHOD("get_channel_isolevel"), &BlockTerraStructure::get_channel_isolevel);
+	ClassDB::bind_method(D_METHOD("set_channel_isolevel", "value"), &BlockTerraStructure::set_channel_isolevel);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "channel_isolevel"), "set_channel_isolevel", "get_channel_isolevel");
 
-	ClassDB::bind_method(D_METHOD("get_voxel_type", "x", "y", "z"), &BlockVoxelStructure::get_voxel_type);
-	ClassDB::bind_method(D_METHOD("get_voxel_isolevel", "x", "y", "z"), &BlockVoxelStructure::get_voxel_isolevel);
+	ClassDB::bind_method(D_METHOD("get_voxel_type", "x", "y", "z"), &BlockTerraStructure::get_voxel_type);
+	ClassDB::bind_method(D_METHOD("get_voxel_isolevel", "x", "y", "z"), &BlockTerraStructure::get_voxel_isolevel);
 
-	ClassDB::bind_method(D_METHOD("set_voxel", "x", "y", "z", "type", "isolevel"), &BlockVoxelStructure::set_voxel);
+	ClassDB::bind_method(D_METHOD("set_voxel", "x", "y", "z", "type", "isolevel"), &BlockTerraStructure::set_voxel);
 
-	ClassDB::bind_method(D_METHOD("_write_to_chunk", "chunk"), &BlockVoxelStructure::_write_to_chunk);
+	ClassDB::bind_method(D_METHOD("_write_to_chunk", "chunk"), &BlockTerraStructure::_write_to_chunk);
 }

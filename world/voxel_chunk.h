@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_CHUNK_H
-#define VOXEL_CHUNK_H
+#ifndef TERRA_CHUNK_H
+#define TERRA_CHUNK_H
 
 #include "core/version.h"
 
@@ -68,18 +68,18 @@ include_pool_vector
 #include "../library/voxelman_library.h"
 		; //hackfix for a clang format issue
 
-class VoxelJob;
-class VoxelWorld;
-class VoxelStructure;
+class TerraJob;
+class TerraWorld;
+class TerraStructure;
 
-class VoxelChunk : public Resource {
-	GDCLASS(VoxelChunk, Resource);
+class TerraChunk : public Resource {
+	GDCLASS(TerraChunk, Resource);
 
 	_THREAD_SAFE_CLASS_
 
 public:
 	enum {
-		VOXEL_CHUNK_STATE_OK = 0,
+		TERRA_CHUNK_STATE_OK = 0,
 	};
 
 public:
@@ -141,26 +141,26 @@ public:
 	void set_margin_start(const int value);
 	void set_margin_end(const int value);
 
-	Ref<VoxelmanLibrary> get_library();
-	void set_library(const Ref<VoxelmanLibrary> &value);
+	Ref<TerramanLibrary> get_library();
+	void set_library(const Ref<TerramanLibrary> &value);
 
 	float get_voxel_scale() const;
 	void set_voxel_scale(const float value);
 
-	VoxelWorld *get_voxel_world() const;
-	void set_voxel_world(VoxelWorld *world);
+	TerraWorld *get_voxel_world() const;
+	void set_voxel_world(TerraWorld *world);
 	void set_voxel_world_bind(Node *world);
 
 	//Jobs
-	Ref<VoxelJob> job_get(const int index) const;
-	void job_set(const int index, const Ref<VoxelJob> &job);
+	Ref<TerraJob> job_get(const int index) const;
+	void job_set(const int index, const Ref<TerraJob> &job);
 	void job_remove(const int index);
-	void job_add(const Ref<VoxelJob> &job);
+	void job_add(const Ref<TerraJob> &job);
 	int job_get_count() const;
 
 	int job_get_current_index();
 	void job_next();
-	Ref<VoxelJob> job_get_current();
+	Ref<TerraJob> job_get_current();
 
 	//Channels
 	void channel_setup();
@@ -194,14 +194,14 @@ public:
 	int get_data_index(const int x, const int y, const int z) const;
 	int get_data_size() const;
 
-	//Voxel Structures
-	Ref<VoxelStructure> voxel_structure_get(const int index) const;
-	void voxel_structure_add(const Ref<VoxelStructure> &structure);
-	void voxel_structure_remove(const Ref<VoxelStructure> &structure);
+	//Terra Structures
+	Ref<TerraStructure> voxel_structure_get(const int index) const;
+	void voxel_structure_add(const Ref<TerraStructure> &structure);
+	void voxel_structure_remove(const Ref<TerraStructure> &structure);
 	void voxel_structure_remove_index(const int index);
 	void voxel_structure_clear();
 	int voxel_structure_get_count() const;
-	void voxel_structure_add_at_position(Ref<VoxelStructure> structure, const Vector3 &world_position);
+	void voxel_structure_add_at_position(Ref<TerraStructure> structure, const Vector3 &world_position);
 
 	Vector<Variant> voxel_structures_get();
 	void voxel_structures_set(const Vector<Variant> &structures);
@@ -215,7 +215,7 @@ public:
 
 	//light Baking
 	void bake_lights();
-	void bake_light(Ref<VoxelLight> light);
+	void bake_light(Ref<TerraLight> light);
 	void clear_baked_lights();
 
 #if PROPS_PRESENT
@@ -280,8 +280,8 @@ public:
 	void physics_process(const float delta);
 	void world_transform_changed();
 	void visibility_changed(const bool visible);
-	void world_light_added(const Ref<VoxelLight> &light);
-	void world_light_removed(const Ref<VoxelLight> &light);
+	void world_light_added(const Ref<TerraLight> &light);
+	void world_light_removed(const Ref<TerraLight> &light);
 	void generation_process(const float delta);
 	void generation_physics_process(const float delta);
 
@@ -292,8 +292,8 @@ public:
 	Vector3 to_local(Vector3 p_global) const;
 	Vector3 to_global(Vector3 p_local) const;
 
-	VoxelChunk();
-	~VoxelChunk();
+	TerraChunk();
+	~TerraChunk();
 
 protected:
 	virtual void _enter_tree();
@@ -350,7 +350,7 @@ protected:
 
 	bool _is_in_tree;
 
-	VoxelWorld *_voxel_world;
+	TerraWorld *_voxel_world;
 
 	int _position_x;
 	int _position_y;
@@ -372,11 +372,11 @@ protected:
 	float _voxel_scale;
 
 	int _current_job;
-	Vector<Ref<VoxelJob> > _jobs;
+	Vector<Ref<TerraJob> > _jobs;
 
-	Ref<VoxelmanLibrary> _library;
+	Ref<TerramanLibrary> _library;
 
-	Vector<Ref<VoxelStructure> > _voxel_structures;
+	Vector<Ref<TerraStructure> > _voxel_structures;
 
 #if PROPS_PRESENT
 	Vector<PropDataStore> _props;

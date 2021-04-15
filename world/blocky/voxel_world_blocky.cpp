@@ -30,41 +30,41 @@ SOFTWARE.
 #include "../jobs/voxel_prop_job.h"
 #include "../jobs/voxel_terrarin_job.h"
 
-Ref<VoxelChunk> VoxelWorldBlocky::_create_chunk(int x, int y, int z, Ref<VoxelChunk> chunk) {
+Ref<TerraChunk> TerraWorldBlocky::_create_chunk(int x, int y, int z, Ref<TerraChunk> chunk) {
 
 	if (!chunk.is_valid()) {
-		chunk = Ref<VoxelChunk>(memnew(VoxelChunkBlocky));
+		chunk = Ref<TerraChunk>(memnew(TerraChunkBlocky));
 	}
 
 	if (chunk->job_get_count() == 0) {
-		Ref<VoxelTerrarinJob> tj;
+		Ref<TerraTerrarinJob> tj;
 		tj.instance();
 
-		Ref<VoxelLightJob> lj;
+		Ref<TerraLightJob> lj;
 		lj.instance();
 
-		Ref<VoxelPropJob> pj;
+		Ref<TerraPropJob> pj;
 		pj.instance();
-		pj->set_prop_mesher(Ref<VoxelMesher>(memnew(VoxelMesherBlocky)));
+		pj->set_prop_mesher(Ref<TerraMesher>(memnew(TerraMesherBlocky)));
 
-		tj->add_mesher(Ref<VoxelMesher>(memnew(VoxelMesherBlocky())));
-		tj->add_liquid_mesher(Ref<VoxelMesher>(memnew(VoxelMesherLiquidBlocky())));
+		tj->add_mesher(Ref<TerraMesher>(memnew(TerraMesherBlocky())));
+		tj->add_liquid_mesher(Ref<TerraMesher>(memnew(TerraMesherLiquidBlocky())));
 
 		chunk->job_add(lj);
 		chunk->job_add(tj);
 		chunk->job_add(pj);
 	}
 
-	return VoxelWorld::_create_chunk(x, y, z, chunk);
+	return TerraWorld::_create_chunk(x, y, z, chunk);
 }
 
-VoxelWorldBlocky::VoxelWorldBlocky() {
+TerraWorldBlocky::TerraWorldBlocky() {
 	set_data_margin_start(1);
 	set_data_margin_end(1);
 }
 
-VoxelWorldBlocky ::~VoxelWorldBlocky() {
+TerraWorldBlocky ::~TerraWorldBlocky() {
 }
 
-void VoxelWorldBlocky::_bind_methods() {
+void TerraWorldBlocky::_bind_methods() {
 }

@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_MESHER_LIQUID_BLOCKY_H
-#define VOXEL_MESHER_LIQUID_BLOCKY_H
+#ifndef TERRA_MESHER_LIQUID_BLOCKY_H
+#define TERRA_MESHER_LIQUID_BLOCKY_H
 
 #include "core/version.h"
 
@@ -36,14 +36,14 @@ SOFTWARE.
 
 #include "../default/voxel_mesher_default.h"
 
-class VoxelMesherLiquidBlocky : public VoxelMesherDefault {
-	GDCLASS(VoxelMesherLiquidBlocky, VoxelMesherDefault);
+class TerraMesherLiquidBlocky : public TerraMesherDefault {
+	GDCLASS(TerraMesherLiquidBlocky, TerraMesherDefault);
 
 public:
-	void _add_chunk(Ref<VoxelChunk> p_chunk);
+	void _add_chunk(Ref<TerraChunk> p_chunk);
 
-	VoxelMesherLiquidBlocky();
-	~VoxelMesherLiquidBlocky();
+	TerraMesherLiquidBlocky();
+	~TerraMesherLiquidBlocky();
 
 protected:
 	static void _bind_methods();

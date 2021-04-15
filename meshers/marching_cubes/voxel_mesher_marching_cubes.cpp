@@ -47,7 +47,7 @@ SOFTWARE.
 typedef class RenderingServer VisualServer;
 #endif
 
-void VoxelMesherMarchingCubes::get_voxel_type_array(int *arr, Ref<VoxelChunk> chunk, const int x, const int y, const int z, const int size) {
+void TerraMesherMarchingCubes::get_voxel_type_array(int *arr, Ref<TerraChunk> chunk, const int x, const int y, const int z, const int size) {
 	uint8_t *channel_type = chunk->channel_get(_channel_index_type);
 
 	if (channel_type == NULL) {
@@ -71,36 +71,36 @@ void VoxelMesherMarchingCubes::get_voxel_type_array(int *arr, Ref<VoxelChunk> ch
 	arr[6] = channel_type[chunk->get_index(x + size, y, z + size)];
 	arr[7] = channel_type[chunk->get_index(x + size, y + size, z + size)];
 }
-int VoxelMesherMarchingCubes::get_case_code_from_arr(const int *data) {
+int TerraMesherMarchingCubes::get_case_code_from_arr(const int *data) {
 	int case_code = 0;
 
 	if (data[0] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_000;
+		case_code = case_code | TERRA_ENTRY_MASK_000;
 
 	if (data[1] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_010;
+		case_code = case_code | TERRA_ENTRY_MASK_010;
 
 	if (data[2] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_001;
+		case_code = case_code | TERRA_ENTRY_MASK_001;
 
 	if (data[3] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_011;
+		case_code = case_code | TERRA_ENTRY_MASK_011;
 
 	if (data[4] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_100;
+		case_code = case_code | TERRA_ENTRY_MASK_100;
 
 	if (data[5] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_110;
+		case_code = case_code | TERRA_ENTRY_MASK_110;
 
 	if (data[6] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_101;
+		case_code = case_code | TERRA_ENTRY_MASK_101;
 
 	if (data[7] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_111;
+		case_code = case_code | TERRA_ENTRY_MASK_111;
 
 	return case_code;
 }
-int VoxelMesherMarchingCubes::get_case_code(Ref<VoxelChunk> chunk, const int x, const int y, const int z, const int size) {
+int TerraMesherMarchingCubes::get_case_code(Ref<TerraChunk> chunk, const int x, const int y, const int z, const int size) {
 	uint8_t *channel_type = chunk->channel_get(_channel_index_type);
 
 	if (channel_type == NULL) {
@@ -110,33 +110,33 @@ int VoxelMesherMarchingCubes::get_case_code(Ref<VoxelChunk> chunk, const int x, 
 	int case_code = 0;
 
 	if (channel_type[chunk->get_index(x, y, z)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_000;
+		case_code = case_code | TERRA_ENTRY_MASK_000;
 
 	if (channel_type[chunk->get_index(x, y + size, z)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_010;
+		case_code = case_code | TERRA_ENTRY_MASK_010;
 
 	if (channel_type[chunk->get_index(x, y, z + size)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_001;
+		case_code = case_code | TERRA_ENTRY_MASK_001;
 
 	if (channel_type[chunk->get_index(x, y + size, z + size)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_011;
+		case_code = case_code | TERRA_ENTRY_MASK_011;
 
 	if (channel_type[chunk->get_index(x + size, y, z)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_100;
+		case_code = case_code | TERRA_ENTRY_MASK_100;
 
 	if (channel_type[chunk->get_index(x + size, y + size, z)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_110;
+		case_code = case_code | TERRA_ENTRY_MASK_110;
 
 	if (channel_type[chunk->get_index(x + size, y, z + size)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_101;
+		case_code = case_code | TERRA_ENTRY_MASK_101;
 
 	if (channel_type[chunk->get_index(x + size, y + size, z + size)] != 0)
-		case_code = case_code | VOXEL_ENTRY_MASK_111;
+		case_code = case_code | TERRA_ENTRY_MASK_111;
 
 	return case_code;
 }
 
-int VoxelMesherMarchingCubes::get_voxel_type(Ref<VoxelChunk> chunk, const int x, const int y, const int z, const int size) {
+int TerraMesherMarchingCubes::get_voxel_type(Ref<TerraChunk> chunk, const int x, const int y, const int z, const int size) {
 	uint8_t *channel_type = chunk->channel_get(_channel_index_type);
 
 	if (channel_type == NULL) {
@@ -185,12 +185,12 @@ int VoxelMesherMarchingCubes::get_voxel_type(Ref<VoxelChunk> chunk, const int x,
 	return type;
 }
 
-void VoxelMesherMarchingCubes::_add_chunk(Ref<VoxelChunk> p_chunk) {
-	Ref<VoxelChunkDefault> chunk = p_chunk;
+void TerraMesherMarchingCubes::_add_chunk(Ref<TerraChunk> p_chunk) {
+	Ref<TerraChunkDefault> chunk = p_chunk;
 
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	Ref<VoxelJob> job = chunk->job_get_current();
+	Ref<TerraJob> job = chunk->job_get_current();
 
 	//if (!job->has_meta("ao_done")) {
 	//	job->set_meta("ao_done", true);
@@ -315,8 +315,8 @@ void VoxelMesherMarchingCubes::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					}
 				}
 
-				Ref<VoxelSurface> surface1 = _library->voxel_surface_get(type_id1 - 1);
-				Ref<VoxelSurface> surface2 = _library->voxel_surface_get(type_id2 - 1);
+				Ref<TerraSurface> surface1 = _library->voxel_surface_get(type_id1 - 1);
+				Ref<TerraSurface> surface2 = _library->voxel_surface_get(type_id2 - 1);
 
 				for (int i = 0; i < vertex_count; ++i) {
 					int fv = get_regular_vertex_data_first_vertex(case_code, i);
@@ -415,8 +415,8 @@ void VoxelMesherMarchingCubes::_add_chunk(Ref<VoxelChunk> p_chunk) {
 						uv.x += umargin.position.x;
 						uv.y += umargin.position.y;
 
-						temp_uvs.set(cvi, surface1->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
-						temp_uv2s.set(cvi, surface2->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
+						temp_uvs.set(cvi, surface1->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
+						temp_uv2s.set(cvi, surface2->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
 					} else if ((bz + 0.0001 > bx) && (bz + 0.0001 > by)) {
 						Vector2 uv(s.z, t.z);
 						Rect2 umargin = get_uv_margin();
@@ -426,8 +426,8 @@ void VoxelMesherMarchingCubes::_add_chunk(Ref<VoxelChunk> p_chunk) {
 						uv.x += umargin.position.x;
 						uv.y += umargin.position.y;
 
-						temp_uvs.set(cvi, surface1->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
-						temp_uv2s.set(cvi, surface2->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
+						temp_uvs.set(cvi, surface1->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
+						temp_uv2s.set(cvi, surface2->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
 					} else {
 						Vector2 uv(s.y, t.y);
 						Rect2 umargin = get_uv_margin();
@@ -437,8 +437,8 @@ void VoxelMesherMarchingCubes::_add_chunk(Ref<VoxelChunk> p_chunk) {
 						uv.x += umargin.position.x;
 						uv.y += umargin.position.y;
 
-						temp_uvs.set(cvi, surface1->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_TOP, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
-						temp_uv2s.set(cvi, surface2->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_TOP, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
+						temp_uvs.set(cvi, surface1->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
+						temp_uv2s.set(cvi, surface2->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, uv, x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()));
 					}
 				}
 
@@ -479,64 +479,64 @@ void VoxelMesherMarchingCubes::_add_chunk(Ref<VoxelChunk> p_chunk) {
 	}
 }
 
-Vector3 VoxelMesherMarchingCubes::corner_id_to_vertex(int corner_id) const {
+Vector3 TerraMesherMarchingCubes::corner_id_to_vertex(int corner_id) const {
 	ERR_FAIL_COND_V(corner_id < 0 || corner_id > 8, Vector3());
 
 	return marching_cube_vertices[corner_id];
 }
 
-int VoxelMesherMarchingCubes::get_regular_cell_class(int index) const {
+int TerraMesherMarchingCubes::get_regular_cell_class(int index) const {
 	return static_cast<int>(regularCellClass[index]);
 }
 
-Ref<MarchingCubesCellData> VoxelMesherMarchingCubes::get_regular_cell_data(int index) const {
+Ref<MarchingCubesCellData> TerraMesherMarchingCubes::get_regular_cell_data(int index) const {
 	return _regular_cell_datas[index];
 }
 
-int VoxelMesherMarchingCubes::get_regular_vertex_data(int index1, int index2) const {
+int TerraMesherMarchingCubes::get_regular_vertex_data(int index1, int index2) const {
 	//return static_cast<int>(regularVertexData[index1][index2]);
 	return regularVertexData[index1][index2];
 }
 
-//void VoxelMesherMarchingCubes::set_regular_vertex_data(int index1, int index2, int value) {
+//void TerraMesherMarchingCubes::set_regular_vertex_data(int index1, int index2, int value) {
 //   ERR_FAIL_INDEX(index1, 256);
 //    ERR_FAIL_INDEX(index2, 13);
 
 //    regularVertexData[index1][index2] = value;
 //}
 
-int VoxelMesherMarchingCubes::get_regular_vertex_data_first_vertex(int index1, int index2) const {
+int TerraMesherMarchingCubes::get_regular_vertex_data_first_vertex(int index1, int index2) const {
 	int vert1 = regularVertexData[index1][index2] & 0x000F;
 
 	return vert1;
 }
 
-int VoxelMesherMarchingCubes::get_regular_vertex_data_second_vertex(int index1, int index2) const {
+int TerraMesherMarchingCubes::get_regular_vertex_data_second_vertex(int index1, int index2) const {
 	int vert2 = (regularVertexData[index1][index2] & 0x00F0) >> 4;
 
 	return vert2;
 }
 
-Vector3 VoxelMesherMarchingCubes::get_regular_vertex_first_position(int index1, int index2) const {
+Vector3 TerraMesherMarchingCubes::get_regular_vertex_first_position(int index1, int index2) const {
 	int vert = regularVertexData[index1][index2] & 0x000F;
 
 	return marching_cube_vertices[vert];
 }
 
-Vector3 VoxelMesherMarchingCubes::get_regular_vertex_second_position(int index1, int index2) const {
+Vector3 TerraMesherMarchingCubes::get_regular_vertex_second_position(int index1, int index2) const {
 	int vert = (regularVertexData[index1][index2] & 0x00F0) >> 4;
 
 	return marching_cube_vertices[vert];
 }
 
-Vector3 VoxelMesherMarchingCubes::get_regular_vertex_direction(int index1, int index2) const {
+Vector3 TerraMesherMarchingCubes::get_regular_vertex_direction(int index1, int index2) const {
 	int vert1 = regularVertexData[index1][index2] & 0x000F;
 	int vert2 = (regularVertexData[index1][index2] & 0x00F0) >> 4;
 
 	return marching_cube_vertices[vert2] - marching_cube_vertices[vert1];
 }
 
-VoxelMesherMarchingCubes::VoxelMesherMarchingCubes() {
+TerraMesherMarchingCubes::TerraMesherMarchingCubes() {
 	_format = VisualServer::ARRAY_FORMAT_NORMAL | VisualServer::ARRAY_FORMAT_COLOR | VisualServer::ARRAY_FORMAT_TEX_UV | VisualServer::ARRAY_FORMAT_TEX_UV2;
 
 	for (int i = 0; i < 16; ++i) {
@@ -544,45 +544,45 @@ VoxelMesherMarchingCubes::VoxelMesherMarchingCubes() {
 	}
 }
 
-VoxelMesherMarchingCubes::~VoxelMesherMarchingCubes() {
+TerraMesherMarchingCubes::~TerraMesherMarchingCubes() {
 	for (int i = 0; i < 16; ++i) {
 		_regular_cell_datas[i].unref();
 	}
 }
 
-void VoxelMesherMarchingCubes::_bind_methods() {
+void TerraMesherMarchingCubes::_bind_methods() {
 
-	ClassDB::bind_method(D_METHOD("_add_chunk", "chunk"), &VoxelMesherMarchingCubes::_add_chunk);
+	ClassDB::bind_method(D_METHOD("_add_chunk", "chunk"), &TerraMesherMarchingCubes::_add_chunk);
 
-	ClassDB::bind_method(D_METHOD("corner_id_to_vertex", "index1"), &VoxelMesherMarchingCubes::corner_id_to_vertex);
+	ClassDB::bind_method(D_METHOD("corner_id_to_vertex", "index1"), &TerraMesherMarchingCubes::corner_id_to_vertex);
 
-	ClassDB::bind_method(D_METHOD("get_regular_cell_class", "index"), &VoxelMesherMarchingCubes::get_regular_cell_class);
-	ClassDB::bind_method(D_METHOD("get_regular_cell_data", "index"), &VoxelMesherMarchingCubes::get_regular_cell_data);
-	ClassDB::bind_method(D_METHOD("get_regular_vertex_data", "index1", "index2"), &VoxelMesherMarchingCubes::get_regular_vertex_data);
-	//  ClassDB::bind_method(D_METHOD("set_regular_vertex_data", "index1", "index2", "value"), &VoxelMesherMarchingCubes::set_regular_vertex_data);
-	ClassDB::bind_method(D_METHOD("get_regular_vertex_data_first_vertex", "index1", "index2"), &VoxelMesherMarchingCubes::get_regular_vertex_data_first_vertex);
-	ClassDB::bind_method(D_METHOD("get_regular_vertex_data_second_vertex", "index1", "index2"), &VoxelMesherMarchingCubes::get_regular_vertex_data_second_vertex);
-	ClassDB::bind_method(D_METHOD("get_regular_vertex_first_position", "index1", "index2"), &VoxelMesherMarchingCubes::get_regular_vertex_first_position);
-	ClassDB::bind_method(D_METHOD("get_regular_vertex_second_position", "index1", "index2"), &VoxelMesherMarchingCubes::get_regular_vertex_second_position);
-	ClassDB::bind_method(D_METHOD("get_regular_vertex_direction", "index1", "index2"), &VoxelMesherMarchingCubes::get_regular_vertex_direction);
+	ClassDB::bind_method(D_METHOD("get_regular_cell_class", "index"), &TerraMesherMarchingCubes::get_regular_cell_class);
+	ClassDB::bind_method(D_METHOD("get_regular_cell_data", "index"), &TerraMesherMarchingCubes::get_regular_cell_data);
+	ClassDB::bind_method(D_METHOD("get_regular_vertex_data", "index1", "index2"), &TerraMesherMarchingCubes::get_regular_vertex_data);
+	//  ClassDB::bind_method(D_METHOD("set_regular_vertex_data", "index1", "index2", "value"), &TerraMesherMarchingCubes::set_regular_vertex_data);
+	ClassDB::bind_method(D_METHOD("get_regular_vertex_data_first_vertex", "index1", "index2"), &TerraMesherMarchingCubes::get_regular_vertex_data_first_vertex);
+	ClassDB::bind_method(D_METHOD("get_regular_vertex_data_second_vertex", "index1", "index2"), &TerraMesherMarchingCubes::get_regular_vertex_data_second_vertex);
+	ClassDB::bind_method(D_METHOD("get_regular_vertex_first_position", "index1", "index2"), &TerraMesherMarchingCubes::get_regular_vertex_first_position);
+	ClassDB::bind_method(D_METHOD("get_regular_vertex_second_position", "index1", "index2"), &TerraMesherMarchingCubes::get_regular_vertex_second_position);
+	ClassDB::bind_method(D_METHOD("get_regular_vertex_direction", "index1", "index2"), &TerraMesherMarchingCubes::get_regular_vertex_direction);
 
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_000);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_100);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_010);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_110);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_001);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_101);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_011);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_INDEX_111);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_000);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_100);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_010);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_110);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_001);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_101);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_011);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_INDEX_111);
 
-	BIND_ENUM_CONSTANT(VOXEL_ENTRIES_SIZE);
+	BIND_ENUM_CONSTANT(TERRA_ENTRIES_SIZE);
 
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_000);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_100);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_010);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_110);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_001);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_101);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_011);
-	BIND_ENUM_CONSTANT(VOXEL_ENTRY_MASK_111);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_000);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_100);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_010);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_110);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_001);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_101);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_011);
+	BIND_ENUM_CONSTANT(TERRA_ENTRY_MASK_111);
 }

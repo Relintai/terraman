@@ -22,7 +22,7 @@ SOFTWARE.
 
 #include "register_types.h"
 
-/*
+
 #include "library/voxel_surface.h"
 #include "library/voxel_surface_simple.h"
 
@@ -77,67 +77,65 @@ SOFTWARE.
 #include "world/jobs/voxel_light_job.h"
 #include "world/jobs/voxel_prop_job.h"
 #include "world/jobs/voxel_terrarin_job.h"
-*/
+
 
 void register_terraman_types() {
-	/*
-	ClassDB::register_class<VoxelMesher>();
-	ClassDB::register_class<VoxelMesherDefault>();
+	ClassDB::register_class<TerraMesher>();
+	ClassDB::register_class<TerraMesherDefault>();
 
-	ClassDB::register_class<VoxelMesherMarchingCubes>();
+	ClassDB::register_class<TerraMesherMarchingCubes>();
 	ClassDB::register_class<MarchingCubesCellData>();
 
-	ClassDB::register_class<VoxelSurface>();
-	ClassDB::register_class<VoxelSurfaceSimple>();
+	ClassDB::register_class<TerraSurface>();
+	ClassDB::register_class<TerraSurfaceSimple>();
 
-	ClassDB::register_class<VoxelmanLibrary>();
-	ClassDB::register_class<VoxelmanLibrarySimple>();
+	ClassDB::register_class<TerramanLibrary>();
+	ClassDB::register_class<TerramanLibrarySimple>();
 
 #ifdef TEXTURE_PACKER_PRESENT
-	ClassDB::register_class<VoxelSurfaceMerger>();
-	ClassDB::register_class<VoxelmanLibraryMerger>();
+	ClassDB::register_class<TerraSurfaceMerger>();
+	ClassDB::register_class<TerramanLibraryMerger>();
 #endif
 
-	ClassDB::register_class<VoxelLight>();
-	ClassDB::register_class<VoxelmanLight>();
+	ClassDB::register_class<TerraLight>();
+	ClassDB::register_class<TerramanLight>();
 
-	ClassDB::register_class<VoxelWorld>();
-	ClassDB::register_class<VoxelChunk>();
-	ClassDB::register_class<VoxelStructure>();
-	ClassDB::register_class<BlockVoxelStructure>();
+	ClassDB::register_class<TerraWorld>();
+	ClassDB::register_class<TerraChunk>();
+	ClassDB::register_class<TerraStructure>();
+	ClassDB::register_class<BlockTerraStructure>();
 	ClassDB::register_class<EnvironmentData>();
 
-	ClassDB::register_class<VoxelChunkDefault>();
-	ClassDB::register_class<VoxelWorldDefault>();
+	ClassDB::register_class<TerraChunkDefault>();
+	ClassDB::register_class<TerraWorldDefault>();
 
-	ClassDB::register_class<VoxelMesherCubic>();
-	ClassDB::register_class<VoxelCubePoints>();
+	ClassDB::register_class<TerraMesherCubic>();
+	ClassDB::register_class<TerraCubePoints>();
 
-	ClassDB::register_class<VoxelMesherBlocky>();
-	ClassDB::register_class<VoxelWorldBlocky>();
-	ClassDB::register_class<VoxelChunkBlocky>();
-	ClassDB::register_class<VoxelMesherLiquidBlocky>();
+	ClassDB::register_class<TerraMesherBlocky>();
+	ClassDB::register_class<TerraWorldBlocky>();
+	ClassDB::register_class<TerraChunkBlocky>();
+	ClassDB::register_class<TerraMesherLiquidBlocky>();
 
-	ClassDB::register_class<VoxelWorldMarchingCubes>();
-	ClassDB::register_class<VoxelChunkMarchingCubes>();
+	ClassDB::register_class<TerraWorldMarchingCubes>();
+	ClassDB::register_class<TerraChunkMarchingCubes>();
 
-	ClassDB::register_class<VoxelWorldCubic>();
-	ClassDB::register_class<VoxelChunkCubic>();
+	ClassDB::register_class<TerraWorldCubic>();
+	ClassDB::register_class<TerraChunkCubic>();
 
-	ClassDB::register_class<VoxelmanLevelGenerator>();
-	ClassDB::register_class<VoxelmanLevelGeneratorFlat>();
+	ClassDB::register_class<TerramanLevelGenerator>();
+	ClassDB::register_class<TerramanLevelGeneratorFlat>();
 
-	ClassDB::register_class<WorldArea>();
+	ClassDB::register_class<TerraWorldArea>();
 
-	ClassDB::register_class<VoxelJob>();
-	ClassDB::register_class<VoxelTerrarinJob>();
-	ClassDB::register_class<VoxelLightJob>();
-	ClassDB::register_class<VoxelPropJob>();
+	ClassDB::register_class<TerraJob>();
+	ClassDB::register_class<TerraTerrarinJob>();
+	ClassDB::register_class<TerraLightJob>();
+	ClassDB::register_class<TerraPropJob>();
 
 #ifdef TOOLS_ENABLED
-	EditorPlugins::add_by_type<VoxelWorldEditorPlugin>();
+	EditorPlugins::add_by_type<TerraWorldEditorPlugin>();
 #endif
-*/
 }
 
 void unregister_terraman_types() {

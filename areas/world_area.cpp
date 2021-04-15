@@ -22,66 +22,66 @@ SOFTWARE.
 
 #include "world_area.h"
 
-AABB WorldArea::get_aabb() const {
+AABB TerraWorldArea::get_aabb() const {
 	return _aabb;
 }
-void WorldArea::set_aabb(const AABB value) {
+void TerraWorldArea::set_aabb(const AABB value) {
 	_aabb = value;
 }
 
-Ref<Texture> WorldArea::get_map_texture() const {
+Ref<Texture> TerraWorldArea::get_map_texture() const {
 	return _map_texture;
 }
-void WorldArea::set_map_texture(const Ref<Texture> &value) {
+void TerraWorldArea::set_map_texture(const Ref<Texture> &value) {
 	_map_texture = value;
 }
 
-Ref<Texture> WorldArea::get_fov_texture() const {
+Ref<Texture> TerraWorldArea::get_fov_texture() const {
 	return _fov_texture;
 }
-void WorldArea::set_fov_texture(const Ref<Texture> &value) {
+void TerraWorldArea::set_fov_texture(const Ref<Texture> &value) {
 	_fov_texture = value;
 }
 
-String WorldArea::get_name() const {
+String TerraWorldArea::get_name() const {
 	return _name;
 }
-void WorldArea::set_name(const String &value) {
+void TerraWorldArea::set_name(const String &value) {
 	_name = value;
 }
 
-int WorldArea::get_level() const {
+int TerraWorldArea::get_level() const {
 	return _level;
 }
-void WorldArea::set_level(const int level) {
+void TerraWorldArea::set_level(const int level) {
 	_level = level;
 }
 
-WorldArea::WorldArea() {
+TerraWorldArea::TerraWorldArea() {
 	_level = 0;
 }
 
-WorldArea::~WorldArea() {
+TerraWorldArea::~TerraWorldArea() {
 }
 
-void WorldArea::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_aabb"), &WorldArea::get_aabb);
-	ClassDB::bind_method(D_METHOD("set_aabb"), &WorldArea::set_aabb);
+void TerraWorldArea::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_aabb"), &TerraWorldArea::get_aabb);
+	ClassDB::bind_method(D_METHOD("set_aabb"), &TerraWorldArea::set_aabb);
 	ADD_PROPERTY(PropertyInfo(Variant::AABB, "aabb"), "set_aabb", "get_aabb");
 
-	ClassDB::bind_method(D_METHOD("get_map_texture"), &WorldArea::get_map_texture);
-	ClassDB::bind_method(D_METHOD("set_map_texture"), &WorldArea::set_map_texture);
+	ClassDB::bind_method(D_METHOD("get_map_texture"), &TerraWorldArea::get_map_texture);
+	ClassDB::bind_method(D_METHOD("set_map_texture"), &TerraWorldArea::set_map_texture);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "map_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "set_map_texture", "get_map_texture");
 
-	ClassDB::bind_method(D_METHOD("get_fov_texture"), &WorldArea::get_fov_texture);
-	ClassDB::bind_method(D_METHOD("set_fov_texture"), &WorldArea::set_fov_texture);
+	ClassDB::bind_method(D_METHOD("get_fov_texture"), &TerraWorldArea::get_fov_texture);
+	ClassDB::bind_method(D_METHOD("set_fov_texture"), &TerraWorldArea::set_fov_texture);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fov_texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "set_fov_texture", "get_fov_texture");
 
-	ClassDB::bind_method(D_METHOD("get_name"), &WorldArea::get_name);
-	ClassDB::bind_method(D_METHOD("set_name"), &WorldArea::set_name);
+	ClassDB::bind_method(D_METHOD("get_name"), &TerraWorldArea::get_name);
+	ClassDB::bind_method(D_METHOD("set_name"), &TerraWorldArea::set_name);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "name"), "set_name", "get_name");
 
-	ClassDB::bind_method(D_METHOD("get_level"), &WorldArea::get_level);
-	ClassDB::bind_method(D_METHOD("set_level"), &WorldArea::set_level);
+	ClassDB::bind_method(D_METHOD("get_level"), &TerraWorldArea::get_level);
+	ClassDB::bind_method(D_METHOD("set_level"), &TerraWorldArea::set_level);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "level"), "set_level", "get_level");
 }

@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_WORLD_H
-#define VOXEL_WORLD_H
+#ifndef TERRA_WORLD_H
+#define TERRA_WORLD_H
 
 #include "core/version.h"
 
@@ -47,12 +47,12 @@ SOFTWARE.
 #include "../../props/props/prop_data.h"
 #endif
 
-class VoxelStructure;
-class VoxelChunk;
+class TerraStructure;
+class TerraChunk;
 class PropData;
 
-class VoxelWorld : public Navigation {
-	GDCLASS(VoxelWorld, Navigation);
+class TerraWorld : public Navigation {
+	GDCLASS(TerraWorld, Navigation);
 
 public:
 	enum ChannelTypeInfo {
@@ -94,11 +94,11 @@ public:
 	int get_max_frame_chunk_build_steps() const;
 	void set_max_frame_chunk_build_steps(const int value);
 
-	Ref<VoxelmanLibrary> get_library();
-	void set_library(const Ref<VoxelmanLibrary> &library);
+	Ref<TerramanLibrary> get_library();
+	void set_library(const Ref<TerramanLibrary> &library);
 
-	Ref<VoxelmanLevelGenerator> get_level_generator() const;
-	void set_level_generator(const Ref<VoxelmanLevelGenerator> &level_generator);
+	Ref<TerramanLevelGenerator> get_level_generator() const;
+	void set_level_generator(const Ref<TerramanLevelGenerator> &level_generator);
 
 	float get_voxel_scale() const;
 	void set_voxel_scale(const float value);
@@ -114,41 +114,41 @@ public:
 	void set_player_bind(Node *player);
 
 	//World Areas
-	Ref<WorldArea> world_area_get(const int index) const;
-	void world_area_add(const Ref<WorldArea> &area);
+	Ref<TerraWorldArea> world_area_get(const int index) const;
+	void world_area_add(const Ref<TerraWorldArea> &area);
 	void world_area_remove(const int index);
 	void world_areas_clear();
 	int world_area_get_count() const;
 
-	//Voxel Structures
-	Ref<VoxelStructure> voxel_structure_get(const int index) const;
-	void voxel_structure_add(const Ref<VoxelStructure> &structure);
-	void voxel_structure_remove(const Ref<VoxelStructure> &structure);
+	//Terra Structures
+	Ref<TerraStructure> voxel_structure_get(const int index) const;
+	void voxel_structure_add(const Ref<TerraStructure> &structure);
+	void voxel_structure_remove(const Ref<TerraStructure> &structure);
 	void voxel_structure_remove_index(const int index);
 	void voxel_structures_clear();
 	int voxel_structure_get_count() const;
-	void voxel_structure_add_at_position(Ref<VoxelStructure> structure, const Vector3 &world_position);
+	void voxel_structure_add_at_position(Ref<TerraStructure> structure, const Vector3 &world_position);
 
 	Vector<Variant> voxel_structures_get();
 	void voxel_structures_set(const Vector<Variant> &structures);
 
 	//Chunks
-	void chunk_add(Ref<VoxelChunk> chunk, const int x, const int y, const int z);
+	void chunk_add(Ref<TerraChunk> chunk, const int x, const int y, const int z);
 	bool chunk_has(const int x, const int y, const int z) const;
-	Ref<VoxelChunk> chunk_get(const int x, const int y, const int z);
-	Ref<VoxelChunk> chunk_remove(const int x, const int y, const int z);
-	Ref<VoxelChunk> chunk_remove_index(const int index);
-	Ref<VoxelChunk> chunk_get_index(const int index);
+	Ref<TerraChunk> chunk_get(const int x, const int y, const int z);
+	Ref<TerraChunk> chunk_remove(const int x, const int y, const int z);
+	Ref<TerraChunk> chunk_remove_index(const int index);
+	Ref<TerraChunk> chunk_get_index(const int index);
 
 	int chunk_get_count() const;
 
 	void chunks_clear();
 
-	Ref<VoxelChunk> chunk_get_or_create(const int x, const int y, const int z);
-	Ref<VoxelChunk> chunk_create(const int x, const int y, const int z);
-	void chunk_setup(Ref<VoxelChunk> chunk);
+	Ref<TerraChunk> chunk_get_or_create(const int x, const int y, const int z);
+	Ref<TerraChunk> chunk_create(const int x, const int y, const int z);
+	void chunk_setup(Ref<TerraChunk> chunk);
 
-	void chunk_generate(Ref<VoxelChunk> chunk);
+	void chunk_generate(Ref<TerraChunk> chunk);
 
 	Vector<Variant> chunks_get();
 	void chunks_set(const Vector<Variant> &chunks);
@@ -156,15 +156,15 @@ public:
 	bool can_chunk_do_build_step();
 	bool is_position_walkable(const Vector3 &p_pos);
 
-	void on_chunk_mesh_generation_finished(Ref<VoxelChunk> p_chunk);
+	void on_chunk_mesh_generation_finished(Ref<TerraChunk> p_chunk);
 
-	void generation_queue_add_to(const Ref<VoxelChunk> &chunk);
-	Ref<VoxelChunk> generation_queue_get_index(const int index);
+	void generation_queue_add_to(const Ref<TerraChunk> &chunk);
+	Ref<TerraChunk> generation_queue_get_index(const int index);
 	void generation_queue_remove_index(const int index);
 	int generation_queue_get_size() const;
 
-	void generation_add_to(const Ref<VoxelChunk> &chunk);
-	Ref<VoxelChunk> generation_get_index(const int index);
+	void generation_add_to(const Ref<TerraChunk> &chunk);
+	Ref<TerraChunk> generation_get_index(const int index);
 	void generation_remove_index(const int index);
 	int generation_get_size() const;
 
@@ -173,8 +173,8 @@ public:
 #endif
 
 	//Lights
-	void light_add(const Ref<VoxelLight> &light);
-	Ref<VoxelLight> light_get(const int index);
+	void light_add(const Ref<TerraLight> &light);
+	Ref<TerraLight> light_get(const int index);
 	void light_remove(const int index);
 	int light_get_count() const;
 	void lights_clear();
@@ -185,18 +185,18 @@ public:
 	//Helpers
 	uint8_t get_voxel_at_world_position(const Vector3 &world_position, const int channel_index);
 	void set_voxel_at_world_position(const Vector3 &world_position, const uint8_t data, const int channel_index, const bool rebuild = true);
-	Ref<VoxelChunk> get_chunk_at_world_position(const Vector3 &world_position);
-	Ref<VoxelChunk> get_or_create_chunk_at_world_position(const Vector3 &world_position);
+	Ref<TerraChunk> get_chunk_at_world_position(const Vector3 &world_position);
+	Ref<TerraChunk> get_or_create_chunk_at_world_position(const Vector3 &world_position);
 	void set_voxel_with_tool(const bool mode_add, const Vector3 hit_position, const Vector3 hit_normal, const int selected_voxel, const int isolevel);
 
 	int get_channel_index_info(const ChannelTypeInfo channel_type);
 
-	VoxelWorld();
-	~VoxelWorld();
+	TerraWorld();
+	~TerraWorld();
 
 protected:
-	virtual void _generate_chunk(Ref<VoxelChunk> chunk);
-	virtual Ref<VoxelChunk> _create_chunk(int x, int y, int z, Ref<VoxelChunk> p_chunk);
+	virtual void _generate_chunk(Ref<TerraChunk> chunk);
+	virtual Ref<TerraChunk> _create_chunk(int x, int y, int z, Ref<TerraChunk> p_chunk);
 	virtual int _get_channel_index_info(const ChannelTypeInfo channel_type);
 	virtual void _set_voxel_with_tool(const bool mode_add, const Vector3 hit_position, const Vector3 hit_normal, const int selected_voxel, const int isolevel);
 
@@ -248,35 +248,35 @@ private:
 	int _data_margin_start;
 	int _data_margin_end;
 
-	Ref<VoxelmanLibrary> _library;
-	Ref<VoxelmanLevelGenerator> _level_generator;
+	Ref<TerramanLibrary> _library;
+	Ref<TerramanLevelGenerator> _level_generator;
 	float _voxel_scale;
 	int _chunk_spawn_range;
 
-	HashMap<IntPos, Ref<VoxelChunk>, IntPosHasher> _chunks;
-	Vector<Ref<VoxelChunk> > _chunks_vector;
+	HashMap<IntPos, Ref<TerraChunk>, IntPosHasher> _chunks;
+	Vector<Ref<TerraChunk> > _chunks_vector;
 
-	Vector<Ref<WorldArea> > _world_areas;
+	Vector<Ref<TerraWorldArea> > _world_areas;
 
-	Vector<Ref<VoxelStructure> > _voxel_structures;
+	Vector<Ref<TerraStructure> > _voxel_structures;
 
 	NodePath _player_path;
 	Spatial *_player;
 
 	bool _use_threads;
 	int _max_concurrent_generations;
-	Vector<Ref<VoxelChunk> > _generation_queue;
-	Vector<Ref<VoxelChunk> > _generating;
+	Vector<Ref<TerraChunk> > _generation_queue;
+	Vector<Ref<TerraChunk> > _generating;
 	int _max_frame_chunk_build_steps;
 	int _num_frame_chunk_build_steps;
 
-	Vector<Ref<VoxelLight> > _lights;
+	Vector<Ref<TerraLight> > _lights;
 };
 
-_FORCE_INLINE_ bool operator==(const VoxelWorld::IntPos &a, const VoxelWorld::IntPos &b) {
+_FORCE_INLINE_ bool operator==(const TerraWorld::IntPos &a, const TerraWorld::IntPos &b) {
 	return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
-VARIANT_ENUM_CAST(VoxelWorld::ChannelTypeInfo);
+VARIANT_ENUM_CAST(TerraWorld::ChannelTypeInfo);
 
 #endif

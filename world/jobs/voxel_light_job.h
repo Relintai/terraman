@@ -20,23 +20,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_LIGHT_JOB_H
-#define VOXEL_LIGHT_JOB_H
+#ifndef TERRA_LIGHT_JOB_H
+#define TERRA_LIGHT_JOB_H
 
 #include "voxel_job.h"
 
-class VoxelMesher;
+class TerraMesher;
 
-class VoxelLightJob : public VoxelJob {
-	GDCLASS(VoxelLightJob, VoxelJob);
+class TerraLightJob : public TerraJob {
+	GDCLASS(TerraLightJob, TerraJob);
 
 public:
 	void phase_light();
 
 	void _execute_phase();
 
-	VoxelLightJob();
-	~VoxelLightJob();
+	TerraLightJob();
+	~TerraLightJob();
 
 protected:
 	static void _bind_methods();

@@ -40,15 +40,15 @@ SOFTWARE.
 #include "../../../mesh_utils/fast_quadratic_mesh_simplifier.h"
 #endif
 
-Ref<VoxelMesher> VoxelPropJob::get_prop_mesher() const {
+Ref<TerraMesher> TerraPropJob::get_prop_mesher() const {
 	return _prop_mesher;
 }
-void VoxelPropJob::set_prop_mesher(const Ref<VoxelMesher> &mesher) {
+void TerraPropJob::set_prop_mesher(const Ref<TerraMesher> &mesher) {
 	_prop_mesher = mesher;
 }
 
-void VoxelPropJob::phase_physics_process() {
-	Ref<VoxelChunkDefault> chunk = _chunk;
+void TerraPropJob::phase_physics_process() {
+	Ref<TerraChunkDefault> chunk = _chunk;
 
 	//TODO this should only update the differences
 	for (int i = 0; i < chunk->collider_get_count(); ++i) {
@@ -105,9 +105,9 @@ void VoxelPropJob::phase_physics_process() {
 	next_phase();
 }
 
-void VoxelPropJob::phase_prop() {
+void TerraPropJob::phase_prop() {
 #ifdef MESH_DATA_RESOURCE_PRESENT
-	Ref<VoxelChunkDefault> chunk = _chunk;
+	Ref<TerraChunkDefault> chunk = _chunk;
 
 	if (!get_prop_mesher().is_valid()) {
 		set_complete(true); //So threadpool knows it's done
@@ -142,7 +142,7 @@ void VoxelPropJob::phase_prop() {
 	}
 
 	if (should_do()) {
-		if ((chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
+		if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
 			get_prop_mesher()->bake_colors(_chunk);
 		}
 
@@ -152,8 +152,8 @@ void VoxelPropJob::phase_prop() {
 	}
 
 	if (should_do()) {
-		if ((chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
-			VoxelWorldDefault *world = Object::cast_to<VoxelWorldDefault>(chunk->get_voxel_world());
+		if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
+			TerraWorldDefault *world = Object::cast_to<TerraWorldDefault>(chunk->get_voxel_world());
 
 			if (world) {
 				for (int i = 0; i < chunk->mesh_data_resource_get_count(); ++i) {
@@ -198,16 +198,16 @@ void VoxelPropJob::phase_prop() {
 			}
 		}
 
-		RID mesh_rid = chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 0);
+		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 0);
 
 		if (should_do()) {
 			if (mesh_rid == RID()) {
-				if ((chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_CREATE_LODS) != 0)
-					chunk->meshes_create(VoxelChunkDefault::MESH_INDEX_PROP, chunk->get_lod_num() + 1);
+				if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_CREATE_LODS) != 0)
+					chunk->meshes_create(TerraChunkDefault::MESH_INDEX_PROP, chunk->get_lod_num() + 1);
 				else
-					chunk->meshes_create(VoxelChunkDefault::MESH_INDEX_PROP, 1);
+					chunk->meshes_create(TerraChunkDefault::MESH_INDEX_PROP, 1);
 
-				mesh_rid = chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 0);
+				mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 0);
 			}
 
 			if (VS::get_singleton()->mesh_get_surface_count(mesh_rid) > 0)
@@ -234,17 +234,17 @@ void VoxelPropJob::phase_prop() {
 			}
 		}
 
-		if ((chunk->get_build_flags() & VoxelChunkDefault::BUILD_FLAG_CREATE_LODS) != 0) {
+		if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_CREATE_LODS) != 0) {
 			if (should_do()) {
 
 				if (chunk->get_lod_num() >= 1) {
 					//for lod 1 just remove uv2
 					temp_mesh_arr[VisualServer::ARRAY_TEX_UV2] = Variant();
 
-					VisualServer::get_singleton()->mesh_add_surface_from_arrays(chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 1), VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+					VisualServer::get_singleton()->mesh_add_surface_from_arrays(chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 1), VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 					if (chunk->get_library()->prop_material_get(1).is_valid())
-						VisualServer::get_singleton()->mesh_surface_set_material(chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 1), 0, chunk->get_library()->prop_material_get(1)->get_rid());
+						VisualServer::get_singleton()->mesh_surface_set_material(chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 1), 0, chunk->get_library()->prop_material_get(1)->get_rid());
 				}
 
 				if (should_return()) {
@@ -257,10 +257,10 @@ void VoxelPropJob::phase_prop() {
 					Array temp_mesh_arr2 = merge_mesh_array(temp_mesh_arr);
 					temp_mesh_arr = temp_mesh_arr2;
 
-					VisualServer::get_singleton()->mesh_add_surface_from_arrays(chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 2), VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr2);
+					VisualServer::get_singleton()->mesh_add_surface_from_arrays(chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 2), VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr2);
 
 					if (chunk->get_library()->prop_material_get(2).is_valid())
-						VisualServer::get_singleton()->mesh_surface_set_material(chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 2), 0, chunk->get_library()->prop_material_get(2)->get_rid());
+						VisualServer::get_singleton()->mesh_surface_set_material(chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 2), 0, chunk->get_library()->prop_material_get(2)->get_rid());
 				}
 				if (should_return()) {
 					return;
@@ -283,10 +283,10 @@ void VoxelPropJob::phase_prop() {
 					temp_mesh_arr = bake_mesh_array_uv(temp_mesh_arr, tex);
 					temp_mesh_arr[VisualServer::ARRAY_TEX_UV] = Variant();
 
-					VisualServer::get_singleton()->mesh_add_surface_from_arrays(chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 3), VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+					VisualServer::get_singleton()->mesh_add_surface_from_arrays(chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 3), VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 					if (chunk->get_library()->prop_material_get(3).is_valid())
-						VisualServer::get_singleton()->mesh_surface_set_material(chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_PROP, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, 3), 0, chunk->get_library()->prop_material_get(3)->get_rid());
+						VisualServer::get_singleton()->mesh_surface_set_material(chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 3), 0, chunk->get_library()->prop_material_get(3)->get_rid());
 				}
 			}
 
@@ -303,12 +303,12 @@ void VoxelPropJob::phase_prop() {
 						temp_mesh_arr = fqms->get_arrays();
 
 						VisualServer::get_singleton()->mesh_add_surface_from_arrays(
-								chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_TERRARIN, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, i),
+								chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, i),
 								VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 						if (chunk->get_library()->prop_material_get(i).is_valid())
 							VisualServer::get_singleton()->mesh_surface_set_material(
-									chunk->mesh_rid_get_index(VoxelChunkDefault::MESH_INDEX_TERRARIN, VoxelChunkDefault::MESH_TYPE_INDEX_MESH, i), 0,
+									chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, i), 0,
 									chunk->get_library()->prop_material_get(i)->get_rid());
 					}
 				}
@@ -327,19 +327,19 @@ void VoxelPropJob::phase_prop() {
 	next_job();
 }
 
-void VoxelPropJob::_physics_process(float delta) {
+void TerraPropJob::_physics_process(float delta) {
 	if (_phase == 0)
 		phase_physics_process();
 }
 
-void VoxelPropJob::_execute_phase() {
+void TerraPropJob::_execute_phase() {
 	ERR_FAIL_COND(!_chunk.is_valid());
 
-	Ref<VoxelmanLibrary> library = _chunk->get_library();
+	Ref<TerramanLibrary> library = _chunk->get_library();
 
 	ERR_FAIL_COND(!library.is_valid());
 
-	Ref<VoxelChunkDefault> chunk = _chunk;
+	Ref<TerraChunkDefault> chunk = _chunk;
 
 	if (!chunk.is_valid()
 #ifdef MESH_DATA_RESOURCE_PRESENT
@@ -356,12 +356,12 @@ void VoxelPropJob::_execute_phase() {
 	} else if (_phase > 1) {
 		set_complete(true); //So threadpool knows it's done
 		next_job();
-		ERR_FAIL_MSG("VoxelPropJob: _phase is too high!");
+		ERR_FAIL_MSG("TerraPropJob: _phase is too high!");
 	}
 }
 
-void VoxelPropJob::_reset() {
-	VoxelJob::_reset();
+void TerraPropJob::_reset() {
+	TerraJob::_reset();
 
 	_build_done = false;
 	_phase = 0;
@@ -374,17 +374,17 @@ void VoxelPropJob::_reset() {
 	set_build_phase_type(BUILD_PHASE_TYPE_PHYSICS_PROCESS);
 }
 
-VoxelPropJob::VoxelPropJob() {
+TerraPropJob::TerraPropJob() {
 	set_build_phase_type(BUILD_PHASE_TYPE_PHYSICS_PROCESS);
 }
 
-VoxelPropJob::~VoxelPropJob() {
+TerraPropJob::~TerraPropJob() {
 }
 
-void VoxelPropJob::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_prop_mesher"), &VoxelPropJob::get_prop_mesher);
-	ClassDB::bind_method(D_METHOD("set_prop_mesher", "mesher"), &VoxelPropJob::set_prop_mesher);
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "prop_mesher", PROPERTY_HINT_RESOURCE_TYPE, "VoxelMesher", 0), "set_prop_mesher", "get_prop_mesher");
+void TerraPropJob::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_prop_mesher"), &TerraPropJob::get_prop_mesher);
+	ClassDB::bind_method(D_METHOD("set_prop_mesher", "mesher"), &TerraPropJob::set_prop_mesher);
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "prop_mesher", PROPERTY_HINT_RESOURCE_TYPE, "TerraMesher", 0), "set_prop_mesher", "get_prop_mesher");
 
-	ClassDB::bind_method(D_METHOD("_physics_process", "delta"), &VoxelPropJob::_physics_process);
+	ClassDB::bind_method(D_METHOD("_physics_process", "delta"), &TerraPropJob::_physics_process);
 }

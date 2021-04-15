@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_STRUCTURE_H
-#define VOXEL_STRUCTURE_H
+#ifndef TERRA_STRUCTURE_H
+#define TERRA_STRUCTURE_H
 
 #include "core/version.h"
 
@@ -41,8 +41,8 @@ include_pool_vector
 #include "core/math/aabb.h"
 #include "voxel_chunk.h"
 
-class VoxelStructure : public Resource {
-	GDCLASS(VoxelStructure, Resource);
+class TerraStructure : public Resource {
+	GDCLASS(TerraStructure, Resource);
 
 public:
 	bool get_use_aabb() const;
@@ -62,10 +62,10 @@ public:
 
 	void set_position(const int x, const int y, const int z);
 
-	void write_to_chunk(Ref<VoxelChunk> chunk);
+	void write_to_chunk(Ref<TerraChunk> chunk);
 
-	VoxelStructure();
-	~VoxelStructure();
+	TerraStructure();
+	~TerraStructure();
 
 protected:
 	static void _bind_methods();

@@ -24,20 +24,20 @@ SOFTWARE.
 
 #include "../../defines.h"
 
-VoxelChunkCubic::VoxelChunkCubic() {
+TerraChunkCubic::TerraChunkCubic() {
 }
 
-VoxelChunkCubic::~VoxelChunkCubic() {
+TerraChunkCubic::~TerraChunkCubic() {
 }
 
-void VoxelChunkCubic::_setup_channels() {
+void TerraChunkCubic::_setup_channels() {
 	channel_set_count(MAX_DEFAULT_CHANNELS);
 }
 
-void VoxelChunkCubic::_bind_methods() {
+void TerraChunkCubic::_bind_methods() {
 	ADD_PROPERTYI(PropertyInfo(Variant::POOL_BYTE_ARRAY, "data_channel"), "channel_set_compressed", "channel_get_compressed", 0);
 	ADD_PROPERTYI(PropertyInfo(Variant::POOL_BYTE_ARRAY, "isolevel_channel"), "channel_set_compressed", "channel_get_compressed", 1);
 
-	//ClassDB::bind_method(D_METHOD("get_channel_compressed", "channel_index"), &VoxelChunk::get_channel_compressed);
-	//ClassDB::bind_method(D_METHOD("set_channel_compressed", "channel_index", "array"), &VoxelChunk::set_channel_compressed);
+	//ClassDB::bind_method(D_METHOD("get_channel_compressed", "channel_index"), &TerraChunk::get_channel_compressed);
+	//ClassDB::bind_method(D_METHOD("set_channel_compressed", "channel_index", "array"), &TerraChunk::set_channel_compressed);
 }

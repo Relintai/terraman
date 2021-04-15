@@ -43,19 +43,19 @@ SOFTWARE.
 #define Texture Texture2D
 #endif
 
-class VoxelSurface;
-class VoxelMesher;
+class TerraSurface;
+class TerraMesher;
 class PackedScene;
 #ifdef PROPS_PRESENT
 class PropData;
 #endif
 
-class VoxelmanLibrary : public Resource {
-	GDCLASS(VoxelmanLibrary, Resource)
+class TerramanLibrary : public Resource {
+	GDCLASS(TerramanLibrary, Resource)
 
 public:
 	enum {
-		MATERIAL_INDEX_VOXELS = 0,
+		MATERIAL_INDEX_TERRAS = 0,
 		MATERIAL_INDEX_LIQUID = 1,
 		MATERIAL_INDEX_PROP = 2,
 	};
@@ -94,9 +94,9 @@ public:
 	Vector<Variant> prop_materials_get();
 	void prop_materials_set(const Vector<Variant> &materials);
 
-	virtual Ref<VoxelSurface> voxel_surface_get(const int index);
-	virtual void voxel_surface_add(Ref<VoxelSurface> value);
-	virtual void voxel_surface_set(const int index, Ref<VoxelSurface> value);
+	virtual Ref<TerraSurface> voxel_surface_get(const int index);
+	virtual void voxel_surface_add(Ref<TerraSurface> value);
+	virtual void voxel_surface_set(const int index, Ref<TerraSurface> value);
 	virtual void voxel_surface_remove(const int index);
 	virtual int voxel_surface_get_num() const;
 	virtual void voxel_surfaces_clear();
@@ -124,8 +124,8 @@ public:
 
 	void setup_material_albedo(int material_index, Ref<Texture> texture);
 
-	VoxelmanLibrary();
-	~VoxelmanLibrary();
+	TerramanLibrary();
+	~TerramanLibrary();
 
 protected:
 	static void _bind_methods();
@@ -137,4 +137,4 @@ private:
 	Vector<Ref<Material> > _prop_materials;
 };
 
-#endif // VOXEL_LIBRARY_H
+#endif // TERRA_LIBRARY_H

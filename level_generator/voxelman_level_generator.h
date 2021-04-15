@@ -31,16 +31,16 @@ SOFTWARE.
 #include "core/resource.h"
 #endif
 
-class VoxelChunk;
+class TerraChunk;
 
-class VoxelmanLevelGenerator : public Resource {
-	GDCLASS(VoxelmanLevelGenerator, Resource);
+class TerramanLevelGenerator : public Resource {
+	GDCLASS(TerramanLevelGenerator, Resource);
 
 public:
-	void generate_chunk(Ref<VoxelChunk> chunk);
+	void generate_chunk(Ref<TerraChunk> chunk);
 
-	VoxelmanLevelGenerator();
-	~VoxelmanLevelGenerator();
+	TerramanLevelGenerator();
+	~TerramanLevelGenerator();
 
 protected:
 	static void _bind_methods();

@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_CHUNK_DEFAULT_H
-#define VOXEL_CHUNK_DEFAULT_H
+#ifndef TERRA_CHUNK_DEFAULT_H
+#define TERRA_CHUNK_DEFAULT_H
 
 #include "core/version.h"
 
@@ -51,11 +51,11 @@ SOFTWARE.
 #include "../../library/voxel_surface.h"
 #include "../../library/voxelman_library.h"
 
-class VoxelWorld;
-class VoxelJob;
+class TerraWorld;
+class TerraJob;
 
-class VoxelChunkDefault : public VoxelChunk {
-	GDCLASS(VoxelChunkDefault, VoxelChunk);
+class TerraChunkDefault : public TerraChunk {
+	GDCLASS(TerraChunkDefault, TerraChunk);
 
 	_THREAD_SAFE_CLASS_
 
@@ -150,7 +150,7 @@ public:
 	void update_transforms();
 
 	//Lights
-	Ref<VoxelLight> get_light(const int index);
+	Ref<TerraLight> get_light(const int index);
 	int get_light_count() const;
 
 	//Debug
@@ -184,8 +184,8 @@ public:
 
 	void _finalize_build();
 
-	VoxelChunkDefault();
-	~VoxelChunkDefault();
+	TerraChunkDefault();
+	~TerraChunkDefault();
 
 protected:
 	virtual void _channel_setup();
@@ -197,10 +197,10 @@ protected:
 
 	//lights
 	virtual void _bake_lights();
-	virtual void _bake_light(Ref<VoxelLight> light);
+	virtual void _bake_light(Ref<TerraLight> light);
 	virtual void _clear_baked_lights();
-	virtual void _world_light_added(const Ref<VoxelLight> &light);
-	virtual void _world_light_removed(const Ref<VoxelLight> &light);
+	virtual void _world_light_added(const Ref<TerraLight> &light);
+	virtual void _world_light_removed(const Ref<TerraLight> &light);
 
 	static void _bind_methods();
 
@@ -222,10 +222,10 @@ protected:
 	RID _debug_mesh_instance;
 	PoolVector3Array _debug_mesh_array;
 
-	Vector<Ref<VoxelLight> > _lights;
+	Vector<Ref<TerraLight> > _lights;
 };
 
-VARIANT_ENUM_CAST(VoxelChunkDefault::DefaultChannels);
-VARIANT_ENUM_CAST(VoxelChunkDefault::BuildFlags);
+VARIANT_ENUM_CAST(TerraChunkDefault::DefaultChannels);
+VARIANT_ENUM_CAST(TerraChunkDefault::BuildFlags);
 
 #endif

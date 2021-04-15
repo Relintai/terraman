@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef BLOCK_VOXEL_STRUCTURE_H
-#define BLOCK_VOXEL_STRUCTURE_H
+#ifndef BLOCK_TERRA_STRUCTURE_H
+#define BLOCK_TERRA_STRUCTURE_H
 
 #include "core/version.h"
 
@@ -41,8 +41,8 @@ include_pool_vector
 #include "voxel_chunk.h"
 		;
 
-class BlockVoxelStructure : public VoxelStructure {
-	GDCLASS(BlockVoxelStructure, VoxelStructure);
+class BlockTerraStructure : public TerraStructure {
+	GDCLASS(BlockTerraStructure, TerraStructure);
 
 public:
 	int get_channel_type() const;
@@ -56,12 +56,12 @@ public:
 
 	void set_voxel(int p_x, int p_y, int p_z, int p_type, int p_isolevel);
 
-	void _write_to_chunk(Ref<VoxelChunk> chunk);
+	void _write_to_chunk(Ref<TerraChunk> chunk);
 
 	void clear();
 
-	BlockVoxelStructure();
-	~BlockVoxelStructure();
+	BlockTerraStructure();
+	~BlockTerraStructure();
 
 protected:
 	static void _bind_methods();

@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef WORLD_AREA_H
-#define WORLD_AREA_H
+#ifndef TERRA_WORLD_AREA_H
+#define TERRA_WORLD_AREA_H
 
 #include "core/version.h"
 
@@ -37,8 +37,8 @@ SOFTWARE.
 
 #include "scene/resources/texture.h"
 
-class WorldArea : public Reference {
-	GDCLASS(WorldArea, Reference);
+class TerraWorldArea : public Reference {
+	GDCLASS(TerraWorldArea, Reference);
 
 public:
 	AABB get_aabb() const;
@@ -56,8 +56,8 @@ public:
 	int get_level() const;
 	void set_level(const int value);
 
-	WorldArea();
-	~WorldArea();
+	TerraWorldArea();
+	~TerraWorldArea();
 
 private:
 	static void _bind_methods();

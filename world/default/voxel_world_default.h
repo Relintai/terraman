@@ -20,13 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_WORLD_DEFAULT_H
-#define VOXEL_WORLD_DEFAULT_H
+#ifndef TERRA_WORLD_DEFAULT_H
+#define TERRA_WORLD_DEFAULT_H
 
 #include "../voxel_world.h"
 
-class VoxelWorldDefault : public VoxelWorld {
-	GDCLASS(VoxelWorldDefault, VoxelWorld);
+class TerraWorldDefault : public TerraWorld {
+	GDCLASS(TerraWorldDefault, TerraWorld);
 
 public:
 	int get_build_flags() const;
@@ -45,13 +45,13 @@ public:
 
 	PoolColorArray get_vertex_colors(const Transform &transform, const PoolVector3Array &vertices, const float base_light_value = 0.45, const float ao_strength = 0.2);
 
-	VoxelWorldDefault();
-	~VoxelWorldDefault();
+	TerraWorldDefault();
+	~TerraWorldDefault();
 
 protected:
 	void _update_lods();
-	Ref<VoxelChunk> _create_chunk(int x, int y, int z, Ref<VoxelChunk> p_chunk);
-	virtual void _chunk_added(Ref<VoxelChunk> chunk);
+	Ref<TerraChunk> _create_chunk(int x, int y, int z, Ref<TerraChunk> p_chunk);
+	virtual void _chunk_added(Ref<TerraChunk> chunk);
 	int _get_channel_index_info(const ChannelTypeInfo channel_type);
 
 	//virtual void _notification(int p_what);

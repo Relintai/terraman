@@ -39,33 +39,33 @@ SOFTWARE.
 #include "../jobs/voxel_prop_job.h"
 #include "../jobs/voxel_terrarin_job.h"
 
-const String VoxelChunkDefault::BINDING_STRING_BUILD_FLAGS = "Use Isolevel,Use Lighting,Use AO,Use RAO,Generate AO,Generate RAO,Bake Lights,Create Collider,Create Lods";
+const String TerraChunkDefault::BINDING_STRING_BUILD_FLAGS = "Use Isolevel,Use Lighting,Use AO,Use RAO,Generate AO,Generate RAO,Bake Lights,Create Collider,Create Lods";
 
-_FORCE_INLINE_ int VoxelChunkDefault::get_build_flags() const {
+_FORCE_INLINE_ int TerraChunkDefault::get_build_flags() const {
 	return _build_flags;
 }
-_FORCE_INLINE_ void VoxelChunkDefault::set_build_flags(const int flags) {
+_FORCE_INLINE_ void TerraChunkDefault::set_build_flags(const int flags) {
 	_build_flags = flags;
 }
 
-bool VoxelChunkDefault::get_lights_dirty() const {
+bool TerraChunkDefault::get_lights_dirty() const {
 	return _lights_dirty;
 }
-void VoxelChunkDefault::set_lights_dirty(const bool value) {
+void TerraChunkDefault::set_lights_dirty(const bool value) {
 	_lights_dirty = value;
 }
 
-int VoxelChunkDefault::get_lod_num() const {
+int TerraChunkDefault::get_lod_num() const {
 	return _lod_num;
 }
-void VoxelChunkDefault::set_lod_num(const int value) {
+void TerraChunkDefault::set_lod_num(const int value) {
 	_lod_num = value;
 }
 
-int VoxelChunkDefault::get_current_lod_level() const {
+int TerraChunkDefault::get_current_lod_level() const {
 	return _current_lod_level;
 }
-void VoxelChunkDefault::set_current_lod_level(const int value) {
+void TerraChunkDefault::set_current_lod_level(const int value) {
 	_current_lod_level = value;
 
 	if ((_build_flags & BUILD_FLAG_CREATE_LODS) == 0)
@@ -95,7 +95,7 @@ void VoxelChunkDefault::set_current_lod_level(const int value) {
 	}
 }
 
-void VoxelChunkDefault::emit_build_finished() {
+void TerraChunkDefault::emit_build_finished() {
 	emit_signal("mesh_generation_finished", this);
 
 	if (_voxel_world != NULL) {
@@ -104,14 +104,14 @@ void VoxelChunkDefault::emit_build_finished() {
 }
 
 //Meshes
-Dictionary VoxelChunkDefault::mesh_rids_get() {
+Dictionary TerraChunkDefault::mesh_rids_get() {
 	return _rids;
 }
-void VoxelChunkDefault::mesh_rids_set(const Dictionary &rids) {
+void TerraChunkDefault::mesh_rids_set(const Dictionary &rids) {
 	_rids = rids;
 }
 
-RID VoxelChunkDefault::mesh_rid_get(const int mesh_index, const int mesh_type_index) {
+RID TerraChunkDefault::mesh_rid_get(const int mesh_index, const int mesh_type_index) {
 	if (!_rids.has(mesh_index))
 		return RID();
 
@@ -132,7 +132,7 @@ RID VoxelChunkDefault::mesh_rid_get(const int mesh_index, const int mesh_type_in
 
 	return v;
 }
-void VoxelChunkDefault::mesh_rid_set(const int mesh_index, const int mesh_type_index, RID value) {
+void TerraChunkDefault::mesh_rid_set(const int mesh_index, const int mesh_type_index, RID value) {
 	if (!_rids.has(mesh_index))
 		_rids[mesh_index] = Dictionary();
 
@@ -155,7 +155,7 @@ void VoxelChunkDefault::mesh_rid_set(const int mesh_index, const int mesh_type_i
 	m[mesh_type_index] = value;
 	_rids[mesh_index] = m;
 }
-RID VoxelChunkDefault::mesh_rid_get_index(const int mesh_index, const int mesh_type_index, const int index) {
+RID TerraChunkDefault::mesh_rid_get_index(const int mesh_index, const int mesh_type_index, const int index) {
 	if (!_rids.has(mesh_index))
 		return RID();
 
@@ -175,7 +175,7 @@ RID VoxelChunkDefault::mesh_rid_get_index(const int mesh_index, const int mesh_t
 
 	return arr[index];
 }
-void VoxelChunkDefault::mesh_rid_set_index(const int mesh_index, const int mesh_type_index, const int index, RID value) {
+void TerraChunkDefault::mesh_rid_set_index(const int mesh_index, const int mesh_type_index, const int index, RID value) {
 	if (!_rids.has(mesh_index))
 		_rids[mesh_index] = Dictionary();
 
@@ -205,7 +205,7 @@ void VoxelChunkDefault::mesh_rid_set_index(const int mesh_index, const int mesh_
 	m[mesh_type_index] = arr;
 	_rids[mesh_index] = m;
 }
-int VoxelChunkDefault::mesh_rid_get_count(const int mesh_index, const int mesh_type_index) {
+int TerraChunkDefault::mesh_rid_get_count(const int mesh_index, const int mesh_type_index) {
 	if (!_rids.has(mesh_index))
 		return 0;
 
@@ -223,7 +223,7 @@ int VoxelChunkDefault::mesh_rid_get_count(const int mesh_index, const int mesh_t
 
 	return arr.size();
 }
-void VoxelChunkDefault::mesh_rids_clear(const int mesh_index, const int mesh_type_index) {
+void TerraChunkDefault::mesh_rids_clear(const int mesh_index, const int mesh_type_index) {
 	if (!_rids.has(mesh_index))
 		return;
 
@@ -234,7 +234,7 @@ void VoxelChunkDefault::mesh_rids_clear(const int mesh_index, const int mesh_typ
 
 	m.erase(mesh_type_index);
 }
-Array VoxelChunkDefault::meshes_get(const int mesh_index, const int mesh_type_index) {
+Array TerraChunkDefault::meshes_get(const int mesh_index, const int mesh_type_index) {
 	if (!_rids.has(mesh_index))
 		return Array();
 
@@ -250,7 +250,7 @@ Array VoxelChunkDefault::meshes_get(const int mesh_index, const int mesh_type_in
 
 	return v;
 }
-void VoxelChunkDefault::meshes_set(const int mesh_index, const int mesh_type_index, const Array &meshes) {
+void TerraChunkDefault::meshes_set(const int mesh_index, const int mesh_type_index, const Array &meshes) {
 	if (!_rids.has(mesh_index))
 		_rids[mesh_index] = Dictionary();
 
@@ -259,7 +259,7 @@ void VoxelChunkDefault::meshes_set(const int mesh_index, const int mesh_type_ind
 	m[mesh_type_index] = meshes;
 	_rids[mesh_index] = m;
 }
-bool VoxelChunkDefault::meshes_has(const int mesh_index, const int mesh_type_index) {
+bool TerraChunkDefault::meshes_has(const int mesh_index, const int mesh_type_index) {
 	if (!_rids.has(mesh_index))
 		return false;
 
@@ -271,11 +271,11 @@ bool VoxelChunkDefault::meshes_has(const int mesh_index, const int mesh_type_ind
 	return true;
 }
 
-void VoxelChunkDefault::rids_clear() {
+void TerraChunkDefault::rids_clear() {
 	_rids.clear();
 }
 
-void VoxelChunkDefault::rids_free() {
+void TerraChunkDefault::rids_free() {
 	List<Variant> keys;
 
 	_rids.get_key_list(&keys);
@@ -290,7 +290,7 @@ void VoxelChunkDefault::rids_free() {
 	}
 }
 
-void VoxelChunkDefault::meshes_create(const int mesh_index, const int mesh_count) {
+void TerraChunkDefault::meshes_create(const int mesh_index, const int mesh_count) {
 	ERR_FAIL_COND(_voxel_world == NULL);
 	ERR_FAIL_COND(!get_library().is_valid());
 
@@ -329,7 +329,7 @@ void VoxelChunkDefault::meshes_create(const int mesh_index, const int mesh_count
 
 	_rids[mesh_index] = m;
 }
-void VoxelChunkDefault::meshes_free(const int mesh_index) {
+void TerraChunkDefault::meshes_free(const int mesh_index) {
 	if (!_rids.has(mesh_index))
 		return;
 
@@ -364,7 +364,7 @@ void VoxelChunkDefault::meshes_free(const int mesh_index) {
 	m.erase(MESH_TYPE_INDEX_MESH_INSTANCE);
 }
 
-void VoxelChunkDefault::colliders_create(const int mesh_index, const int layer_mask) {
+void TerraChunkDefault::colliders_create(const int mesh_index, const int layer_mask) {
 	ERR_FAIL_COND(_voxel_world == NULL);
 	ERR_FAIL_COND(PhysicsServer::get_singleton()->is_flushing_queries());
 	//ERR_FAIL_COND(!get_voxel_world()->is_inside_tree());
@@ -399,7 +399,7 @@ void VoxelChunkDefault::colliders_create(const int mesh_index, const int layer_m
 
 	_rids[mesh_index] = m;
 }
-void VoxelChunkDefault::colliders_create_area(const int mesh_index, const int layer_mask) {
+void TerraChunkDefault::colliders_create_area(const int mesh_index, const int layer_mask) {
 	ERR_FAIL_COND(_voxel_world == NULL);
 	ERR_FAIL_COND(PhysicsServer::get_singleton()->is_flushing_queries());
 
@@ -440,7 +440,7 @@ void VoxelChunkDefault::colliders_create_area(const int mesh_index, const int la
 	_rids[mesh_index] = m;
 }
 
-void VoxelChunkDefault::colliders_free(const int mesh_index) {
+void TerraChunkDefault::colliders_free(const int mesh_index) {
 	if (!_rids.has(mesh_index))
 		return;
 
@@ -465,12 +465,12 @@ void VoxelChunkDefault::colliders_free(const int mesh_index) {
 	_rids[mesh_index] = m;
 }
 
-void VoxelChunkDefault::free_index(const int mesh_index) {
+void TerraChunkDefault::free_index(const int mesh_index) {
 	meshes_free(mesh_index);
 	colliders_free(mesh_index);
 }
 
-void VoxelChunkDefault::update_transforms() {
+void TerraChunkDefault::update_transforms() {
 	RID empty_rid;
 	Transform t = get_transform();
 
@@ -522,16 +522,16 @@ void VoxelChunkDefault::update_transforms() {
 }
 
 //Lights
-Ref<VoxelLight> VoxelChunkDefault::get_light(const int index) {
-	ERR_FAIL_INDEX_V(index, _lights.size(), Ref<VoxelLight>());
+Ref<TerraLight> TerraChunkDefault::get_light(const int index) {
+	ERR_FAIL_INDEX_V(index, _lights.size(), Ref<TerraLight>());
 
 	return _lights.get(index);
 }
-int VoxelChunkDefault::get_light_count() const {
+int TerraChunkDefault::get_light_count() const {
 	return _lights.size();
 }
 
-void VoxelChunkDefault::debug_mesh_allocate() {
+void TerraChunkDefault::debug_mesh_allocate() {
 	if (_debug_mesh_rid == RID()) {
 		_debug_mesh_rid = VisualServer::get_singleton()->mesh_create();
 	}
@@ -547,7 +547,7 @@ void VoxelChunkDefault::debug_mesh_allocate() {
 		VS::get_singleton()->instance_set_visible(_debug_mesh_instance, true);
 	}
 }
-void VoxelChunkDefault::debug_mesh_free() {
+void TerraChunkDefault::debug_mesh_free() {
 	if (_debug_mesh_instance != RID()) {
 		VisualServer::get_singleton()->free(_debug_mesh_instance);
 	}
@@ -556,25 +556,25 @@ void VoxelChunkDefault::debug_mesh_free() {
 		VisualServer::get_singleton()->free(_debug_mesh_rid);
 	}
 }
-bool VoxelChunkDefault::debug_mesh_has() {
+bool TerraChunkDefault::debug_mesh_has() {
 	return _debug_mesh_rid != RID();
 }
-void VoxelChunkDefault::debug_mesh_clear() {
+void TerraChunkDefault::debug_mesh_clear() {
 	if (_debug_mesh_rid != RID()) {
 		VisualServer::get_singleton()->mesh_clear(_debug_mesh_rid);
 	}
 }
-void VoxelChunkDefault::debug_mesh_array_clear() {
+void TerraChunkDefault::debug_mesh_array_clear() {
 	_debug_mesh_array.resize(0);
 }
-void VoxelChunkDefault::debug_mesh_add_vertices_to(const PoolVector3Array &arr) {
+void TerraChunkDefault::debug_mesh_add_vertices_to(const PoolVector3Array &arr) {
 	_debug_mesh_array.append_array(arr);
 
 	if (_debug_mesh_array.size() % 2 == 1) {
 		_debug_mesh_array.append(_debug_mesh_array[_debug_mesh_array.size() - 1]);
 	}
 }
-void VoxelChunkDefault::debug_mesh_send() {
+void TerraChunkDefault::debug_mesh_send() {
 	debug_mesh_allocate();
 	debug_mesh_clear();
 
@@ -596,7 +596,7 @@ void VoxelChunkDefault::debug_mesh_send() {
 	debug_mesh_array_clear();
 }
 
-void VoxelChunkDefault::draw_cross_voxels(Vector3 pos) {
+void TerraChunkDefault::draw_cross_voxels(Vector3 pos) {
 	pos *= _voxel_scale;
 
 	int size = _debug_mesh_array.size();
@@ -612,7 +612,7 @@ void VoxelChunkDefault::draw_cross_voxels(Vector3 pos) {
 	_debug_mesh_array.set(size + 5, pos + Vector3(0.2, 0, 0));
 }
 
-void VoxelChunkDefault::draw_cross_voxels_fill(Vector3 pos, float fill) {
+void TerraChunkDefault::draw_cross_voxels_fill(Vector3 pos, float fill) {
 	pos *= _voxel_scale;
 
 	int size = _debug_mesh_array.size();
@@ -628,7 +628,7 @@ void VoxelChunkDefault::draw_cross_voxels_fill(Vector3 pos, float fill) {
 	_debug_mesh_array.set(size + 5, pos + Vector3(0.2 * fill, 0, 0));
 }
 
-void VoxelChunkDefault::draw_debug_voxels(int max, Color color) {
+void TerraChunkDefault::draw_debug_voxels(int max, Color color) {
 	if (!debug_mesh_has()) {
 		debug_mesh_allocate();
 	}
@@ -646,13 +646,13 @@ void VoxelChunkDefault::draw_debug_voxels(int max, Color color) {
 	for (int y = 0; y < sy; ++y) {
 		for (int z = 0; z < sz; ++z) {
 			for (int x = 0; x < sx; ++x) {
-				int type = get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_TYPE);
+				int type = get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_TYPE);
 
 				if (type == 0) {
 					continue;
 				}
 
-				draw_cross_voxels_fill(Vector3(x, y, z), get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL) / 255.0 * get_voxel_scale() * 2.0);
+				draw_cross_voxels_fill(Vector3(x, y, z), get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL) / 255.0 * get_voxel_scale() * 2.0);
 
 				++a;
 
@@ -666,7 +666,7 @@ void VoxelChunkDefault::draw_debug_voxels(int max, Color color) {
 	debug_mesh_send();
 }
 
-void VoxelChunkDefault::draw_debug_voxel_lights() {
+void TerraChunkDefault::draw_debug_voxel_lights() {
 	if (!debug_mesh_has()) {
 		debug_mesh_allocate();
 	}
@@ -676,7 +676,7 @@ void VoxelChunkDefault::draw_debug_voxel_lights() {
 	//_debug_drawer->begin(Mesh::PrimitiveType::PRIMITIVE_LINES);
 
 	for (int i = 0; i < _lights.size(); ++i) {
-		Ref<VoxelLight> v = _lights[i];
+		Ref<TerraLight> v = _lights[i];
 
 		int pos_x = v->get_world_position_x() - (_size_x * _position_x);
 		int pos_y = v->get_world_position_y() - (_size_y * _position_y);
@@ -688,7 +688,7 @@ void VoxelChunkDefault::draw_debug_voxel_lights() {
 	debug_mesh_send();
 }
 
-void VoxelChunkDefault::draw_debug_mdr_colliders() {
+void TerraChunkDefault::draw_debug_mdr_colliders() {
 	if (!debug_mesh_has()) {
 		debug_mesh_allocate();
 	}
@@ -705,7 +705,7 @@ void VoxelChunkDefault::draw_debug_mdr_colliders() {
 	}
 }
 
-void VoxelChunkDefault::_visibility_changed(bool visible) {
+void TerraChunkDefault::_visibility_changed(bool visible) {
 	if (visible) {
 		set_current_lod_level(_current_lod_level);
 		return;
@@ -729,27 +729,27 @@ void VoxelChunkDefault::_visibility_changed(bool visible) {
 	}
 }
 
-void VoxelChunkDefault::_exit_tree() {
-	VoxelChunk::_exit_tree();
+void TerraChunkDefault::_exit_tree() {
+	TerraChunk::_exit_tree();
 
 	rids_free();
 }
 
-void VoxelChunkDefault::_world_transform_changed() {
-	VoxelChunk::_world_transform_changed();
+void TerraChunkDefault::_world_transform_changed() {
+	TerraChunk::_world_transform_changed();
 
 	update_transforms();
 }
 
 //Lights
-void VoxelChunkDefault::_bake_lights() {
+void TerraChunkDefault::_bake_lights() {
 	clear_baked_lights();
 
 	for (int i = 0; i < _lights.size(); ++i) {
 		bake_light(_lights.get(i));
 	}
 }
-void VoxelChunkDefault::_bake_light(Ref<VoxelLight> light) {
+void TerraChunkDefault::_bake_light(Ref<TerraLight> light) {
 	ERR_FAIL_COND(!light.is_valid());
 
 	Color color = light->get_color();
@@ -765,9 +765,9 @@ void VoxelChunkDefault::_bake_light(Ref<VoxelLight> light) {
 	int64_t dsy = static_cast<int64_t>(_data_size_y);
 	int64_t dsz = static_cast<int64_t>(_data_size_z);
 
-	uint8_t *channel_color_r = channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
-	uint8_t *channel_color_g = channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
-	uint8_t *channel_color_b = channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+	uint8_t *channel_color_r = channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+	uint8_t *channel_color_g = channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+	uint8_t *channel_color_b = channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
 
 	ERR_FAIL_COND(channel_color_r == NULL || channel_color_g == NULL || channel_color_b == NULL);
 
@@ -819,17 +819,17 @@ void VoxelChunkDefault::_bake_light(Ref<VoxelLight> light) {
 		}
 	}
 }
-void VoxelChunkDefault::_clear_baked_lights() {
+void TerraChunkDefault::_clear_baked_lights() {
 	channel_fill(0, DEFAULT_CHANNEL_LIGHT_COLOR_R);
 	channel_fill(0, DEFAULT_CHANNEL_LIGHT_COLOR_G);
 	channel_fill(0, DEFAULT_CHANNEL_LIGHT_COLOR_B);
 }
-void VoxelChunkDefault::_world_light_added(const Ref<VoxelLight> &light) {
+void TerraChunkDefault::_world_light_added(const Ref<TerraLight> &light) {
 	_lights.push_back(light);
 
 	set_lights_dirty(true);
 }
-void VoxelChunkDefault::_world_light_removed(const Ref<VoxelLight> &light) {
+void TerraChunkDefault::_world_light_removed(const Ref<TerraLight> &light) {
 	int index = _lights.find(light);
 
 	if (index != -1) {
@@ -839,11 +839,11 @@ void VoxelChunkDefault::_world_light_removed(const Ref<VoxelLight> &light) {
 	}
 }
 
-void VoxelChunkDefault::free_chunk() {
+void TerraChunkDefault::free_chunk() {
 	rids_free();
 }
 
-void VoxelChunkDefault::_finalize_build() {
+void TerraChunkDefault::_finalize_build() {
 	ERR_FAIL_COND(!_library.is_valid());
 
 #if TOOLS_ENABLED
@@ -857,7 +857,7 @@ void VoxelChunkDefault::_finalize_build() {
 	call_deferred("update_transforms");
 }
 
-VoxelChunkDefault::VoxelChunkDefault() {
+TerraChunkDefault::TerraChunkDefault() {
 	_abort_build = false;
 
 	_enabled = true;
@@ -868,7 +868,7 @@ VoxelChunkDefault::VoxelChunkDefault() {
 	_build_flags = BUILD_FLAG_CREATE_COLLIDER | BUILD_FLAG_CREATE_LODS;
 }
 
-VoxelChunkDefault::~VoxelChunkDefault() {
+TerraChunkDefault::~TerraChunkDefault() {
 	_abort_build = true;
 
 	_lights.clear();
@@ -876,92 +876,92 @@ VoxelChunkDefault::~VoxelChunkDefault() {
 	debug_mesh_free();
 }
 
-void VoxelChunkDefault::_channel_setup() {
+void TerraChunkDefault::_channel_setup() {
 	channel_set_count(MAX_DEFAULT_CHANNELS);
 }
 
-void VoxelChunkDefault::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_build_flags"), &VoxelChunkDefault::get_build_flags);
-	ClassDB::bind_method(D_METHOD("set_build_flags", "value"), &VoxelChunkDefault::set_build_flags);
+void TerraChunkDefault::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_build_flags"), &TerraChunkDefault::get_build_flags);
+	ClassDB::bind_method(D_METHOD("set_build_flags", "value"), &TerraChunkDefault::set_build_flags);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "build_flags", PROPERTY_HINT_FLAGS, BINDING_STRING_BUILD_FLAGS, 0), "set_build_flags", "get_build_flags");
 
-	ClassDB::bind_method(D_METHOD("get_lights_dirty"), &VoxelChunkDefault::get_lights_dirty);
-	ClassDB::bind_method(D_METHOD("set_lights_dirty", "value"), &VoxelChunkDefault::set_lights_dirty);
+	ClassDB::bind_method(D_METHOD("get_lights_dirty"), &TerraChunkDefault::get_lights_dirty);
+	ClassDB::bind_method(D_METHOD("set_lights_dirty", "value"), &TerraChunkDefault::set_lights_dirty);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "lights_dirty", PROPERTY_HINT_NONE, "", 0), "set_lights_dirty", "get_lights_dirty");
 
-	ClassDB::bind_method(D_METHOD("get_lod_num"), &VoxelChunkDefault::get_lod_num);
-	ClassDB::bind_method(D_METHOD("set_lod_num"), &VoxelChunkDefault::set_lod_num);
+	ClassDB::bind_method(D_METHOD("get_lod_num"), &TerraChunkDefault::get_lod_num);
+	ClassDB::bind_method(D_METHOD("set_lod_num"), &TerraChunkDefault::set_lod_num);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "lod_num", PROPERTY_HINT_NONE, "", 0), "set_lod_num", "get_lod_num");
 
-	ClassDB::bind_method(D_METHOD("get_current_lod_level"), &VoxelChunkDefault::get_current_lod_level);
-	ClassDB::bind_method(D_METHOD("set_current_lod_level"), &VoxelChunkDefault::set_current_lod_level);
+	ClassDB::bind_method(D_METHOD("get_current_lod_level"), &TerraChunkDefault::get_current_lod_level);
+	ClassDB::bind_method(D_METHOD("set_current_lod_level"), &TerraChunkDefault::set_current_lod_level);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "current_lod_level"), "set_current_lod_level", "get_current_lod_level");
 
 	//Meshes
-	ClassDB::bind_method(D_METHOD("get_mesh_rids"), &VoxelChunkDefault::mesh_rids_get);
-	ClassDB::bind_method(D_METHOD("set_mesh_rids", "rids"), &VoxelChunkDefault::mesh_rids_set);
-	ClassDB::bind_method(D_METHOD("clear_rids"), &VoxelChunkDefault::rids_clear);
+	ClassDB::bind_method(D_METHOD("get_mesh_rids"), &TerraChunkDefault::mesh_rids_get);
+	ClassDB::bind_method(D_METHOD("set_mesh_rids", "rids"), &TerraChunkDefault::mesh_rids_set);
+	ClassDB::bind_method(D_METHOD("clear_rids"), &TerraChunkDefault::rids_clear);
 
-	ClassDB::bind_method(D_METHOD("mesh_rid_get", "mesh_index", "mesh_type_index"), &VoxelChunkDefault::mesh_rid_get);
-	ClassDB::bind_method(D_METHOD("mesh_rid_set", "mesh_index", "mesh_type_index", "value"), &VoxelChunkDefault::mesh_rid_set);
-	ClassDB::bind_method(D_METHOD("mesh_rid_get_index", "mesh_index", "mesh_type_index", "index"), &VoxelChunkDefault::mesh_rid_get_index);
-	ClassDB::bind_method(D_METHOD("mesh_rid_set_index", "mesh_index", "mesh_type_index", "index", "value"), &VoxelChunkDefault::mesh_rid_set_index);
-	ClassDB::bind_method(D_METHOD("mesh_rid_get_count", "mesh_index", "mesh_type_index"), &VoxelChunkDefault::mesh_rid_get_count);
-	ClassDB::bind_method(D_METHOD("mesh_rids_clear", "mesh_index", "mesh_type_index"), &VoxelChunkDefault::mesh_rids_clear);
-	ClassDB::bind_method(D_METHOD("meshes_get", "mesh_index", "mesh_type_index"), &VoxelChunkDefault::meshes_get);
-	ClassDB::bind_method(D_METHOD("meshes_set", "mesh_index", "mesh_type_index", "meshes"), &VoxelChunkDefault::meshes_set);
-	ClassDB::bind_method(D_METHOD("meshes_has", "mesh_index", "mesh_type_index"), &VoxelChunkDefault::meshes_has);
+	ClassDB::bind_method(D_METHOD("mesh_rid_get", "mesh_index", "mesh_type_index"), &TerraChunkDefault::mesh_rid_get);
+	ClassDB::bind_method(D_METHOD("mesh_rid_set", "mesh_index", "mesh_type_index", "value"), &TerraChunkDefault::mesh_rid_set);
+	ClassDB::bind_method(D_METHOD("mesh_rid_get_index", "mesh_index", "mesh_type_index", "index"), &TerraChunkDefault::mesh_rid_get_index);
+	ClassDB::bind_method(D_METHOD("mesh_rid_set_index", "mesh_index", "mesh_type_index", "index", "value"), &TerraChunkDefault::mesh_rid_set_index);
+	ClassDB::bind_method(D_METHOD("mesh_rid_get_count", "mesh_index", "mesh_type_index"), &TerraChunkDefault::mesh_rid_get_count);
+	ClassDB::bind_method(D_METHOD("mesh_rids_clear", "mesh_index", "mesh_type_index"), &TerraChunkDefault::mesh_rids_clear);
+	ClassDB::bind_method(D_METHOD("meshes_get", "mesh_index", "mesh_type_index"), &TerraChunkDefault::meshes_get);
+	ClassDB::bind_method(D_METHOD("meshes_set", "mesh_index", "mesh_type_index", "meshes"), &TerraChunkDefault::meshes_set);
+	ClassDB::bind_method(D_METHOD("meshes_has", "mesh_index", "mesh_type_index"), &TerraChunkDefault::meshes_has);
 
-	ClassDB::bind_method(D_METHOD("rids_free"), &VoxelChunkDefault::rids_free);
-	ClassDB::bind_method(D_METHOD("free_index", "mesh_index"), &VoxelChunkDefault::free_index);
+	ClassDB::bind_method(D_METHOD("rids_free"), &TerraChunkDefault::rids_free);
+	ClassDB::bind_method(D_METHOD("free_index", "mesh_index"), &TerraChunkDefault::free_index);
 
-	ClassDB::bind_method(D_METHOD("meshes_create", "mesh_index", "mesh_count"), &VoxelChunkDefault::meshes_create);
-	ClassDB::bind_method(D_METHOD("meshes_free", "mesh_index"), &VoxelChunkDefault::meshes_free);
+	ClassDB::bind_method(D_METHOD("meshes_create", "mesh_index", "mesh_count"), &TerraChunkDefault::meshes_create);
+	ClassDB::bind_method(D_METHOD("meshes_free", "mesh_index"), &TerraChunkDefault::meshes_free);
 
-	ClassDB::bind_method(D_METHOD("create_colliders", "mesh_index", "layer_mask"), &VoxelChunkDefault::colliders_create, DEFVAL(1));
-	ClassDB::bind_method(D_METHOD("free_colliders", "mesh_index"), &VoxelChunkDefault::colliders_free);
+	ClassDB::bind_method(D_METHOD("create_colliders", "mesh_index", "layer_mask"), &TerraChunkDefault::colliders_create, DEFVAL(1));
+	ClassDB::bind_method(D_METHOD("free_colliders", "mesh_index"), &TerraChunkDefault::colliders_free);
 
 	//Lights
-	ClassDB::bind_method(D_METHOD("get_light", "index"), &VoxelChunkDefault::get_light);
-	ClassDB::bind_method(D_METHOD("get_light_count"), &VoxelChunkDefault::get_light_count);
+	ClassDB::bind_method(D_METHOD("get_light", "index"), &TerraChunkDefault::get_light);
+	ClassDB::bind_method(D_METHOD("get_light_count"), &TerraChunkDefault::get_light_count);
 
 	//Debug
-	ClassDB::bind_method(D_METHOD("debug_mesh_allocate"), &VoxelChunkDefault::debug_mesh_allocate);
-	ClassDB::bind_method(D_METHOD("debug_mesh_free"), &VoxelChunkDefault::debug_mesh_free);
+	ClassDB::bind_method(D_METHOD("debug_mesh_allocate"), &TerraChunkDefault::debug_mesh_allocate);
+	ClassDB::bind_method(D_METHOD("debug_mesh_free"), &TerraChunkDefault::debug_mesh_free);
 
-	ClassDB::bind_method(D_METHOD("debug_mesh_has"), &VoxelChunkDefault::debug_mesh_has);
-	ClassDB::bind_method(D_METHOD("debug_mesh_clear"), &VoxelChunkDefault::debug_mesh_clear);
-	ClassDB::bind_method(D_METHOD("debug_mesh_array_clear"), &VoxelChunkDefault::debug_mesh_array_clear);
-	ClassDB::bind_method(D_METHOD("debug_mesh_add_vertices_to", "arr"), &VoxelChunkDefault::debug_mesh_add_vertices_to);
-	ClassDB::bind_method(D_METHOD("debug_mesh_send"), &VoxelChunkDefault::debug_mesh_send);
+	ClassDB::bind_method(D_METHOD("debug_mesh_has"), &TerraChunkDefault::debug_mesh_has);
+	ClassDB::bind_method(D_METHOD("debug_mesh_clear"), &TerraChunkDefault::debug_mesh_clear);
+	ClassDB::bind_method(D_METHOD("debug_mesh_array_clear"), &TerraChunkDefault::debug_mesh_array_clear);
+	ClassDB::bind_method(D_METHOD("debug_mesh_add_vertices_to", "arr"), &TerraChunkDefault::debug_mesh_add_vertices_to);
+	ClassDB::bind_method(D_METHOD("debug_mesh_send"), &TerraChunkDefault::debug_mesh_send);
 
-	ClassDB::bind_method(D_METHOD("draw_cross_voxels", "max"), &VoxelChunkDefault::draw_cross_voxels);
-	ClassDB::bind_method(D_METHOD("draw_cross_voxels_fill", "max", "fill"), &VoxelChunkDefault::draw_cross_voxels_fill);
-	ClassDB::bind_method(D_METHOD("draw_debug_voxels", "max", "color"), &VoxelChunkDefault::draw_debug_voxels, DEFVAL(Color(1, 1, 1)));
+	ClassDB::bind_method(D_METHOD("draw_cross_voxels", "max"), &TerraChunkDefault::draw_cross_voxels);
+	ClassDB::bind_method(D_METHOD("draw_cross_voxels_fill", "max", "fill"), &TerraChunkDefault::draw_cross_voxels_fill);
+	ClassDB::bind_method(D_METHOD("draw_debug_voxels", "max", "color"), &TerraChunkDefault::draw_debug_voxels, DEFVAL(Color(1, 1, 1)));
 
-	ClassDB::bind_method(D_METHOD("draw_debug_voxel_lights"), &VoxelChunkDefault::draw_debug_voxel_lights);
-	ClassDB::bind_method(D_METHOD("draw_debug_mdr_colliders"), &VoxelChunkDefault::draw_debug_mdr_colliders);
+	ClassDB::bind_method(D_METHOD("draw_debug_voxel_lights"), &TerraChunkDefault::draw_debug_voxel_lights);
+	ClassDB::bind_method(D_METHOD("draw_debug_mdr_colliders"), &TerraChunkDefault::draw_debug_mdr_colliders);
 
 	//Free
-	ClassDB::bind_method(D_METHOD("free_chunk"), &VoxelChunkDefault::free_chunk);
+	ClassDB::bind_method(D_METHOD("free_chunk"), &TerraChunkDefault::free_chunk);
 
 	//etc
-	ClassDB::bind_method(D_METHOD("emit_build_finished"), &VoxelChunkDefault::emit_build_finished);
+	ClassDB::bind_method(D_METHOD("emit_build_finished"), &TerraChunkDefault::emit_build_finished);
 
 	//virtuals
-	ClassDB::bind_method(D_METHOD("_channel_setup"), &VoxelChunkDefault::_channel_setup);
+	ClassDB::bind_method(D_METHOD("_channel_setup"), &TerraChunkDefault::_channel_setup);
 
-	ClassDB::bind_method(D_METHOD("_visibility_changed", "visible"), &VoxelChunkDefault::_visibility_changed);
+	ClassDB::bind_method(D_METHOD("_visibility_changed", "visible"), &TerraChunkDefault::_visibility_changed);
 
 	//lights
-	ClassDB::bind_method(D_METHOD("_bake_lights"), &VoxelChunkDefault::_bake_lights);
-	ClassDB::bind_method(D_METHOD("_bake_light", "light"), &VoxelChunkDefault::_bake_light);
-	ClassDB::bind_method(D_METHOD("_clear_baked_lights"), &VoxelChunkDefault::_clear_baked_lights);
+	ClassDB::bind_method(D_METHOD("_bake_lights"), &TerraChunkDefault::_bake_lights);
+	ClassDB::bind_method(D_METHOD("_bake_light", "light"), &TerraChunkDefault::_bake_light);
+	ClassDB::bind_method(D_METHOD("_clear_baked_lights"), &TerraChunkDefault::_clear_baked_lights);
 
-	ClassDB::bind_method(D_METHOD("_world_light_added", "light"), &VoxelChunkDefault::_world_light_added);
-	ClassDB::bind_method(D_METHOD("_world_light_removed", "light"), &VoxelChunkDefault::_world_light_removed);
+	ClassDB::bind_method(D_METHOD("_world_light_added", "light"), &TerraChunkDefault::_world_light_added);
+	ClassDB::bind_method(D_METHOD("_world_light_removed", "light"), &TerraChunkDefault::_world_light_removed);
 
-	ClassDB::bind_method(D_METHOD("_finalize_build"), &VoxelChunkDefault::_finalize_build);
+	ClassDB::bind_method(D_METHOD("_finalize_build"), &TerraChunkDefault::_finalize_build);
 
 	BIND_ENUM_CONSTANT(DEFAULT_CHANNEL_TYPE);
 	BIND_ENUM_CONSTANT(DEFAULT_CHANNEL_ISOLEVEL);

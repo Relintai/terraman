@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_MESHER_CUBIC_H
-#define VOXEL_MESHER_CUBIC_H
+#ifndef TERRA_MESHER_CUBIC_H
+#define TERRA_MESHER_CUBIC_H
 
 #include "core/version.h"
 
@@ -38,14 +38,14 @@ SOFTWARE.
 
 #include "voxel_cube_points.h"
 
-class VoxelMesherCubic : public VoxelMesherDefault {
-	GDCLASS(VoxelMesherCubic, VoxelMesherDefault);
+class TerraMesherCubic : public TerraMesherDefault {
+	GDCLASS(TerraMesherCubic, TerraMesherDefault);
 
 public:
-	void _add_chunk(Ref<VoxelChunk> p_chunk);
+	void _add_chunk(Ref<TerraChunk> p_chunk);
 
-	VoxelMesherCubic();
-	~VoxelMesherCubic();
+	TerraMesherCubic();
+	~TerraMesherCubic();
 
 protected:
 	static void _bind_methods();

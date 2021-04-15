@@ -20,20 +20,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_WORLD_MARCHING_CUBES_H
-#define VOXEL_WORLD_MARCHING_CUBES_H
+#ifndef TERRA_WORLD_MARCHING_CUBES_H
+#define TERRA_WORLD_MARCHING_CUBES_H
 
 #include "../default/voxel_world_default.h"
 
-class VoxelWorldMarchingCubes : public VoxelWorldDefault {
-	GDCLASS(VoxelWorldMarchingCubes, VoxelWorldDefault);
+class TerraWorldMarchingCubes : public TerraWorldDefault {
+	GDCLASS(TerraWorldMarchingCubes, TerraWorldDefault);
 
 public:
-	VoxelWorldMarchingCubes();
-	~VoxelWorldMarchingCubes();
+	TerraWorldMarchingCubes();
+	~TerraWorldMarchingCubes();
 
 protected:
-	Ref<VoxelChunk> _create_chunk(int x, int y, int z, Ref<VoxelChunk> p_chunk);
+	Ref<TerraChunk> _create_chunk(int x, int y, int z, Ref<TerraChunk> p_chunk);
 	void _set_voxel_with_tool(const bool mode_add, const Vector3 hit_position, const Vector3 hit_normal, const int selected_voxel, const int isolevel) override;
 
 	static void _bind_methods();

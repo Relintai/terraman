@@ -40,12 +40,12 @@ SOFTWARE.
 #include "../data/voxel_light.h"
 #include "voxel_surface_merger.h"
 
-class VoxelSurfaceSimple;
-class VoxelMesher;
+class TerraSurfaceSimple;
+class TerraMesher;
 class PackedScene;
 
-class VoxelmanLibraryMerger : public VoxelmanLibrary {
-	GDCLASS(VoxelmanLibraryMerger, VoxelmanLibrary)
+class TerramanLibraryMerger : public TerramanLibrary {
+	GDCLASS(TerramanLibraryMerger, TerramanLibrary)
 
 public:
 	int get_texture_flags() const;
@@ -63,9 +63,9 @@ public:
 	int get_margin() const;
 	void set_margin(const int margin);
 
-	Ref<VoxelSurface> voxel_surface_get(const int index);
-	void voxel_surface_add(Ref<VoxelSurface> value);
-	void voxel_surface_set(const int index, Ref<VoxelSurface> value);
+	Ref<TerraSurface> voxel_surface_get(const int index);
+	void voxel_surface_add(Ref<TerraSurface> value);
+	void voxel_surface_set(const int index, Ref<TerraSurface> value);
 	void voxel_surface_remove(const int index);
 	int voxel_surface_get_num() const;
 	void voxel_surfaces_clear();
@@ -94,8 +94,8 @@ public:
 
 	void _setup_material_albedo(const int material_index, const Ref<Texture> &texture);
 
-	VoxelmanLibraryMerger();
-	~VoxelmanLibraryMerger();
+	TerramanLibraryMerger();
+	~TerramanLibraryMerger();
 
 protected:
 #ifdef PROPS_PRESENT
@@ -105,7 +105,7 @@ protected:
 	static void _bind_methods();
 
 private:
-	Vector<Ref<VoxelSurfaceMerger> > _voxel_surfaces;
+	Vector<Ref<TerraSurfaceMerger> > _voxel_surfaces;
 #ifdef PROPS_PRESENT
 	Vector<Ref<PropData> > _props;
 #endif

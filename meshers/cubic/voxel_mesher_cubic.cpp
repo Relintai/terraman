@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include visual_server_h
 
-void VoxelMesherCubic::_add_chunk(Ref<VoxelChunk> p_chunk) {
-	Ref<VoxelChunkDefault> chunk = p_chunk;
+void TerraMesherCubic::_add_chunk(Ref<TerraChunk> p_chunk) {
+	Ref<TerraChunkDefault> chunk = p_chunk;
 
 	ERR_FAIL_COND(!chunk.is_valid());
 
@@ -37,7 +37,7 @@ void VoxelMesherCubic::_add_chunk(Ref<VoxelChunk> p_chunk) {
 		return;
 	}
 
-	//if (chunk->get_channel(VoxelChunkDefault::DEFAULT_CHANNEL_RANDOM_AO)) {
+	//if (chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO)) {
 	//	chunk->generate_ao();
 	//}
 
@@ -48,7 +48,7 @@ void VoxelMesherCubic::_add_chunk(Ref<VoxelChunk> p_chunk) {
 	float voxel_size = 1;
 	float voxel_scale = get_voxel_scale();
 
-	Ref<VoxelCubePoints> cube_points;
+	Ref<TerraCubePoints> cube_points;
 	cube_points.instance();
 	cube_points->set_channel_index_type(_channel_index_type);
 	cube_points->set_channel_index_isolevel(_channel_index_isolevel);
@@ -64,13 +64,13 @@ void VoxelMesherCubic::_add_chunk(Ref<VoxelChunk> p_chunk) {
 				if (!cube_points->has_points())
 					continue;
 
-				for (int face = 0; face < VoxelCubePoints::VOXEL_FACE_COUNT; ++face) {
+				for (int face = 0; face < TerraCubePoints::TERRA_FACE_COUNT; ++face) {
 					if (!cube_points->is_face_visible(face))
 						continue;
 
 					uint8_t type = cube_points->get_face_type(face) - 1;
 
-					Ref<VoxelSurface> surface = _library->voxel_surface_get(type);
+					Ref<TerraSurface> surface = _library->voxel_surface_get(type);
 
 					if (!surface.is_valid())
 						continue;
@@ -119,14 +119,14 @@ void VoxelMesherCubic::_add_chunk(Ref<VoxelChunk> p_chunk) {
 
 						Vector2 uv = cube_points->get_point_uv_direction(face, i) + Vector2(0.5, 0.5);
 
-						VoxelSurface::VoxelSurfaceSides side = VoxelSurface::VOXEL_SIDE_SIDE;
+						TerraSurface::TerraSurfaceSides side = TerraSurface::TERRA_SIDE_SIDE;
 
 						switch (face) {
-							case VoxelCubePoints::VOXEL_FACE_TOP:
-								side = VoxelSurface::VOXEL_SIDE_TOP;
+							case TerraCubePoints::TERRA_FACE_TOP:
+								side = TerraSurface::TERRA_SIDE_TOP;
 								break;
-							case VoxelCubePoints::VOXEL_FACE_BOTTOM:
-								side = VoxelSurface::VOXEL_SIDE_BOTTOM;
+							case TerraCubePoints::TERRA_FACE_BOTTOM:
+								side = TerraSurface::TERRA_SIDE_BOTTOM;
 								break;
 						}
 
@@ -143,15 +143,15 @@ void VoxelMesherCubic::_add_chunk(Ref<VoxelChunk> p_chunk) {
 	}
 }
 
-VoxelMesherCubic::VoxelMesherCubic() {
+TerraMesherCubic::TerraMesherCubic() {
 	_format = VisualServer::ARRAY_FORMAT_NORMAL | VisualServer::ARRAY_FORMAT_COLOR | VisualServer::ARRAY_FORMAT_TEX_UV;
 
 	_texture_scale = 1;
 }
 
-VoxelMesherCubic::~VoxelMesherCubic() {
+TerraMesherCubic::~TerraMesherCubic() {
 }
 
-void VoxelMesherCubic::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_add_chunk", "buffer"), &VoxelMesherCubic::_add_chunk);
+void TerraMesherCubic::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_add_chunk", "buffer"), &TerraMesherCubic::_add_chunk);
 }

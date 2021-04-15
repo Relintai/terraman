@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_LIGHT_H
-#define VOXEL_LIGHT_H
+#ifndef TERRA_LIGHT_H
+#define TERRA_LIGHT_H
 
 #include "core/version.h"
 
@@ -35,8 +35,8 @@ SOFTWARE.
 #include "core/color.h"
 #endif
 
-class VoxelLight : public Reference {
-	GDCLASS(VoxelLight, Reference);
+class TerraLight : public Reference {
+	GDCLASS(TerraLight, Reference);
 
 public:
 	int get_world_position_x() const;
@@ -51,8 +51,8 @@ public:
 	float get_size() const;
 	void set_size(const float strength);
 
-	VoxelLight();
-	~VoxelLight();
+	TerraLight();
+	~TerraLight();
 
 private:
 	static void _bind_methods();

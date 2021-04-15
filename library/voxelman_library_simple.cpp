@@ -24,41 +24,41 @@ SOFTWARE.
 
 #include "../defines.h"
 
-int VoxelmanLibrarySimple::get_atlas_columns() const {
+int TerramanLibrarySimple::get_atlas_columns() const {
 	return _atlas_columns;
 }
 
-void VoxelmanLibrarySimple::set_atlas_columns(int s) {
+void TerramanLibrarySimple::set_atlas_columns(int s) {
 	ERR_FAIL_COND(s < 0);
 	_atlas_columns = s;
 }
 
-int VoxelmanLibrarySimple::get_atlas_rows() const {
+int TerramanLibrarySimple::get_atlas_rows() const {
 	return _atlas_rows;
 }
 
-void VoxelmanLibrarySimple::set_atlas_rows(int s) {
+void TerramanLibrarySimple::set_atlas_rows(int s) {
 	ERR_FAIL_COND(s < 0);
 	_atlas_rows = s;
 }
 
 //Surfaces
-Ref<VoxelSurface> VoxelmanLibrarySimple::voxel_surface_get(const int index) {
-	ERR_FAIL_INDEX_V(index, _voxel_surfaces.size(), Ref<VoxelSurface>(NULL));
+Ref<TerraSurface> TerramanLibrarySimple::voxel_surface_get(const int index) {
+	ERR_FAIL_INDEX_V(index, _voxel_surfaces.size(), Ref<TerraSurface>(NULL));
 
 	return _voxel_surfaces[index];
 }
 
-void VoxelmanLibrarySimple::voxel_surface_add(Ref<VoxelSurface> value) {
+void TerramanLibrarySimple::voxel_surface_add(Ref<TerraSurface> value) {
 	ERR_FAIL_COND(!value.is_valid());
 
-	value->set_library(Ref<VoxelmanLibrarySimple>(this));
+	value->set_library(Ref<TerramanLibrarySimple>(this));
 	value->set_id(_voxel_surfaces.size());
 
 	_voxel_surfaces.push_back(value);
 }
 
-void VoxelmanLibrarySimple::voxel_surface_set(const int index, Ref<VoxelSurface> value) {
+void TerramanLibrarySimple::voxel_surface_set(const int index, Ref<TerraSurface> value) {
 	ERR_FAIL_COND(index < 0);
 
 	if (_voxel_surfaces.size() < index) {
@@ -66,37 +66,37 @@ void VoxelmanLibrarySimple::voxel_surface_set(const int index, Ref<VoxelSurface>
 	}
 
 	if (_voxel_surfaces[index].is_valid()) {
-		_voxel_surfaces.get(index)->set_library(Ref<VoxelmanLibrarySimple>(NULL));
+		_voxel_surfaces.get(index)->set_library(Ref<TerramanLibrarySimple>(NULL));
 	}
 
 	if (value.is_valid()) {
-		value->set_library(Ref<VoxelmanLibrarySimple>(this));
+		value->set_library(Ref<TerramanLibrarySimple>(this));
 
 		_voxel_surfaces.set(index, value);
 	}
 }
 
-void VoxelmanLibrarySimple::voxel_surface_remove(const int index) {
+void TerramanLibrarySimple::voxel_surface_remove(const int index) {
 	_voxel_surfaces.remove(index);
 }
 
-int VoxelmanLibrarySimple::voxel_surface_get_num() const {
+int TerramanLibrarySimple::voxel_surface_get_num() const {
 	return _voxel_surfaces.size();
 }
 
-void VoxelmanLibrarySimple::voxel_surfaces_clear() {
+void TerramanLibrarySimple::voxel_surfaces_clear() {
 	_voxel_surfaces.clear();
 }
 
-Vector<Variant> VoxelmanLibrarySimple::get_voxel_surfaces() {
+Vector<Variant> TerramanLibrarySimple::get_voxel_surfaces() {
 	VARIANT_ARRAY_GET(_voxel_surfaces);
 }
 
-void VoxelmanLibrarySimple::set_voxel_surfaces(const Vector<Variant> &surfaces) {
+void TerramanLibrarySimple::set_voxel_surfaces(const Vector<Variant> &surfaces) {
 	_voxel_surfaces.clear();
 
 	for (int i = 0; i < surfaces.size(); i++) {
-		Ref<VoxelSurfaceSimple> surface = Ref<VoxelSurfaceSimple>(surfaces[i]);
+		Ref<TerraSurfaceSimple> surface = Ref<TerraSurfaceSimple>(surfaces[i]);
 
 		if (surface.is_valid()) {
 			surface->set_library(this);
@@ -109,9 +109,9 @@ void VoxelmanLibrarySimple::set_voxel_surfaces(const Vector<Variant> &surfaces) 
 	set_initialized(true);
 }
 
-void VoxelmanLibrarySimple::refresh_rects() {
+void TerramanLibrarySimple::refresh_rects() {
 	for (int i = 0; i < _voxel_surfaces.size(); i++) {
-		Ref<VoxelSurfaceSimple> surface = Ref<VoxelSurfaceSimple>(_voxel_surfaces[i]);
+		Ref<TerraSurfaceSimple> surface = Ref<TerraSurfaceSimple>(_voxel_surfaces[i]);
 
 		if (surface.is_valid()) {
 			surface->refresh_rects();
@@ -119,33 +119,33 @@ void VoxelmanLibrarySimple::refresh_rects() {
 	}
 }
 
-VoxelmanLibrarySimple::VoxelmanLibrarySimple() {
+TerramanLibrarySimple::TerramanLibrarySimple() {
 	_atlas_rows = 8;
 	_atlas_columns = 8;
 }
 
-VoxelmanLibrarySimple::~VoxelmanLibrarySimple() {
+TerramanLibrarySimple::~TerramanLibrarySimple() {
 	for (int i = 0; i < _voxel_surfaces.size(); ++i) {
-		Ref<VoxelSurface> surface = _voxel_surfaces[i];
+		Ref<TerraSurface> surface = _voxel_surfaces[i];
 
 		if (surface.is_valid()) {
-			surface->set_library(Ref<VoxelmanLibrarySimple>());
+			surface->set_library(Ref<TerramanLibrarySimple>());
 		}
 	}
 
 	_voxel_surfaces.clear();
 }
 
-void VoxelmanLibrarySimple::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_atlas_columns"), &VoxelmanLibrarySimple::get_atlas_columns);
-	ClassDB::bind_method(D_METHOD("set_atlas_columns", "value"), &VoxelmanLibrarySimple::set_atlas_columns);
+void TerramanLibrarySimple::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_atlas_columns"), &TerramanLibrarySimple::get_atlas_columns);
+	ClassDB::bind_method(D_METHOD("set_atlas_columns", "value"), &TerramanLibrarySimple::set_atlas_columns);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "atlas_columns"), "set_atlas_columns", "get_atlas_columns");
 
-	ClassDB::bind_method(D_METHOD("get_atlas_rows"), &VoxelmanLibrarySimple::get_atlas_rows);
-	ClassDB::bind_method(D_METHOD("set_atlas_rows", "value"), &VoxelmanLibrarySimple::set_atlas_rows);
+	ClassDB::bind_method(D_METHOD("get_atlas_rows"), &TerramanLibrarySimple::get_atlas_rows);
+	ClassDB::bind_method(D_METHOD("set_atlas_rows", "value"), &TerramanLibrarySimple::set_atlas_rows);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "atlas_rows"), "set_atlas_rows", "get_atlas_rows");
 
-	ClassDB::bind_method(D_METHOD("get_voxel_surfaces"), &VoxelmanLibrarySimple::get_voxel_surfaces);
-	ClassDB::bind_method(D_METHOD("set_voxel_surfaces"), &VoxelmanLibrarySimple::set_voxel_surfaces);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "voxel_surfaces", PROPERTY_HINT_NONE, "17/17:VoxelSurfaceSimple", PROPERTY_USAGE_DEFAULT, "VoxelSurfaceSimple"), "set_voxel_surfaces", "get_voxel_surfaces");
+	ClassDB::bind_method(D_METHOD("get_voxel_surfaces"), &TerramanLibrarySimple::get_voxel_surfaces);
+	ClassDB::bind_method(D_METHOD("set_voxel_surfaces"), &TerramanLibrarySimple::set_voxel_surfaces);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "voxel_surfaces", PROPERTY_HINT_NONE, "17/17:TerraSurfaceSimple", PROPERTY_USAGE_DEFAULT, "TerraSurfaceSimple"), "set_voxel_surfaces", "get_voxel_surfaces");
 }

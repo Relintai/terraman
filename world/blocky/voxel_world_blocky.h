@@ -20,20 +20,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_WORLD_BLOCKY_H
-#define VOXEL_WORLD_BLOCKY_H
+#ifndef TERRA_WORLD_BLOCKY_H
+#define TERRA_WORLD_BLOCKY_H
 
 #include "../default/voxel_world_default.h"
 
-class VoxelWorldBlocky : public VoxelWorldDefault {
-	GDCLASS(VoxelWorldBlocky, VoxelWorldDefault);
+class TerraWorldBlocky : public TerraWorldDefault {
+	GDCLASS(TerraWorldBlocky, TerraWorldDefault);
 
 public:
-	VoxelWorldBlocky();
-	~VoxelWorldBlocky();
+	TerraWorldBlocky();
+	~TerraWorldBlocky();
 
 protected:
-	Ref<VoxelChunk> _create_chunk(int x, int y, int z, Ref<VoxelChunk> p_chunk);
+	Ref<TerraChunk> _create_chunk(int x, int y, int z, Ref<TerraChunk> p_chunk);
 
 	static void _bind_methods();
 };

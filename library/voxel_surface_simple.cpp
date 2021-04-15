@@ -24,34 +24,34 @@ SOFTWARE.
 
 #include "voxelman_library_simple.h"
 
-int VoxelSurfaceSimple::get_atlas_x(const VoxelSurfaceSides side) const {
+int TerraSurfaceSimple::get_atlas_x(const TerraSurfaceSides side) const {
 	int indx = (side * 2);
 
 	return _atlas_positions[indx];
 }
-void VoxelSurfaceSimple::set_atlas_x(const VoxelSurfaceSides side, int value) {
+void TerraSurfaceSimple::set_atlas_x(const TerraSurfaceSides side, int value) {
 	int indx = (side * 2);
 
 	_atlas_positions[indx] = value;
 }
 
-int VoxelSurfaceSimple::get_atlas_y(const VoxelSurfaceSides side) const {
+int TerraSurfaceSimple::get_atlas_y(const TerraSurfaceSides side) const {
 	int indx = (side * 2) + 1;
 
 	return _atlas_positions[indx];
 }
-void VoxelSurfaceSimple::set_atlas_y(const VoxelSurfaceSides side, int value) {
+void TerraSurfaceSimple::set_atlas_y(const TerraSurfaceSides side, int value) {
 	int indx = (side * 2) + 1;
 
 	_atlas_positions[indx] = value;
 }
 
-void VoxelSurfaceSimple::refresh_rects() {
-	VoxelmanLibrarySimple *lib = Object::cast_to<VoxelmanLibrarySimple>(_library);
+void TerraSurfaceSimple::refresh_rects() {
+	TerramanLibrarySimple *lib = Object::cast_to<TerramanLibrarySimple>(_library);
 
 	ERR_FAIL_COND(lib == NULL);
 
-	for (int i = 0; i < VOXEL_SIDES_COUNT; ++i) {
+	for (int i = 0; i < TERRA_SIDES_COUNT; ++i) {
 		float culomn = 1.0 / static_cast<float>(lib->get_atlas_columns());
 		float row = 1.0 / static_cast<float>(lib->get_atlas_rows());
 
@@ -67,28 +67,28 @@ void VoxelSurfaceSimple::refresh_rects() {
 	}
 }
 
-VoxelSurfaceSimple::VoxelSurfaceSimple() {
-	for (int i = 0; i < VOXEL_SIDES_ARRAY_SIZE; ++i) {
+TerraSurfaceSimple::TerraSurfaceSimple() {
+	for (int i = 0; i < TERRA_SIDES_ARRAY_SIZE; ++i) {
 		_atlas_positions[i] = 0;
 	}
 }
 
-VoxelSurfaceSimple::~VoxelSurfaceSimple() {
+TerraSurfaceSimple::~TerraSurfaceSimple() {
 }
 
-void VoxelSurfaceSimple::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_atlas_x", "side"), &VoxelSurfaceSimple::get_atlas_x);
-	ClassDB::bind_method(D_METHOD("set_atlas_x", "side", "value"), &VoxelSurfaceSimple::set_atlas_x);
+void TerraSurfaceSimple::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_atlas_x", "side"), &TerraSurfaceSimple::get_atlas_x);
+	ClassDB::bind_method(D_METHOD("set_atlas_x", "side", "value"), &TerraSurfaceSimple::set_atlas_x);
 
-	ClassDB::bind_method(D_METHOD("get_atlas_y", "side"), &VoxelSurfaceSimple::get_atlas_y);
-	ClassDB::bind_method(D_METHOD("set_atlas_y", "side", "value"), &VoxelSurfaceSimple::set_atlas_y);
+	ClassDB::bind_method(D_METHOD("get_atlas_y", "side"), &TerraSurfaceSimple::get_atlas_y);
+	ClassDB::bind_method(D_METHOD("set_atlas_y", "side", "value"), &TerraSurfaceSimple::set_atlas_y);
 
-	ADD_PROPERTYI(PropertyInfo(Variant::INT, "top_atlas_x"), "set_atlas_x", "get_atlas_x", VOXEL_SIDE_TOP);
-	ADD_PROPERTYI(PropertyInfo(Variant::INT, "top_atlas_y"), "set_atlas_y", "get_atlas_y", VOXEL_SIDE_TOP);
+	ADD_PROPERTYI(PropertyInfo(Variant::INT, "top_atlas_x"), "set_atlas_x", "get_atlas_x", TERRA_SIDE_TOP);
+	ADD_PROPERTYI(PropertyInfo(Variant::INT, "top_atlas_y"), "set_atlas_y", "get_atlas_y", TERRA_SIDE_TOP);
 
-	ADD_PROPERTYI(PropertyInfo(Variant::INT, "bottom_atlas_x"), "set_atlas_x", "get_atlas_x", VOXEL_SIDE_BOTTOM);
-	ADD_PROPERTYI(PropertyInfo(Variant::INT, "bottom_atlas_y"), "set_atlas_y", "get_atlas_y", VOXEL_SIDE_BOTTOM);
+	ADD_PROPERTYI(PropertyInfo(Variant::INT, "bottom_atlas_x"), "set_atlas_x", "get_atlas_x", TERRA_SIDE_BOTTOM);
+	ADD_PROPERTYI(PropertyInfo(Variant::INT, "bottom_atlas_y"), "set_atlas_y", "get_atlas_y", TERRA_SIDE_BOTTOM);
 
-	ADD_PROPERTYI(PropertyInfo(Variant::INT, "side_atlas_x"), "set_atlas_x", "get_atlas_x", VOXEL_SIDE_SIDE);
-	ADD_PROPERTYI(PropertyInfo(Variant::INT, "side_atlas_y"), "set_atlas_y", "get_atlas_y", VOXEL_SIDE_SIDE);
+	ADD_PROPERTYI(PropertyInfo(Variant::INT, "side_atlas_x"), "set_atlas_x", "get_atlas_x", TERRA_SIDE_SIDE);
+	ADD_PROPERTYI(PropertyInfo(Variant::INT, "side_atlas_y"), "set_atlas_y", "get_atlas_y", TERRA_SIDE_SIDE);
 }

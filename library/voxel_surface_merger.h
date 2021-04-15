@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_SURFACE_MERGER_H
-#define VOXEL_SURFACE_MERGER_H
+#ifndef TERRA_SURFACE_MERGER_H
+#define TERRA_SURFACE_MERGER_H
 
 #include "voxel_surface.h"
 
@@ -35,27 +35,27 @@ SOFTWARE.
 #define Texture Texture2D
 #endif
 
-class VoxelSurfaceMerger : public VoxelSurface {
-	GDCLASS(VoxelSurfaceMerger, VoxelSurface)
+class TerraSurfaceMerger : public TerraSurface {
+	GDCLASS(TerraSurfaceMerger, TerraSurface)
 
 public:
-	Ref<AtlasTexture> get_region(const VoxelSurfaceSides side);
-	void set_region(const VoxelSurfaceSides side, const Ref<AtlasTexture> &texture);
+	Ref<AtlasTexture> get_region(const TerraSurfaceSides side);
+	void set_region(const TerraSurfaceSides side, const Ref<AtlasTexture> &texture);
 
-	Ref<Texture> get_texture(const VoxelSurfaceSides side);
-	void set_texture(const VoxelSurfaceSides side, const Ref<Texture> &texture);
+	Ref<Texture> get_texture(const TerraSurfaceSides side);
+	void set_texture(const TerraSurfaceSides side, const Ref<Texture> &texture);
 
 	void refresh_rects();
 
-	VoxelSurfaceMerger();
-	~VoxelSurfaceMerger();
+	TerraSurfaceMerger();
+	~TerraSurfaceMerger();
 
 protected:
 	static void _bind_methods();
 
 private:
-	Ref<AtlasTexture> _regions[VOXEL_SIDES_COUNT];
-	Ref<Texture> _textures[VOXEL_SIDES_COUNT];
+	Ref<AtlasTexture> _regions[TERRA_SIDES_COUNT];
+	Ref<Texture> _textures[TERRA_SIDES_COUNT];
 };
 
 #endif

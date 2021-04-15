@@ -20,19 +20,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_PROP_JOB_H
-#define VOXEL_PROP_JOB_H
+#ifndef TERRA_PROP_JOB_H
+#define TERRA_PROP_JOB_H
 
 #include "voxel_job.h"
 
-class VoxelMesher;
+class TerraMesher;
 
-class VoxelPropJob : public VoxelJob {
-	GDCLASS(VoxelPropJob, VoxelJob);
+class TerraPropJob : public TerraJob {
+	GDCLASS(TerraPropJob, TerraJob);
 
 public:
-	Ref<VoxelMesher> get_prop_mesher() const;
-	void set_prop_mesher(const Ref<VoxelMesher> &mesher);
+	Ref<TerraMesher> get_prop_mesher() const;
+	void set_prop_mesher(const Ref<TerraMesher> &mesher);
 
 	void phase_physics_process();
 	void phase_prop();
@@ -41,13 +41,13 @@ public:
 	void _execute_phase();
 	void _reset();
 
-	VoxelPropJob();
-	~VoxelPropJob();
+	TerraPropJob();
+	~TerraPropJob();
 
 protected:
 	static void _bind_methods();
 
-	Ref<VoxelMesher> _prop_mesher;
+	Ref<TerraMesher> _prop_mesher;
 
 	Array temp_mesh_arr;
 };

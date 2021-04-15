@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_SURFACE_H
-#define VOXEL_SURFACE_H
+#ifndef TERRA_SURFACE_H
+#define TERRA_SURFACE_H
 
 
 #include "core/version.h"
@@ -41,10 +41,10 @@ SOFTWARE.
 
 #include "voxelman_library.h"
 
-class VoxelmanLibrary;
+class TerramanLibrary;
 
-class VoxelSurface : public Resource {
-	GDCLASS(VoxelSurface, Resource)
+class TerraSurface : public Resource {
+	GDCLASS(TerraSurface, Resource)
 
 public:
 	/*
@@ -62,15 +62,15 @@ public:
 	/ z+ I ---I/
 	*/
 
-	enum VoxelSurfaceSides {
-		VOXEL_SIDE_TOP = 0,
-		VOXEL_SIDE_BOTTOM = 1,
-		VOXEL_SIDE_SIDE = 2,
+	enum TerraSurfaceSides {
+		TERRA_SIDE_TOP = 0,
+		TERRA_SIDE_BOTTOM = 1,
+		TERRA_SIDE_SIDE = 2,
 	};
 
 	enum {
-		VOXEL_SIDES_COUNT = 3,
-		VOXEL_SIDES_ARRAY_SIZE = VOXEL_SIDES_COUNT * 2,
+		TERRA_SIDES_COUNT = 3,
+		TERRA_SIDES_ARRAY_SIZE = TERRA_SIDES_COUNT * 2,
 	};
 
 	int get_id() const;
@@ -85,32 +85,32 @@ public:
 	bool get_liquid() const;
 	void set_liquid(const bool value);
 
-	Rect2 get_rect(const VoxelSurfaceSides side) const;
-	void set_rect(const VoxelSurfaceSides side, const Rect2 &rect);
+	Rect2 get_rect(const TerraSurfaceSides side) const;
+	void set_rect(const TerraSurfaceSides side, const Rect2 &rect);
 
-	Ref<VoxelmanLibrary> get_library() const;
-	void set_library(Ref<VoxelmanLibrary> library);
+	Ref<TerramanLibrary> get_library() const;
+	void set_library(Ref<TerramanLibrary> library);
 
-	Vector2 transform_uv(const VoxelSurfaceSides p_side, const Vector2 &p_uv) const;
-	Vector2 transform_uv_scaled(const VoxelSurfaceSides p_side, const Vector2 &p_uv, const int p_current_x, const int p_current_y, const int p_max) const;
+	Vector2 transform_uv(const TerraSurfaceSides p_side, const Vector2 &p_uv) const;
+	Vector2 transform_uv_scaled(const TerraSurfaceSides p_side, const Vector2 &p_uv, const int p_current_x, const int p_current_y, const int p_max) const;
 
 	virtual void refresh_rects();
 
-	VoxelSurface();
-	~VoxelSurface();
+	TerraSurface();
+	~TerraSurface();
 
 protected:
 	static void _bind_methods();
 
-	VoxelmanLibrary *_library;
+	TerramanLibrary *_library;
 
 	int _id;
 	int _mesher_index;
 	bool _transparent;
 	bool _liquid;
-	Rect2 _rects[VOXEL_SIDES_COUNT];
+	Rect2 _rects[TERRA_SIDES_COUNT];
 };
 
-VARIANT_ENUM_CAST(VoxelSurface::VoxelSurfaceSides);
+VARIANT_ENUM_CAST(TerraSurface::TerraSurfaceSides);
 
 #endif

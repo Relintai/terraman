@@ -10,56 +10,56 @@ def configure(env):
 
 def get_doc_classes():
     return [
-        #"WorldArea",
+        "TerraWorldArea",
 
-        #"VoxelLight",
-        #"VoxelmanLight",
+        "TerraLight",
+        "TerramanLight",
 
-       # "VoxelmanLevelGenerator",
-       # "VoxelmanLevelGeneratorFlat",
+        "TerramanLevelGenerator",
+        "TerramanLevelGeneratorFlat",
 
-        #"VoxelSurfaceMerger",
-       # "VoxelSurfaceSimple",
-       # "VoxelSurface",
-       # "VoxelmanLibraryMerger",
-       # "VoxelmanLibrarySimple",
-       # "VoxelmanLibrary",
+        "TerraSurfaceMerger",
+        "TerraSurfaceSimple",
+        "TerraSurface",
+        "TerramanLibraryMerger",
+        "TerramanLibrarySimple",
+        "TerramanLibrary",
 
-       # "VoxelCubePoints",
-       # "VoxelMesherCubic",
-       # "VoxelMeshData",
+        "TerraCubePoints",
+        "TerraMesherCubic",
+        "TerraMeshData",
 
-       # "MarchingCubesCellData",
-       # "VoxelMesherMarchingCubes",
+        "MarchingCubesCellData",
+        "TerraMesherMarchingCubes",
 
-       # "VoxelMesher",
+        "TerraMesher",
 
-       # "EnvironmentData",
-       # "VoxelChunk",
-       # "VoxelChunkDefault",
-       # "VoxelStructure",
-       # "BlockVoxelStructure",
-       # "VoxelWorld",
+        "EnvironmentData",
+        "TerraChunk",
+        "TerraChunkDefault",
+        "TerraStructure",
+        "BlockTerraStructure",
+        "TerraWorld",
 
-       # "VoxelMesherBlocky",
-       # "VoxelWorldBlocky",
-        #"VoxelChunkBlocky",
-        #"VoxelMesherLiquidBlocky",
+        "TerraMesherBlocky",
+        "TerraWorldBlocky",
+        "TerraChunkBlocky",
+        "TerraMesherLiquidBlocky",
 
-       # "VoxelWorldMarchingCubes",
-       # "VoxelChunkMarchingCubes",
+        "TerraWorldMarchingCubes",
+        "TerraChunkMarchingCubes",
+    
+        "TerraMesherCubic",
+        "TerraWorldCubic",
+        "TerraChunkCubic",
 
-      #  "VoxelMesherCubic",
-       # "VoxelWorldCubic",
-       # "VoxelChunkCubic",
+        "TerraMesherDefault",
+        "TerraWorldDefault",
 
-       # "VoxelMesherDefault",
-       # "VoxelWorldDefault",
-
-       # "VoxelJob",
-       # "VoxelTerrarinJob",
-       # "VoxelLightJob",
-        #"VoxelPropJob",
+        "TerraJob",
+        "TerraTerrarinJob",
+        "TerraLightJob",
+        "TerraPropJob",
     ]
 
 

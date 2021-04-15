@@ -24,20 +24,20 @@ SOFTWARE.
 
 #include "../../world/default/voxel_chunk_default.h"
 
-bool VoxelMesherBlocky::get_always_add_colors() const {
+bool TerraMesherBlocky::get_always_add_colors() const {
 	return _always_add_colors;
 }
-void VoxelMesherBlocky::set_always_add_colors(const bool value) {
+void TerraMesherBlocky::set_always_add_colors(const bool value) {
 	_always_add_colors = value;
 }
 
-void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
-	Ref<VoxelChunkDefault> chunk = p_chunk;
+void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
+	Ref<TerraChunkDefault> chunk = p_chunk;
 
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	//if ((get_build_flags() & VoxelChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
-	//	if (!chunk->get_channel(VoxelChunkDefault::DEFAULT_CHANNEL_AO))
+	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
+	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
 	//		chunk->generate_ao();
 
 	int x_size = chunk->get_size_x();
@@ -59,25 +59,25 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 
 	Color base_light(_base_light_value, _base_light_value, _base_light_value);
 	Color light(1, 1, 1);
-	bool use_lighting = (get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
-	bool use_ao = (get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_AO) != 0;
-	bool use_rao = (get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_RAO) != 0;
+	bool use_lighting = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
+	bool use_ao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_AO) != 0;
+	bool use_rao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_RAO) != 0;
 
 	if (use_lighting) {
-		channel_color_r = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
-		channel_color_g = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
-		channel_color_b = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+		channel_color_r = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+		channel_color_g = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+		channel_color_b = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
 
 		if (use_ao)
-			channel_ao = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_AO);
+			channel_ao = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_AO);
 
 		if (use_rao)
-			channel_rao = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
+			channel_rao = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
 	Vector<uint8_t> liquids;
 	for (int i = 0; i < _library->voxel_surface_get_num(); ++i) {
-		Ref<VoxelSurface> surface = _library->voxel_surface_get(i);
+		Ref<TerraSurface> surface = _library->voxel_surface_get(i);
 
 		if (!surface.is_valid())
 			continue;
@@ -106,7 +106,7 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 				if (liquids.find(type) != -1)
 					continue;
 
-				Ref<VoxelSurface> surface = _library->voxel_surface_get(type - 1);
+				Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
 
 				if (!surface.is_valid())
 					continue;
@@ -162,10 +162,10 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 0);
 
 					Vector2 uvs[] = {
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 					};
 
 					Vector3 verts[] = {
@@ -223,10 +223,10 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 3);
 
 					Vector2 uvs[] = {
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 					};
 
 					Vector3 verts[] = {
@@ -283,10 +283,10 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 0);
 
 					Vector2 uvs[] = {
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 					};
 
 					Vector3 verts[] = {
@@ -344,10 +344,10 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 3);
 
 					Vector2 uvs[] = {
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 					};
 
 					Vector3 verts[] = {
@@ -404,10 +404,10 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 0);
 
 					Vector2 uvs[] = {
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 					};
 
 					Vector3 verts[] = {
@@ -465,10 +465,10 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 3);
 
 					Vector2 uvs[] = {
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-						surface->transform_uv_scaled(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+						surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 					};
 
 					Vector3 verts[] = {
@@ -493,17 +493,17 @@ void VoxelMesherBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 	}
 }
 
-VoxelMesherBlocky::VoxelMesherBlocky() {
+TerraMesherBlocky::TerraMesherBlocky() {
 	_always_add_colors = false;
 }
 
-VoxelMesherBlocky::~VoxelMesherBlocky() {
+TerraMesherBlocky::~TerraMesherBlocky() {
 }
 
-void VoxelMesherBlocky::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_add_chunk", "buffer"), &VoxelMesherBlocky::_add_chunk);
+void TerraMesherBlocky::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_add_chunk", "buffer"), &TerraMesherBlocky::_add_chunk);
 
-	ClassDB::bind_method(D_METHOD("get_always_add_colors"), &VoxelMesherBlocky::get_always_add_colors);
-	ClassDB::bind_method(D_METHOD("set_always_add_colors", "value"), &VoxelMesherBlocky::set_always_add_colors);
+	ClassDB::bind_method(D_METHOD("get_always_add_colors"), &TerraMesherBlocky::get_always_add_colors);
+	ClassDB::bind_method(D_METHOD("set_always_add_colors", "value"), &TerraMesherBlocky::set_always_add_colors);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "always_add_colors"), "set_always_add_colors", "get_always_add_colors");
 }

@@ -29,7 +29,7 @@ SOFTWARE.
 #include "../world/default/voxel_chunk_default.h"
 #include "../world/voxel_chunk.h"
 
-bool VoxelMesher::Vertex::operator==(const Vertex &p_vertex) const {
+bool TerraMesher::Vertex::operator==(const Vertex &p_vertex) const {
 
 	if (vertex != p_vertex.vertex)
 		return false;
@@ -65,7 +65,7 @@ bool VoxelMesher::Vertex::operator==(const Vertex &p_vertex) const {
 	return true;
 }
 
-uint32_t VoxelMesher::VertexHasher::hash(const Vertex &p_vtx) {
+uint32_t TerraMesher::VertexHasher::hash(const Vertex &p_vtx) {
 
 	uint32_t h = hash_djb2_buffer((const uint8_t *)&p_vtx.vertex, sizeof(real_t) * 3);
 	h = hash_djb2_buffer((const uint8_t *)&p_vtx.normal, sizeof(real_t) * 3, h);
@@ -79,84 +79,84 @@ uint32_t VoxelMesher::VertexHasher::hash(const Vertex &p_vtx) {
 	return h;
 }
 
-int VoxelMesher::get_channel_index_type() const {
+int TerraMesher::get_channel_index_type() const {
 	return _channel_index_type;
 }
-void VoxelMesher::set_channel_index_type(const int value) {
+void TerraMesher::set_channel_index_type(const int value) {
 	_channel_index_type = value;
 }
 
-int VoxelMesher::get_channel_index_isolevel() const {
+int TerraMesher::get_channel_index_isolevel() const {
 	return _channel_index_isolevel;
 }
-void VoxelMesher::set_channel_index_isolevel(const int value) {
+void TerraMesher::set_channel_index_isolevel(const int value) {
 	_channel_index_isolevel = value;
 }
 
-int VoxelMesher::get_mesher_index() const {
+int TerraMesher::get_mesher_index() const {
 	return _mesher_index;
 }
-void VoxelMesher::set_mesher_index(const int value) {
+void TerraMesher::set_mesher_index(const int value) {
 	_mesher_index = value;
 }
 
-int VoxelMesher::get_format() const {
+int TerraMesher::get_format() const {
 	return _format;
 }
-void VoxelMesher::set_format(const int value) {
+void TerraMesher::set_format(const int value) {
 	_format = value;
 }
 
-int VoxelMesher::get_texture_scale() const {
+int TerraMesher::get_texture_scale() const {
 	return _texture_scale;
 }
-void VoxelMesher::set_texture_scale(const int value) {
+void TerraMesher::set_texture_scale(const int value) {
 	_texture_scale = value;
 }
 
-Ref<VoxelmanLibrary> VoxelMesher::get_library() {
+Ref<TerramanLibrary> TerraMesher::get_library() {
 	return _library;
 }
-void VoxelMesher::set_library(const Ref<VoxelmanLibrary> &library) {
+void TerraMesher::set_library(const Ref<TerramanLibrary> &library) {
 	_library = library;
 }
 
-Ref<Material> VoxelMesher::get_material() {
+Ref<Material> TerraMesher::get_material() {
 	return _material;
 }
-void VoxelMesher::set_material(const Ref<Material> &material) {
+void TerraMesher::set_material(const Ref<Material> &material) {
 	_material = material;
 }
 
-float VoxelMesher::get_ao_strength() const {
+float TerraMesher::get_ao_strength() const {
 	return _ao_strength;
 }
-void VoxelMesher::set_ao_strength(float value) {
+void TerraMesher::set_ao_strength(float value) {
 	_ao_strength = value;
 }
 
-float VoxelMesher::get_base_light_value() const {
+float TerraMesher::get_base_light_value() const {
 	return _base_light_value;
 }
-void VoxelMesher::set_base_light_value(float value) {
+void TerraMesher::set_base_light_value(float value) {
 	_base_light_value = value;
 }
 
-float VoxelMesher::get_voxel_scale() const {
+float TerraMesher::get_voxel_scale() const {
 	return _voxel_scale;
 }
-void VoxelMesher::set_voxel_scale(const float voxel_scale) {
+void TerraMesher::set_voxel_scale(const float voxel_scale) {
 	_voxel_scale = voxel_scale;
 }
 
-Rect2 VoxelMesher::get_uv_margin() const {
+Rect2 TerraMesher::get_uv_margin() const {
 	return _uv_margin;
 }
-void VoxelMesher::set_uv_margin(const Rect2 margin) {
+void TerraMesher::set_uv_margin(const Rect2 margin) {
 	_uv_margin = margin;
 }
 
-Array VoxelMesher::build_mesh() {
+Array TerraMesher::build_mesh() {
 	Array a;
 	a.resize(VisualServer::ARRAY_MAX);
 
@@ -276,7 +276,7 @@ Array VoxelMesher::build_mesh() {
 	return a;
 }
 
-void VoxelMesher::build_mesh_into(RID mesh) {
+void TerraMesher::build_mesh_into(RID mesh) {
 	ERR_FAIL_COND(mesh == RID());
 
 	VS::get_singleton()->mesh_clear(mesh);
@@ -294,7 +294,7 @@ void VoxelMesher::build_mesh_into(RID mesh) {
 		VS::get_singleton()->mesh_surface_set_material(mesh, 0, _library->material_get(0)->get_rid());
 }
 
-void VoxelMesher::generate_normals(bool p_flip) {
+void TerraMesher::generate_normals(bool p_flip) {
 
 	_format = _format | VisualServer::ARRAY_FORMAT_NORMAL;
 
@@ -327,7 +327,7 @@ void VoxelMesher::generate_normals(bool p_flip) {
 	}
 }
 
-void VoxelMesher::remove_doubles() {
+void TerraMesher::remove_doubles() {
 	if (_vertices.size() == 0)
 		return;
 
@@ -373,7 +373,7 @@ void VoxelMesher::remove_doubles() {
 }
 
 //lot faster that normal remove_doubles, but false positives can happen curtesy of hash collisions
-void VoxelMesher::remove_doubles_hashed() {
+void TerraMesher::remove_doubles_hashed() {
 	if (_vertices.size() == 0)
 		return;
 
@@ -425,7 +425,7 @@ void VoxelMesher::remove_doubles_hashed() {
 	//print_error("after " + String::num(_vertices.size()) + " " + String::num(duration.count()));
 }
 
-void VoxelMesher::reset() {
+void TerraMesher::reset() {
 	_vertices.resize(0);
 	_indices.resize(0);
 
@@ -438,7 +438,7 @@ void VoxelMesher::reset() {
 	_last_tangent = Plane();
 }
 
-void VoxelMesher::add_chunk(Ref<VoxelChunk> chunk) {
+void TerraMesher::add_chunk(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!has_method("_add_chunk"));
 	ERR_FAIL_COND(!chunk.is_valid());
 
@@ -446,13 +446,13 @@ void VoxelMesher::add_chunk(Ref<VoxelChunk> chunk) {
 }
 
 #ifdef MESH_DATA_RESOURCE_PRESENT
-void VoxelMesher::add_mesh_data_resource(Ref<MeshDataResource> mesh, const Vector3 position, const Vector3 rotation, const Vector3 scale, const Rect2 uv_rect) {
+void TerraMesher::add_mesh_data_resource(Ref<MeshDataResource> mesh, const Vector3 position, const Vector3 rotation, const Vector3 scale, const Rect2 uv_rect) {
 	Transform transform = Transform(Basis(rotation).scaled(scale), position);
 
 	add_mesh_data_resource_transform(mesh, transform, uv_rect);
 }
 
-void VoxelMesher::add_mesh_data_resource_transform(Ref<MeshDataResource> mesh, const Transform transform, const Rect2 uv_rect) {
+void TerraMesher::add_mesh_data_resource_transform(Ref<MeshDataResource> mesh, const Transform transform, const Rect2 uv_rect) {
 	if (mesh->get_array().size() == 0)
 		return;
 
@@ -496,7 +496,7 @@ void VoxelMesher::add_mesh_data_resource_transform(Ref<MeshDataResource> mesh, c
 	}
 }
 
-void VoxelMesher::add_mesh_data_resource_transform_colored(Ref<MeshDataResource> mesh, const Transform transform, const PoolColorArray &colors, const Rect2 uv_rect) {
+void TerraMesher::add_mesh_data_resource_transform_colored(Ref<MeshDataResource> mesh, const Transform transform, const PoolColorArray &colors, const Rect2 uv_rect) {
 	if (mesh->get_array().size() == 0)
 		return;
 
@@ -540,10 +540,10 @@ void VoxelMesher::add_mesh_data_resource_transform_colored(Ref<MeshDataResource>
 }
 #endif
 
-void VoxelMesher::add_mesher(const Ref<VoxelMesher> &mesher) {
+void TerraMesher::add_mesher(const Ref<TerraMesher> &mesher) {
 	call("_add_mesher", mesher);
 }
-void VoxelMesher::_add_mesher(const Ref<VoxelMesher> &mesher) {
+void TerraMesher::_add_mesher(const Ref<TerraMesher> &mesher) {
 	int orig_size = _vertices.size();
 
 	_vertices.append_array(mesher->_vertices);
@@ -561,21 +561,21 @@ void VoxelMesher::_add_mesher(const Ref<VoxelMesher> &mesher) {
 	}
 }
 
-void VoxelMesher::bake_colors(Ref<VoxelChunk> chunk) {
+void TerraMesher::bake_colors(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
 	if (has_method("_bake_colors"))
 		call("_bake_colors", chunk);
 }
 
-void VoxelMesher::bake_liquid_colors(Ref<VoxelChunk> chunk) {
+void TerraMesher::bake_liquid_colors(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
 	if (has_method("_bake_liquid_colors"))
 		call("_bake_liquid_colors", chunk);
 }
 
-PoolVector<Vector3> VoxelMesher::build_collider() const {
+PoolVector<Vector3> TerraMesher::build_collider() const {
 	PoolVector<Vector3> face_points;
 
 	if (_vertices.size() == 0)
@@ -607,7 +607,7 @@ PoolVector<Vector3> VoxelMesher::build_collider() const {
 	return face_points;
 }
 
-void VoxelMesher::bake_lights(MeshInstance *node, Vector<Ref<VoxelLight> > &lights) {
+void TerraMesher::bake_lights(MeshInstance *node, Vector<Ref<TerraLight> > &lights) {
 	ERR_FAIL_COND(node == NULL);
 
 	Color darkColor(0, 0, 0, 1);
@@ -624,7 +624,7 @@ void VoxelMesher::bake_lights(MeshInstance *node, Vector<Ref<VoxelLight> > &ligh
 
 		//calculate the lights value
 		for (int i = 0; i < lights.size(); ++i) {
-			Ref<VoxelLight> light = lights.get(i);
+			Ref<TerraLight> light = lights.get(i);
 
 			Vector3 lightDir = light->get_world_position() - vertex;
 
@@ -694,7 +694,7 @@ void VoxelMesher::bake_lights(MeshInstance *node, Vector<Ref<VoxelLight> > &ligh
 	//	}
 }
 
-PoolVector<Vector3> VoxelMesher::get_vertices() const {
+PoolVector<Vector3> TerraMesher::get_vertices() const {
 	PoolVector<Vector3> arr;
 
 	arr.resize(_vertices.size());
@@ -705,7 +705,7 @@ PoolVector<Vector3> VoxelMesher::get_vertices() const {
 	return arr;
 }
 
-void VoxelMesher::set_vertices(const PoolVector<Vector3> &values) {
+void TerraMesher::set_vertices(const PoolVector<Vector3> &values) {
 	ERR_FAIL_COND(values.size() != _vertices.size());
 
 	for (int i = 0; i < _vertices.size(); ++i) {
@@ -717,11 +717,11 @@ void VoxelMesher::set_vertices(const PoolVector<Vector3> &values) {
 	}
 }
 
-int VoxelMesher::get_vertex_count() const {
+int TerraMesher::get_vertex_count() const {
 	return _vertices.size();
 }
 
-void VoxelMesher::add_vertex(const Vector3 &vertex) {
+void TerraMesher::add_vertex(const Vector3 &vertex) {
 	Vertex vtx;
 	vtx.vertex = vertex;
 	vtx.color = _last_color;
@@ -737,15 +737,15 @@ void VoxelMesher::add_vertex(const Vector3 &vertex) {
 	_vertices.push_back(vtx);
 }
 
-Vector3 VoxelMesher::get_vertex(const int idx) const {
+Vector3 TerraMesher::get_vertex(const int idx) const {
 	return _vertices.get(idx).vertex;
 }
 
-void VoxelMesher::remove_vertex(const int idx) {
+void TerraMesher::remove_vertex(const int idx) {
 	_vertices.remove(idx);
 }
 
-PoolVector<Vector3> VoxelMesher::get_normals() const {
+PoolVector<Vector3> TerraMesher::get_normals() const {
 	PoolVector<Vector3> arr;
 
 	arr.resize(_vertices.size());
@@ -756,7 +756,7 @@ PoolVector<Vector3> VoxelMesher::get_normals() const {
 	return arr;
 }
 
-void VoxelMesher::set_normals(const PoolVector<Vector3> &values) {
+void TerraMesher::set_normals(const PoolVector<Vector3> &values) {
 	ERR_FAIL_COND(values.size() != _vertices.size());
 
 	for (int i = 0; i < _vertices.size(); ++i) {
@@ -768,15 +768,15 @@ void VoxelMesher::set_normals(const PoolVector<Vector3> &values) {
 	}
 }
 
-void VoxelMesher::add_normal(const Vector3 &normal) {
+void TerraMesher::add_normal(const Vector3 &normal) {
 	_last_normal = normal;
 }
 
-Vector3 VoxelMesher::get_normal(int idx) const {
+Vector3 TerraMesher::get_normal(int idx) const {
 	return _vertices.get(idx).normal;
 }
 
-PoolVector<Color> VoxelMesher::get_colors() const {
+PoolVector<Color> TerraMesher::get_colors() const {
 	PoolVector<Color> arr;
 
 	arr.resize(_vertices.size());
@@ -787,7 +787,7 @@ PoolVector<Color> VoxelMesher::get_colors() const {
 	return arr;
 }
 
-void VoxelMesher::set_colors(const PoolVector<Color> &values) {
+void TerraMesher::set_colors(const PoolVector<Color> &values) {
 	ERR_FAIL_COND(values.size() != _vertices.size());
 
 	for (int i = 0; i < _vertices.size(); ++i) {
@@ -799,15 +799,15 @@ void VoxelMesher::set_colors(const PoolVector<Color> &values) {
 	}
 }
 
-void VoxelMesher::add_color(const Color &color) {
+void TerraMesher::add_color(const Color &color) {
 	_last_color = color;
 }
 
-Color VoxelMesher::get_color(const int idx) const {
+Color TerraMesher::get_color(const int idx) const {
 	return _vertices.get(idx).color;
 }
 
-PoolVector<Vector2> VoxelMesher::get_uvs() const {
+PoolVector<Vector2> TerraMesher::get_uvs() const {
 	PoolVector<Vector2> arr;
 
 	arr.resize(_vertices.size());
@@ -818,7 +818,7 @@ PoolVector<Vector2> VoxelMesher::get_uvs() const {
 	return arr;
 }
 
-void VoxelMesher::set_uvs(const PoolVector<Vector2> &values) {
+void TerraMesher::set_uvs(const PoolVector<Vector2> &values) {
 	ERR_FAIL_COND(values.size() != _vertices.size());
 
 	for (int i = 0; i < _vertices.size(); ++i) {
@@ -830,15 +830,15 @@ void VoxelMesher::set_uvs(const PoolVector<Vector2> &values) {
 	}
 }
 
-void VoxelMesher::add_uv(const Vector2 &uv) {
+void TerraMesher::add_uv(const Vector2 &uv) {
 	_last_uv = uv;
 }
 
-Vector2 VoxelMesher::get_uv(const int idx) const {
+Vector2 TerraMesher::get_uv(const int idx) const {
 	return _vertices.get(idx).uv;
 }
 
-PoolVector<Vector2> VoxelMesher::get_uv2s() const {
+PoolVector<Vector2> TerraMesher::get_uv2s() const {
 	PoolVector<Vector2> arr;
 
 	arr.resize(_vertices.size());
@@ -849,7 +849,7 @@ PoolVector<Vector2> VoxelMesher::get_uv2s() const {
 	return arr;
 }
 
-void VoxelMesher::set_uv2s(const PoolVector<Vector2> &values) {
+void TerraMesher::set_uv2s(const PoolVector<Vector2> &values) {
 	ERR_FAIL_COND(values.size() != _vertices.size());
 
 	for (int i = 0; i < _vertices.size(); ++i) {
@@ -861,39 +861,39 @@ void VoxelMesher::set_uv2s(const PoolVector<Vector2> &values) {
 	}
 }
 
-void VoxelMesher::add_uv2(const Vector2 &uv) {
+void TerraMesher::add_uv2(const Vector2 &uv) {
 	_last_uv2 = uv;
 }
 
-Vector2 VoxelMesher::get_uv2(const int idx) const {
+Vector2 TerraMesher::get_uv2(const int idx) const {
 	return _vertices.get(idx).uv2;
 }
 
-PoolVector<int> VoxelMesher::get_indices() const {
+PoolVector<int> TerraMesher::get_indices() const {
 	return _indices;
 }
 
-void VoxelMesher::set_indices(const PoolVector<int> &values) {
+void TerraMesher::set_indices(const PoolVector<int> &values) {
 	_indices = values;
 }
 
-int VoxelMesher::get_indices_count() const {
+int TerraMesher::get_indices_count() const {
 	return _indices.size();
 }
 
-void VoxelMesher::add_indices(const int index) {
+void TerraMesher::add_indices(const int index) {
 	_indices.push_back(index);
 }
 
-int VoxelMesher::get_index(const int idx) const {
+int TerraMesher::get_index(const int idx) const {
 	return _indices.get(idx);
 }
 
-void VoxelMesher::remove_index(const int idx) {
+void TerraMesher::remove_index(const int idx) {
 	_indices.remove(idx);
 }
 
-VoxelMesher::VoxelMesher(const Ref<VoxelmanLibrary> &library) {
+TerraMesher::TerraMesher(const Ref<TerramanLibrary> &library) {
 	_library = library;
 
 	_mesher_index = 0;
@@ -908,7 +908,7 @@ VoxelMesher::VoxelMesher(const Ref<VoxelmanLibrary> &library) {
 	_texture_scale = 1;
 }
 
-VoxelMesher::VoxelMesher() {
+TerraMesher::TerraMesher() {
 	_mesher_index = 0;
 	_voxel_scale = 1;
 	_ao_strength = 0.25;
@@ -920,120 +920,120 @@ VoxelMesher::VoxelMesher() {
 	_texture_scale = 1;
 }
 
-VoxelMesher::~VoxelMesher() {
+TerraMesher::~TerraMesher() {
 	if (_library.is_valid()) {
 		_library.unref();
 	}
 }
 
-void VoxelMesher::_bind_methods() {
-	BIND_VMETHOD(MethodInfo("_add_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "VoxelChunk")));
-	BIND_VMETHOD(MethodInfo("_bake_colors", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "VoxelChunk")));
-	BIND_VMETHOD(MethodInfo("_bake_liquid_colors", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "VoxelChunk")));
+void TerraMesher::_bind_methods() {
+	BIND_VMETHOD(MethodInfo("_add_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+	BIND_VMETHOD(MethodInfo("_bake_colors", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+	BIND_VMETHOD(MethodInfo("_bake_liquid_colors", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 
-	ClassDB::bind_method(D_METHOD("get_channel_index_type"), &VoxelMesher::get_channel_index_type);
-	ClassDB::bind_method(D_METHOD("set_channel_index_type", "value"), &VoxelMesher::set_channel_index_type);
+	ClassDB::bind_method(D_METHOD("get_channel_index_type"), &TerraMesher::get_channel_index_type);
+	ClassDB::bind_method(D_METHOD("set_channel_index_type", "value"), &TerraMesher::set_channel_index_type);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "channel_index_type"), "set_channel_index_type", "get_channel_index_type");
 
-	ClassDB::bind_method(D_METHOD("get_channel_index_isolevel"), &VoxelMesher::get_channel_index_isolevel);
-	ClassDB::bind_method(D_METHOD("set_channel_index_isolevel", "value"), &VoxelMesher::set_channel_index_isolevel);
+	ClassDB::bind_method(D_METHOD("get_channel_index_isolevel"), &TerraMesher::get_channel_index_isolevel);
+	ClassDB::bind_method(D_METHOD("set_channel_index_isolevel", "value"), &TerraMesher::set_channel_index_isolevel);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "channel_index_isolevel"), "set_channel_index_isolevel", "get_channel_index_isolevel");
 
-	ClassDB::bind_method(D_METHOD("get_mesher_index"), &VoxelMesher::get_mesher_index);
-	ClassDB::bind_method(D_METHOD("set_mesher_index", "value"), &VoxelMesher::set_mesher_index);
+	ClassDB::bind_method(D_METHOD("get_mesher_index"), &TerraMesher::get_mesher_index);
+	ClassDB::bind_method(D_METHOD("set_mesher_index", "value"), &TerraMesher::set_mesher_index);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "mesher_index"), "set_mesher_index", "get_mesher_index");
 
-	ClassDB::bind_method(D_METHOD("get_format"), &VoxelMesher::get_format);
-	ClassDB::bind_method(D_METHOD("set_format", "value"), &VoxelMesher::set_format);
+	ClassDB::bind_method(D_METHOD("get_format"), &TerraMesher::get_format);
+	ClassDB::bind_method(D_METHOD("set_format", "value"), &TerraMesher::set_format);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "format"), "set_format", "get_format");
 
-	ClassDB::bind_method(D_METHOD("get_texture_scale"), &VoxelMesher::get_texture_scale);
-	ClassDB::bind_method(D_METHOD("set_texture_scale", "value"), &VoxelMesher::set_texture_scale);
+	ClassDB::bind_method(D_METHOD("get_texture_scale"), &TerraMesher::get_texture_scale);
+	ClassDB::bind_method(D_METHOD("set_texture_scale", "value"), &TerraMesher::set_texture_scale);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_scale"), "set_texture_scale", "get_texture_scale");
 
-	ClassDB::bind_method(D_METHOD("get_library"), &VoxelMesher::get_library);
-	ClassDB::bind_method(D_METHOD("set_library", "value"), &VoxelMesher::set_library);
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "library", PROPERTY_HINT_RESOURCE_TYPE, "VoxelmanLibrary"), "set_library", "get_library");
+	ClassDB::bind_method(D_METHOD("get_library"), &TerraMesher::get_library);
+	ClassDB::bind_method(D_METHOD("set_library", "value"), &TerraMesher::set_library);
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "library", PROPERTY_HINT_RESOURCE_TYPE, "TerramanLibrary"), "set_library", "get_library");
 
-	ClassDB::bind_method(D_METHOD("get_material"), &VoxelMesher::get_material);
-	ClassDB::bind_method(D_METHOD("set_material", "value"), &VoxelMesher::set_material);
+	ClassDB::bind_method(D_METHOD("get_material"), &TerraMesher::get_material);
+	ClassDB::bind_method(D_METHOD("set_material", "value"), &TerraMesher::set_material);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_material", "get_material");
 
-	ClassDB::bind_method(D_METHOD("get_voxel_scale"), &VoxelMesher::get_voxel_scale);
-	ClassDB::bind_method(D_METHOD("set_voxel_scale", "value"), &VoxelMesher::set_voxel_scale);
+	ClassDB::bind_method(D_METHOD("get_voxel_scale"), &TerraMesher::get_voxel_scale);
+	ClassDB::bind_method(D_METHOD("set_voxel_scale", "value"), &TerraMesher::set_voxel_scale);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "voxel_scale"), "set_voxel_scale", "get_voxel_scale");
 
-	ClassDB::bind_method(D_METHOD("get_ao_strength"), &VoxelMesher::get_ao_strength);
-	ClassDB::bind_method(D_METHOD("set_ao_strength", "value"), &VoxelMesher::set_ao_strength);
+	ClassDB::bind_method(D_METHOD("get_ao_strength"), &TerraMesher::get_ao_strength);
+	ClassDB::bind_method(D_METHOD("set_ao_strength", "value"), &TerraMesher::set_ao_strength);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "ao_strength"), "set_ao_strength", "get_ao_strength");
 
-	ClassDB::bind_method(D_METHOD("get_base_light_value"), &VoxelMesher::get_base_light_value);
-	ClassDB::bind_method(D_METHOD("set_base_light_value", "value"), &VoxelMesher::set_base_light_value);
+	ClassDB::bind_method(D_METHOD("get_base_light_value"), &TerraMesher::get_base_light_value);
+	ClassDB::bind_method(D_METHOD("set_base_light_value", "value"), &TerraMesher::set_base_light_value);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "base_light_value"), "set_base_light_value", "get_base_light_value");
 
-	ClassDB::bind_method(D_METHOD("get_uv_margin"), &VoxelMesher::get_uv_margin);
-	ClassDB::bind_method(D_METHOD("set_uv_margin", "value"), &VoxelMesher::set_uv_margin);
+	ClassDB::bind_method(D_METHOD("get_uv_margin"), &TerraMesher::get_uv_margin);
+	ClassDB::bind_method(D_METHOD("set_uv_margin", "value"), &TerraMesher::set_uv_margin);
 	ADD_PROPERTY(PropertyInfo(Variant::RECT2, "uv_margin"), "set_uv_margin", "get_uv_margin");
 
-	ClassDB::bind_method(D_METHOD("add_chunk", "chunk"), &VoxelMesher::add_chunk);
+	ClassDB::bind_method(D_METHOD("add_chunk", "chunk"), &TerraMesher::add_chunk);
 
 #ifdef MESH_DATA_RESOURCE_PRESENT
-	ClassDB::bind_method(D_METHOD("add_mesh_data_resource", "mesh", "position", "rotation", "scale", "uv_rect"), &VoxelMesher::add_mesh_data_resource, DEFVAL(Rect2(0, 0, 1, 1)), DEFVAL(Vector3(1.0, 1.0, 1.0)), DEFVAL(Vector3()), DEFVAL(Vector3()));
-	ClassDB::bind_method(D_METHOD("add_mesh_data_resource_transform", "mesh", "transform", "uv_rect"), &VoxelMesher::add_mesh_data_resource_transform, DEFVAL(Rect2(0, 0, 1, 1)));
-	ClassDB::bind_method(D_METHOD("add_mesh_data_resource_transform_colored", "mesh", "transform", "colors", "uv_rect"), &VoxelMesher::add_mesh_data_resource_transform_colored, DEFVAL(Rect2(0, 0, 1, 1)));
+	ClassDB::bind_method(D_METHOD("add_mesh_data_resource", "mesh", "position", "rotation", "scale", "uv_rect"), &TerraMesher::add_mesh_data_resource, DEFVAL(Rect2(0, 0, 1, 1)), DEFVAL(Vector3(1.0, 1.0, 1.0)), DEFVAL(Vector3()), DEFVAL(Vector3()));
+	ClassDB::bind_method(D_METHOD("add_mesh_data_resource_transform", "mesh", "transform", "uv_rect"), &TerraMesher::add_mesh_data_resource_transform, DEFVAL(Rect2(0, 0, 1, 1)));
+	ClassDB::bind_method(D_METHOD("add_mesh_data_resource_transform_colored", "mesh", "transform", "colors", "uv_rect"), &TerraMesher::add_mesh_data_resource_transform_colored, DEFVAL(Rect2(0, 0, 1, 1)));
 #endif
 
-	BIND_VMETHOD(MethodInfo("_add_mesher", PropertyInfo(Variant::OBJECT, "mesher", PROPERTY_HINT_RESOURCE_TYPE, "VoxelMesher")));
-	ClassDB::bind_method(D_METHOD("add_mesher", "mesher"), &VoxelMesher::add_mesher);
-	ClassDB::bind_method(D_METHOD("_add_mesher", "mesher"), &VoxelMesher::_add_mesher);
+	BIND_VMETHOD(MethodInfo("_add_mesher", PropertyInfo(Variant::OBJECT, "mesher", PROPERTY_HINT_RESOURCE_TYPE, "TerraMesher")));
+	ClassDB::bind_method(D_METHOD("add_mesher", "mesher"), &TerraMesher::add_mesher);
+	ClassDB::bind_method(D_METHOD("_add_mesher", "mesher"), &TerraMesher::_add_mesher);
 
-	ClassDB::bind_method(D_METHOD("bake_colors", "chunk"), &VoxelMesher::bake_colors);
-	ClassDB::bind_method(D_METHOD("bake_liquid_colors", "chunk"), &VoxelMesher::bake_liquid_colors);
+	ClassDB::bind_method(D_METHOD("bake_colors", "chunk"), &TerraMesher::bake_colors);
+	ClassDB::bind_method(D_METHOD("bake_liquid_colors", "chunk"), &TerraMesher::bake_liquid_colors);
 
-	ClassDB::bind_method(D_METHOD("get_vertices"), &VoxelMesher::get_vertices);
-	ClassDB::bind_method(D_METHOD("set_vertices", "values"), &VoxelMesher::set_vertices);
-	ClassDB::bind_method(D_METHOD("get_vertex_count"), &VoxelMesher::get_vertex_count);
-	ClassDB::bind_method(D_METHOD("get_vertex", "idx"), &VoxelMesher::get_vertex);
-	ClassDB::bind_method(D_METHOD("remove_vertex", "idx"), &VoxelMesher::remove_vertex);
-	ClassDB::bind_method(D_METHOD("add_vertex", "vertex"), &VoxelMesher::add_vertex);
+	ClassDB::bind_method(D_METHOD("get_vertices"), &TerraMesher::get_vertices);
+	ClassDB::bind_method(D_METHOD("set_vertices", "values"), &TerraMesher::set_vertices);
+	ClassDB::bind_method(D_METHOD("get_vertex_count"), &TerraMesher::get_vertex_count);
+	ClassDB::bind_method(D_METHOD("get_vertex", "idx"), &TerraMesher::get_vertex);
+	ClassDB::bind_method(D_METHOD("remove_vertex", "idx"), &TerraMesher::remove_vertex);
+	ClassDB::bind_method(D_METHOD("add_vertex", "vertex"), &TerraMesher::add_vertex);
 
-	ClassDB::bind_method(D_METHOD("get_normals"), &VoxelMesher::get_normals);
-	ClassDB::bind_method(D_METHOD("set_normals", "values"), &VoxelMesher::set_normals);
-	ClassDB::bind_method(D_METHOD("get_normal", "idx"), &VoxelMesher::get_normal);
-	ClassDB::bind_method(D_METHOD("add_normal", "normal"), &VoxelMesher::add_normal);
+	ClassDB::bind_method(D_METHOD("get_normals"), &TerraMesher::get_normals);
+	ClassDB::bind_method(D_METHOD("set_normals", "values"), &TerraMesher::set_normals);
+	ClassDB::bind_method(D_METHOD("get_normal", "idx"), &TerraMesher::get_normal);
+	ClassDB::bind_method(D_METHOD("add_normal", "normal"), &TerraMesher::add_normal);
 
-	ClassDB::bind_method(D_METHOD("get_colors"), &VoxelMesher::get_colors);
-	ClassDB::bind_method(D_METHOD("set_colors", "values"), &VoxelMesher::set_colors);
-	ClassDB::bind_method(D_METHOD("get_color", "idx"), &VoxelMesher::get_color);
-	ClassDB::bind_method(D_METHOD("add_color", "color"), &VoxelMesher::add_color);
+	ClassDB::bind_method(D_METHOD("get_colors"), &TerraMesher::get_colors);
+	ClassDB::bind_method(D_METHOD("set_colors", "values"), &TerraMesher::set_colors);
+	ClassDB::bind_method(D_METHOD("get_color", "idx"), &TerraMesher::get_color);
+	ClassDB::bind_method(D_METHOD("add_color", "color"), &TerraMesher::add_color);
 
-	ClassDB::bind_method(D_METHOD("get_uvs"), &VoxelMesher::get_uvs);
-	ClassDB::bind_method(D_METHOD("set_uvs", "values"), &VoxelMesher::set_uvs);
-	ClassDB::bind_method(D_METHOD("get_uv", "idx"), &VoxelMesher::get_uv);
-	ClassDB::bind_method(D_METHOD("add_uv", "uv"), &VoxelMesher::add_uv);
+	ClassDB::bind_method(D_METHOD("get_uvs"), &TerraMesher::get_uvs);
+	ClassDB::bind_method(D_METHOD("set_uvs", "values"), &TerraMesher::set_uvs);
+	ClassDB::bind_method(D_METHOD("get_uv", "idx"), &TerraMesher::get_uv);
+	ClassDB::bind_method(D_METHOD("add_uv", "uv"), &TerraMesher::add_uv);
 
-	ClassDB::bind_method(D_METHOD("get_uv2s"), &VoxelMesher::get_uv2s);
-	ClassDB::bind_method(D_METHOD("set_uv2s", "values"), &VoxelMesher::set_uv2s);
-	ClassDB::bind_method(D_METHOD("get_uv2", "idx"), &VoxelMesher::get_uv2);
-	ClassDB::bind_method(D_METHOD("add_uv2", "uv"), &VoxelMesher::add_uv2);
+	ClassDB::bind_method(D_METHOD("get_uv2s"), &TerraMesher::get_uv2s);
+	ClassDB::bind_method(D_METHOD("set_uv2s", "values"), &TerraMesher::set_uv2s);
+	ClassDB::bind_method(D_METHOD("get_uv2", "idx"), &TerraMesher::get_uv2);
+	ClassDB::bind_method(D_METHOD("add_uv2", "uv"), &TerraMesher::add_uv2);
 
-	ClassDB::bind_method(D_METHOD("get_indices"), &VoxelMesher::get_indices);
-	ClassDB::bind_method(D_METHOD("set_indices", "values"), &VoxelMesher::set_indices);
-	ClassDB::bind_method(D_METHOD("get_indices_count"), &VoxelMesher::get_indices_count);
-	ClassDB::bind_method(D_METHOD("get_index", "idx"), &VoxelMesher::get_index);
-	ClassDB::bind_method(D_METHOD("remove_index", "idx"), &VoxelMesher::remove_index);
-	ClassDB::bind_method(D_METHOD("add_indices", "indice"), &VoxelMesher::add_indices);
+	ClassDB::bind_method(D_METHOD("get_indices"), &TerraMesher::get_indices);
+	ClassDB::bind_method(D_METHOD("set_indices", "values"), &TerraMesher::set_indices);
+	ClassDB::bind_method(D_METHOD("get_indices_count"), &TerraMesher::get_indices_count);
+	ClassDB::bind_method(D_METHOD("get_index", "idx"), &TerraMesher::get_index);
+	ClassDB::bind_method(D_METHOD("remove_index", "idx"), &TerraMesher::remove_index);
+	ClassDB::bind_method(D_METHOD("add_indices", "indice"), &TerraMesher::add_indices);
 
-	ClassDB::bind_method(D_METHOD("reset"), &VoxelMesher::reset);
+	ClassDB::bind_method(D_METHOD("reset"), &TerraMesher::reset);
 
-	//ClassDB::bind_method(D_METHOD("calculate_vertex_ambient_occlusion", "meshinstance_path", "radius", "intensity", "sampleCount"), &VoxelMesher::calculate_vertex_ambient_occlusion_path);
+	//ClassDB::bind_method(D_METHOD("calculate_vertex_ambient_occlusion", "meshinstance_path", "radius", "intensity", "sampleCount"), &TerraMesher::calculate_vertex_ambient_occlusion_path);
 
-	ClassDB::bind_method(D_METHOD("build_mesh"), &VoxelMesher::build_mesh);
-	ClassDB::bind_method(D_METHOD("build_mesh_into", "mesh_rid"), &VoxelMesher::build_mesh_into);
-	ClassDB::bind_method(D_METHOD("build_collider"), &VoxelMesher::build_collider);
+	ClassDB::bind_method(D_METHOD("build_mesh"), &TerraMesher::build_mesh);
+	ClassDB::bind_method(D_METHOD("build_mesh_into", "mesh_rid"), &TerraMesher::build_mesh_into);
+	ClassDB::bind_method(D_METHOD("build_collider"), &TerraMesher::build_collider);
 
-	ClassDB::bind_method(D_METHOD("generate_normals", "flip"), &VoxelMesher::generate_normals, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("generate_normals", "flip"), &TerraMesher::generate_normals, DEFVAL(false));
 
-	ClassDB::bind_method(D_METHOD("remove_doubles"), &VoxelMesher::remove_doubles);
-	ClassDB::bind_method(D_METHOD("remove_doubles_hashed"), &VoxelMesher::remove_doubles_hashed);
+	ClassDB::bind_method(D_METHOD("remove_doubles"), &TerraMesher::remove_doubles);
+	ClassDB::bind_method(D_METHOD("remove_doubles_hashed"), &TerraMesher::remove_doubles_hashed);
 }

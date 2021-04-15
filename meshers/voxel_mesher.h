@@ -20,19 +20,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_TOOLS_H
-#define VOXEL_TOOLS_H
+#ifndef TERRA_TOOLS_H
+#define TERRA_TOOLS_H
 
 #include "core/version.h"
 
 #if VERSION_MAJOR > 3
+#include "core/math/color.h"
 #include "core/object/reference.h"
 #include "core/templates/vector.h"
-#include "core/math/color.h"
 #else
+#include "core/color.h"
 #include "core/reference.h"
 #include "core/vector.h"
-#include "core/color.h"
 #endif
 
 #include "../defines.h"
@@ -55,16 +55,16 @@ include_pool_vector
 
 #include "../library/voxelman_library.h"
 
-		const double PI_2 = 3.141592653589793238463 / 2;
-const double PI = 3.141592653589793238463;
+		class TerramanLibrary;
+class TerraChunk;
 
-class VoxelmanLibrary;
-class VoxelChunk;
-
-class VoxelMesher : public Reference {
-	GDCLASS(VoxelMesher, Reference);
+class TerraMesher : public Reference {
+	GDCLASS(TerraMesher, Reference);
 
 public:
+	const double PI_2 = 3.141592653589793238463 / 2;
+	const double PI = 3.141592653589793238463;
+
 	struct Vertex {
 
 		Vector3 vertex;
@@ -110,8 +110,8 @@ public:
 	int get_texture_scale() const;
 	void set_texture_scale(const int value);
 
-	Ref<VoxelmanLibrary> get_library();
-	void set_library(const Ref<VoxelmanLibrary> &library);
+	Ref<TerramanLibrary> get_library();
+	void set_library(const Ref<TerramanLibrary> &library);
 
 	Ref<Material> get_material();
 	void set_material(const Ref<Material> &material);
@@ -130,7 +130,7 @@ public:
 
 	void reset();
 
-	void add_chunk(Ref<VoxelChunk> chunk);
+	void add_chunk(Ref<TerraChunk> chunk);
 
 #ifdef MESH_DATA_RESOURCE_PRESENT
 	void add_mesh_data_resource(Ref<MeshDataResource> mesh, const Vector3 position = Vector3(0, 0, 0), const Vector3 rotation = Vector3(0, 0, 0), const Vector3 scale = Vector3(1.0, 1.0, 1.0), const Rect2 uv_rect = Rect2(0, 0, 1, 1));
@@ -138,15 +138,15 @@ public:
 	void add_mesh_data_resource_transform_colored(Ref<MeshDataResource> mesh, const Transform transform, const PoolColorArray &colors, const Rect2 uv_rect = Rect2(0, 0, 1, 1));
 #endif
 
-	void add_mesher(const Ref<VoxelMesher> &mesher);
-	void _add_mesher(const Ref<VoxelMesher> &mesher);
+	void add_mesher(const Ref<TerraMesher> &mesher);
+	void _add_mesher(const Ref<TerraMesher> &mesher);
 
-	void bake_colors(Ref<VoxelChunk> chunk);
-	void bake_liquid_colors(Ref<VoxelChunk> chunk);
+	void bake_colors(Ref<TerraChunk> chunk);
+	void bake_liquid_colors(Ref<TerraChunk> chunk);
 
 	PoolVector<Vector3> build_collider() const;
 
-	void bake_lights(MeshInstance *node, Vector<Ref<VoxelLight> > &lights);
+	void bake_lights(MeshInstance *node, Vector<Ref<TerraLight> > &lights);
 
 	Array build_mesh();
 	void build_mesh_into(RID mesh);
@@ -189,9 +189,9 @@ public:
 	void remove_index(const int idx);
 	void add_indices(const int index);
 
-	VoxelMesher(const Ref<VoxelmanLibrary> &library);
-	VoxelMesher();
-	~VoxelMesher();
+	TerraMesher(const Ref<TerramanLibrary> &library);
+	TerraMesher();
+	~TerraMesher();
 
 protected:
 	static void _bind_methods();
@@ -216,7 +216,7 @@ protected:
 	Vector<float> _last_weights;
 	Plane _last_tangent;
 
-	Ref<VoxelmanLibrary> _library;
+	Ref<TerramanLibrary> _library;
 	Ref<Material> _material;
 
 	float _voxel_scale;

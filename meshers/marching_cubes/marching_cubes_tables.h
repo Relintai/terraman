@@ -23,7 +23,7 @@
 // not claim that the entire implementation of the MarchingCubes Algorithm is your
 // own if you use the data in this file or any transformation of it.
 //
-// The format of the data in this file is described in the dissertation "Voxel-
+// The format of the data in this file is described in the dissertation "Terra-
 // Based Terrain for Real-Time Virtual Simulations", available at the web page
 // given above. References to sections and figures below pertain to that paper.
 //

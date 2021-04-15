@@ -24,12 +24,12 @@ SOFTWARE.
 
 #include "../../world/default/voxel_chunk_default.h"
 
-void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
-	Ref<VoxelChunkDefault> chunk = p_chunk;
+void TerraMesherLiquidBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
+	Ref<TerraChunkDefault> chunk = p_chunk;
 
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	//if ((get_build_flags() & VoxelChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
+	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
 	//	chunk->generate_ao();
 
 	int x_size = chunk->get_size_x();
@@ -38,7 +38,7 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 
 	float voxel_scale = get_voxel_scale();
 
-	uint8_t *channel_type = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_TYPE);
+	uint8_t *channel_type = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_TYPE);
 
 	if (!channel_type)
 		return;
@@ -51,25 +51,25 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 
 	Color base_light(_base_light_value, _base_light_value, _base_light_value);
 	Color light;
-	bool use_lighting = (get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
-	bool use_ao = (get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_AO) != 0;
-	bool use_rao = (get_build_flags() & VoxelChunkDefault::BUILD_FLAG_USE_RAO) != 0;
+	bool use_lighting = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
+	bool use_ao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_AO) != 0;
+	bool use_rao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_RAO) != 0;
 
 	if (use_lighting) {
-		channel_color_r = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
-		channel_color_g = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
-		channel_color_b = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+		channel_color_r = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+		channel_color_g = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+		channel_color_b = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
 
 		if (use_ao)
-			channel_ao = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_AO);
+			channel_ao = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_AO);
 
 		if (use_rao)
-			channel_rao = chunk->channel_get(VoxelChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
+			channel_rao = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
 	Vector<uint8_t> liquids;
 	for (int i = 0; i < _library->voxel_surface_get_num(); ++i) {
-		Ref<VoxelSurface> surface = _library->voxel_surface_get(i);
+		Ref<TerraSurface> surface = _library->voxel_surface_get(i);
 
 		if (!surface.is_valid())
 			continue;
@@ -98,7 +98,7 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 				if (liquids.find(type) == -1)
 					continue;
 
-				Ref<VoxelSurface> surface = _library->voxel_surface_get(type - 1);
+				Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
 
 				if (!surface.is_valid())
 					continue;
@@ -148,10 +148,10 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 0);
 
 					Vector2 uvs[] = {
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1))
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1))
 					};
 
 					Vector3 verts[] = {
@@ -209,10 +209,10 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 3);
 
 					Vector2 uvs[] = {
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1))
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1))
 					};
 
 					Vector3 verts[] = {
@@ -269,10 +269,10 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 0);
 
 					Vector2 uvs[] = {
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_TOP, Vector2(0, 1)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_TOP, Vector2(0, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_TOP, Vector2(1, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_TOP, Vector2(1, 1))
+						surface->transform_uv(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 1)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 1))
 					};
 
 					Vector3 verts[] = {
@@ -330,10 +330,10 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 3);
 
 					Vector2 uvs[] = {
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_BOTTOM, Vector2(0, 1)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_BOTTOM, Vector2(0, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_BOTTOM, Vector2(1, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_BOTTOM, Vector2(1, 1))
+						surface->transform_uv(TerraSurface::TERRA_SIDE_BOTTOM, Vector2(0, 1)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_BOTTOM, Vector2(0, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_BOTTOM, Vector2(1, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_BOTTOM, Vector2(1, 1))
 					};
 
 					Vector3 verts[] = {
@@ -390,10 +390,10 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 0);
 
 					Vector2 uvs[] = {
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1))
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1))
 					};
 
 					Vector3 verts[] = {
@@ -451,10 +451,10 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 					add_indices(vc + 3);
 
 					Vector2 uvs[] = {
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 1)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(0, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 0)),
-						surface->transform_uv(VoxelSurface::VOXEL_SIDE_SIDE, Vector2(1, 1))
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0)),
+						surface->transform_uv(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1))
 					};
 
 					Vector3 verts[] = {
@@ -479,12 +479,12 @@ void VoxelMesherLiquidBlocky::_add_chunk(Ref<VoxelChunk> p_chunk) {
 	}
 }
 
-VoxelMesherLiquidBlocky::VoxelMesherLiquidBlocky() {
+TerraMesherLiquidBlocky::TerraMesherLiquidBlocky() {
 }
 
-VoxelMesherLiquidBlocky::~VoxelMesherLiquidBlocky() {
+TerraMesherLiquidBlocky::~TerraMesherLiquidBlocky() {
 }
 
-void VoxelMesherLiquidBlocky::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_add_chunk", "buffer"), &VoxelMesherLiquidBlocky::_add_chunk);
+void TerraMesherLiquidBlocky::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_add_chunk", "buffer"), &TerraMesherLiquidBlocky::_add_chunk);
 }

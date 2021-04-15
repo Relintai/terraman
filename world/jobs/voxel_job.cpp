@@ -26,52 +26,52 @@ SOFTWARE.
 
 #include "../../../opensimplex/open_simplex_noise.h"
 
-const String VoxelJob::BINDING_STRING_ACTIVE_BUILD_PHASE_TYPE = "Normal,Process,Physics Process";
+const String TerraJob::BINDING_STRING_ACTIVE_BUILD_PHASE_TYPE = "Normal,Process,Physics Process";
 
-VoxelJob::ActiveBuildPhaseType VoxelJob::get_build_phase_type() {
+TerraJob::ActiveBuildPhaseType TerraJob::get_build_phase_type() {
 	return _build_phase_type;
 }
-void VoxelJob::set_build_phase_type(VoxelJob::ActiveBuildPhaseType build_phase_type) {
+void TerraJob::set_build_phase_type(TerraJob::ActiveBuildPhaseType build_phase_type) {
 	_build_phase_type = build_phase_type;
 }
 
-void VoxelJob::set_chunk(const Ref<VoxelChunk> &chunk) {
+void TerraJob::set_chunk(const Ref<TerraChunk> &chunk) {
 	_chunk = chunk;
 
 	_in_tree = true;
 }
 
-int VoxelJob::get_phase() {
+int TerraJob::get_phase() {
 	return _phase;
 }
-void VoxelJob::set_phase(const int phase) {
+void TerraJob::set_phase(const int phase) {
 	_phase = phase;
 }
-void VoxelJob::next_phase() {
+void TerraJob::next_phase() {
 	++_phase;
 }
 
-bool VoxelJob::get_build_done() {
+bool TerraJob::get_build_done() {
 	return _build_done;
 }
-void VoxelJob::set_build_done(const bool val) {
+void TerraJob::set_build_done(const bool val) {
 	_build_done = val;
 }
 
-void VoxelJob::next_job() {
+void TerraJob::next_job() {
 	_chunk->job_next();
 	set_build_done(true);
 }
 
-void VoxelJob::reset() {
+void TerraJob::reset() {
 	call("_reset");
 }
-void VoxelJob::_reset() {
+void TerraJob::_reset() {
 	_build_done = false;
 	_phase = 0;
 }
 
-void VoxelJob::_execute() {
+void TerraJob::_execute() {
 
 	ActiveBuildPhaseType origpt = _build_phase_type;
 
@@ -84,25 +84,25 @@ void VoxelJob::_execute() {
 	}
 }
 
-void VoxelJob::execute_phase() {
+void TerraJob::execute_phase() {
 	call("_execute_phase");
 }
 
-void VoxelJob::_execute_phase() {
+void TerraJob::_execute_phase() {
 	next_job();
 }
 
-void VoxelJob::process(const float delta) {
+void TerraJob::process(const float delta) {
 	if (has_method("_process"))
 		call("_process", delta);
 }
-void VoxelJob::physics_process(const float delta) {
+void TerraJob::physics_process(const float delta) {
 	if (has_method("_physics_process"))
 		call("_physics_process", delta);
 }
 
 //Data Management functions
-void VoxelJob::generate_ao() {
+void TerraJob::generate_ao() {
 	ERR_FAIL_COND(!_chunk.is_valid());
 
 	int data_size_x = _chunk->get_data_size_x();
@@ -125,14 +125,14 @@ void VoxelJob::generate_ao() {
 	for (int y = margin_start - 1; y < size_y - 1; ++y) {
 		for (int z = margin_start - 1; z < size_z - 1; ++z) {
 			for (int x = margin_start - 1; x < size_x - 1; ++x) {
-				int current = _chunk->get_voxel(x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+				int current = _chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
 
-				int sum = _chunk->get_voxel(x + 1, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x - 1, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y + 1, z, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y - 1, z, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y, z + 1, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y, z - 1, VoxelChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+				int sum = _chunk->get_voxel(x + 1, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+				sum += _chunk->get_voxel(x - 1, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+				sum += _chunk->get_voxel(x, y + 1, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+				sum += _chunk->get_voxel(x, y - 1, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+				sum += _chunk->get_voxel(x, y, z + 1, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+				sum += _chunk->get_voxel(x, y, z - 1, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
 
 				sum /= 6;
 
@@ -141,13 +141,13 @@ void VoxelJob::generate_ao() {
 				if (sum < 0)
 					sum = 0;
 
-				_chunk->set_voxel(sum, x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_AO);
+				_chunk->set_voxel(sum, x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_AO);
 			}
 		}
 	}
 }
 
-void VoxelJob::generate_random_ao(int seed, int octaves, int period, float persistence, float scale_factor) {
+void TerraJob::generate_random_ao(int seed, int octaves, int period, float persistence, float scale_factor) {
 	ERR_FAIL_COND(!_chunk.is_valid());
 
 	int margin_start = _chunk->get_margin_start();
@@ -182,13 +182,13 @@ void VoxelJob::generate_random_ao(int seed, int octaves, int period, float persi
 				if (val < 0)
 					val = -val;
 
-				_chunk->set_voxel(int(val * 255.0), x, y, z, VoxelChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
+				_chunk->set_voxel(int(val * 255.0), x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 			}
 		}
 	}
 }
 
-Array VoxelJob::merge_mesh_array(Array arr) const {
+Array TerraJob::merge_mesh_array(Array arr) const {
 	ERR_FAIL_COND_V(arr.size() != VisualServer::ARRAY_MAX, arr);
 
 	PoolVector3Array verts = arr[VisualServer::ARRAY_VERTEX];
@@ -252,7 +252,7 @@ Array VoxelJob::merge_mesh_array(Array arr) const {
 
 	return arr;
 }
-Array VoxelJob::bake_mesh_array_uv(Array arr, Ref<Texture> tex, const float mul_color) const {
+Array TerraJob::bake_mesh_array_uv(Array arr, Ref<Texture> tex, const float mul_color) const {
 	ERR_FAIL_COND_V(arr.size() != VisualServer::ARRAY_MAX, arr);
 	ERR_FAIL_COND_V(!tex.is_valid(), arr);
 
@@ -293,7 +293,7 @@ Array VoxelJob::bake_mesh_array_uv(Array arr, Ref<Texture> tex, const float mul_
 	return arr;
 }
 
-void VoxelJob::chunk_exit_tree() {
+void TerraJob::chunk_exit_tree() {
 
 	_in_tree = false;
 
@@ -304,7 +304,7 @@ void VoxelJob::chunk_exit_tree() {
 	}
 }
 
-VoxelJob::VoxelJob() {
+TerraJob::TerraJob() {
 	_in_tree = false;
 
 	_build_phase_type = BUILD_PHASE_TYPE_NORMAL;
@@ -323,138 +323,138 @@ VoxelJob::VoxelJob() {
 #endif
 }
 
-VoxelJob::~VoxelJob() {
+TerraJob::~TerraJob() {
 	_chunk.unref();
 }
 
-void VoxelJob::_bind_methods() {
+void TerraJob::_bind_methods() {
 	BIND_VMETHOD(MethodInfo("_process", PropertyInfo(Variant::REAL, "delta")));
 	BIND_VMETHOD(MethodInfo("_physics_process", PropertyInfo(Variant::REAL, "delta")));
 
-	ClassDB::bind_method(D_METHOD("get_build_phase_type"), &VoxelJob::get_build_phase_type);
-	ClassDB::bind_method(D_METHOD("set_build_phase_type", "value"), &VoxelJob::set_build_phase_type);
+	ClassDB::bind_method(D_METHOD("get_build_phase_type"), &TerraJob::get_build_phase_type);
+	ClassDB::bind_method(D_METHOD("set_build_phase_type", "value"), &TerraJob::set_build_phase_type);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "build_phase_type", PROPERTY_HINT_ENUM, BINDING_STRING_ACTIVE_BUILD_PHASE_TYPE), "set_build_phase_type", "get_build_phase_type");
 
-	ClassDB::bind_method(D_METHOD("set_chunk", "chunk"), &VoxelJob::set_chunk);
+	ClassDB::bind_method(D_METHOD("set_chunk", "chunk"), &TerraJob::set_chunk);
 
-	ClassDB::bind_method(D_METHOD("get_phase"), &VoxelJob::get_phase);
-	ClassDB::bind_method(D_METHOD("set_phase", "phase"), &VoxelJob::set_phase);
-	ClassDB::bind_method(D_METHOD("next_phase"), &VoxelJob::next_phase);
+	ClassDB::bind_method(D_METHOD("get_phase"), &TerraJob::get_phase);
+	ClassDB::bind_method(D_METHOD("set_phase", "phase"), &TerraJob::set_phase);
+	ClassDB::bind_method(D_METHOD("next_phase"), &TerraJob::next_phase);
 
-	ClassDB::bind_method(D_METHOD("get_build_done"), &VoxelJob::get_build_done);
-	ClassDB::bind_method(D_METHOD("set_build_done", "val"), &VoxelJob::set_build_done);
+	ClassDB::bind_method(D_METHOD("get_build_done"), &TerraJob::get_build_done);
+	ClassDB::bind_method(D_METHOD("set_build_done", "val"), &TerraJob::set_build_done);
 
-	ClassDB::bind_method(D_METHOD("next_job"), &VoxelJob::next_job);
+	ClassDB::bind_method(D_METHOD("next_job"), &TerraJob::next_job);
 
 	BIND_VMETHOD(MethodInfo("_reset"));
 
-	ClassDB::bind_method(D_METHOD("reset"), &VoxelJob::reset);
-	ClassDB::bind_method(D_METHOD("_reset"), &VoxelJob::_reset);
+	ClassDB::bind_method(D_METHOD("reset"), &TerraJob::reset);
+	ClassDB::bind_method(D_METHOD("_reset"), &TerraJob::_reset);
 
-	ClassDB::bind_method(D_METHOD("_execute"), &VoxelJob::_execute);
+	ClassDB::bind_method(D_METHOD("_execute"), &TerraJob::_execute);
 
 	BIND_VMETHOD(MethodInfo("_execute_phase"));
 
-	ClassDB::bind_method(D_METHOD("execute_phase"), &VoxelJob::execute_phase);
-	ClassDB::bind_method(D_METHOD("_execute_phase"), &VoxelJob::_execute_phase);
+	ClassDB::bind_method(D_METHOD("execute_phase"), &TerraJob::execute_phase);
+	ClassDB::bind_method(D_METHOD("_execute_phase"), &TerraJob::_execute_phase);
 
-	ClassDB::bind_method(D_METHOD("generate_ao"), &VoxelJob::generate_ao);
-	ClassDB::bind_method(D_METHOD("generate_random_ao", "seed", "octaves", "period", "persistence", "scale_factor"), &VoxelJob::generate_random_ao, DEFVAL(4), DEFVAL(30), DEFVAL(0.3), DEFVAL(0.6));
+	ClassDB::bind_method(D_METHOD("generate_ao"), &TerraJob::generate_ao);
+	ClassDB::bind_method(D_METHOD("generate_random_ao", "seed", "octaves", "period", "persistence", "scale_factor"), &TerraJob::generate_random_ao, DEFVAL(4), DEFVAL(30), DEFVAL(0.3), DEFVAL(0.6));
 
-	ClassDB::bind_method(D_METHOD("chunk_exit_tree"), &VoxelJob::chunk_exit_tree);
+	ClassDB::bind_method(D_METHOD("chunk_exit_tree"), &TerraJob::chunk_exit_tree);
 
 #if !THREAD_POOL_PRESENT
-	ClassDB::bind_method(D_METHOD("get_complete"), &VoxelJob::get_complete);
-	ClassDB::bind_method(D_METHOD("set_complete", "value"), &VoxelJob::set_complete);
+	ClassDB::bind_method(D_METHOD("get_complete"), &TerraJob::get_complete);
+	ClassDB::bind_method(D_METHOD("set_complete", "value"), &TerraJob::set_complete);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "complete"), "set_complete", "get_complete");
 
-	ClassDB::bind_method(D_METHOD("get_start_time"), &VoxelJob::get_start_time);
-	ClassDB::bind_method(D_METHOD("set_start_time", "value"), &VoxelJob::set_start_time);
+	ClassDB::bind_method(D_METHOD("get_start_time"), &TerraJob::get_start_time);
+	ClassDB::bind_method(D_METHOD("set_start_time", "value"), &TerraJob::set_start_time);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "start_time"), "set_start_time", "get_start_time");
 
-	ClassDB::bind_method(D_METHOD("get_current_run_stage"), &VoxelJob::get_current_run_stage);
-	ClassDB::bind_method(D_METHOD("set_current_run_stage", "value"), &VoxelJob::set_current_run_stage);
+	ClassDB::bind_method(D_METHOD("get_current_run_stage"), &TerraJob::get_current_run_stage);
+	ClassDB::bind_method(D_METHOD("set_current_run_stage", "value"), &TerraJob::set_current_run_stage);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "current_run_stage"), "set_current_run_stage", "get_current_run_stage");
 
-	ClassDB::bind_method(D_METHOD("get_stage"), &VoxelJob::get_stage);
-	ClassDB::bind_method(D_METHOD("set_stage", "value"), &VoxelJob::set_stage);
+	ClassDB::bind_method(D_METHOD("get_stage"), &TerraJob::get_stage);
+	ClassDB::bind_method(D_METHOD("set_stage", "value"), &TerraJob::set_stage);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "stage"), "set_stage", "get_stage");
 
-	ClassDB::bind_method(D_METHOD("get_current_execution_time"), &VoxelJob::get_current_execution_time);
+	ClassDB::bind_method(D_METHOD("get_current_execution_time"), &TerraJob::get_current_execution_time);
 
-	ClassDB::bind_method(D_METHOD("should_do", "just_check"), &VoxelJob::should_do, DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("should_return"), &VoxelJob::should_return);
+	ClassDB::bind_method(D_METHOD("should_do", "just_check"), &TerraJob::should_do, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("should_return"), &TerraJob::should_return);
 
 	BIND_VMETHOD(MethodInfo("_execute"));
-	ClassDB::bind_method(D_METHOD("execute"), &VoxelJob::execute);
+	ClassDB::bind_method(D_METHOD("execute"), &TerraJob::execute);
 
 	ADD_SIGNAL(MethodInfo("completed"));
 #endif
 }
 
 #if !THREAD_POOL_PRESENT
-bool VoxelJob::get_complete() const {
+bool TerraJob::get_complete() const {
 	return _complete;
 }
-void VoxelJob::set_complete(const bool value) {
+void TerraJob::set_complete(const bool value) {
 	_complete = value;
 }
 
-bool VoxelJob::get_cancelled() const {
+bool TerraJob::get_cancelled() const {
 	return _cancelled;
 }
-void VoxelJob::set_cancelled(const bool value) {
+void TerraJob::set_cancelled(const bool value) {
 	_cancelled = value;
 }
 
-float VoxelJob::get_max_allocated_time() const {
+float TerraJob::get_max_allocated_time() const {
 	return _max_allocated_time;
 }
-void VoxelJob::set_max_allocated_time(const float value) {
+void TerraJob::set_max_allocated_time(const float value) {
 	_max_allocated_time = value;
 }
 
-int VoxelJob::get_start_time() const {
+int TerraJob::get_start_time() const {
 	return _start_time;
 }
-void VoxelJob::set_start_time(const int value) {
+void TerraJob::set_start_time(const int value) {
 	_start_time = value;
 }
 
-int VoxelJob::get_current_run_stage() const {
+int TerraJob::get_current_run_stage() const {
 	return _current_run_stage;
 }
-void VoxelJob::set_current_run_stage(const int value) {
+void TerraJob::set_current_run_stage(const int value) {
 	_current_run_stage = value;
 }
 
-int VoxelJob::get_stage() const {
+int TerraJob::get_stage() const {
 	return _stage;
 }
-void VoxelJob::set_stage(const int value) {
+void TerraJob::set_stage(const int value) {
 	_stage = value;
 }
 
-void VoxelJob::reset_stages() {
+void TerraJob::reset_stages() {
 	_current_run_stage = 0;
 	_stage = 0;
 }
 
-float VoxelJob::get_current_execution_time() {
+float TerraJob::get_current_execution_time() {
 	return 0;
 }
 
-bool VoxelJob::should_do(const bool just_check) {
+bool TerraJob::should_do(const bool just_check) {
 	return true;
 }
-bool VoxelJob::should_return() {
+bool TerraJob::should_return() {
 	if (_cancelled)
 		return true;
 
 	return false;
 }
 
-void VoxelJob::execute() {
+void TerraJob::execute() {
 	ERR_FAIL_COND(!has_method("_execute"));
 
 	call("_execute");

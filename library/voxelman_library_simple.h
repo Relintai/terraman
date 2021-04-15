@@ -38,11 +38,11 @@ SOFTWARE.
 #include "../data/voxel_light.h"
 #include "voxel_surface_simple.h"
 
-class VoxelSurfaceSimple;
-class VoxelMesher;
+class TerraSurfaceSimple;
+class TerraMesher;
 
-class VoxelmanLibrarySimple : public VoxelmanLibrary {
-	GDCLASS(VoxelmanLibrarySimple, VoxelmanLibrary)
+class TerramanLibrarySimple : public TerramanLibrary {
+	GDCLASS(TerramanLibrarySimple, TerramanLibrary)
 
 public:
 	int get_atlas_columns() const;
@@ -51,9 +51,9 @@ public:
 	int get_atlas_rows() const;
 	void set_atlas_rows(int s);
 
-	Ref<VoxelSurface> voxel_surface_get(const int index);
-	void voxel_surface_add(Ref<VoxelSurface> value);
-	void voxel_surface_set(const int index, Ref<VoxelSurface> value);
+	Ref<TerraSurface> voxel_surface_get(const int index);
+	void voxel_surface_add(Ref<TerraSurface> value);
+	void voxel_surface_set(const int index, Ref<TerraSurface> value);
 	void voxel_surface_remove(const int index);
 	int voxel_surface_get_num() const;
 	void voxel_surfaces_clear();
@@ -63,18 +63,18 @@ public:
 
 	void refresh_rects();
 
-	VoxelmanLibrarySimple();
-	~VoxelmanLibrarySimple();
+	TerramanLibrarySimple();
+	~TerramanLibrarySimple();
 
 protected:
 	static void _bind_methods();
 
 private:
-	Vector<Ref<VoxelSurfaceSimple> > _voxel_surfaces;
+	Vector<Ref<TerraSurfaceSimple> > _voxel_surfaces;
 
 	//atlas
 	int _atlas_columns;
 	int _atlas_rows;
 };
 
-#endif // VOXEL_LIBRARY_H
+#endif // TERRA_LIBRARY_H

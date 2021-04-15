@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_JOB_H
-#define VOXEL_JOB_H
+#ifndef TERRA_JOB_H
+#define TERRA_JOB_H
 
 #include "scene/resources/texture.h"
 
@@ -45,14 +45,14 @@ SOFTWARE.
 #define Texture Texture2D
 #endif
 
-class VoxelChunk;
+class TerraChunk;
 
 #if THREAD_POOL_PRESENT
-class VoxelJob : public ThreadPoolJob {
-	GDCLASS(VoxelJob, ThreadPoolJob);
+class TerraJob : public ThreadPoolJob {
+	GDCLASS(TerraJob, ThreadPoolJob);
 #else
-class VoxelJob : public Reference {
-	GDCLASS(VoxelJob, Reference);
+class TerraJob : public Reference {
+	GDCLASS(TerraJob, Reference);
 #endif
 
 public:
@@ -66,9 +66,9 @@ public:
 
 public:
 	ActiveBuildPhaseType get_build_phase_type();
-	void set_build_phase_type(VoxelJob::ActiveBuildPhaseType build_phase_type);
+	void set_build_phase_type(TerraJob::ActiveBuildPhaseType build_phase_type);
 
-	void set_chunk(const Ref<VoxelChunk> &chunk);
+	void set_chunk(const Ref<TerraChunk> &chunk);
 
 	int get_phase();
 	void set_phase(const int phase);
@@ -97,8 +97,8 @@ public:
 
 	void chunk_exit_tree();
 
-	VoxelJob();
-	~VoxelJob();
+	TerraJob();
+	~TerraJob();
 
 protected:
 	static void _bind_methods();
@@ -107,7 +107,7 @@ protected:
 	bool _build_done;
 	int _phase;
 	bool _in_tree;
-	Ref<VoxelChunk> _chunk;
+	Ref<TerraChunk> _chunk;
 
 public:
 #if !THREAD_POOL_PRESENT
@@ -150,6 +150,6 @@ private:
 #endif
 };
 
-VARIANT_ENUM_CAST(VoxelJob::ActiveBuildPhaseType);
+VARIANT_ENUM_CAST(TerraJob::ActiveBuildPhaseType);
 
 #endif

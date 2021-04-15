@@ -20,17 +20,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_CHUNK_CUBIC_H
-#define VOXEL_CHUNK_CUBIC_H
+#ifndef TERRA_CHUNK_CUBIC_H
+#define TERRA_CHUNK_CUBIC_H
 
 #include "../default/voxel_chunk_default.h"
 
-class VoxelChunkCubic : public VoxelChunkDefault {
-	GDCLASS(VoxelChunkCubic, VoxelChunkDefault);
+class TerraChunkCubic : public TerraChunkDefault {
+	GDCLASS(TerraChunkCubic, TerraChunkDefault);
 
 public:
-	VoxelChunkCubic();
-	~VoxelChunkCubic();
+	TerraChunkCubic();
+	~TerraChunkCubic();
 
 protected:
 	virtual void _setup_channels();

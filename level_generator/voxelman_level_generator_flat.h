@@ -25,10 +25,10 @@ SOFTWARE.
 
 #include "voxelman_level_generator.h"
 
-class VoxelChunk;
+class TerraChunk;
 
-class VoxelmanLevelGeneratorFlat : public VoxelmanLevelGenerator {
-	GDCLASS(VoxelmanLevelGeneratorFlat, VoxelmanLevelGenerator);
+class TerramanLevelGeneratorFlat : public TerramanLevelGenerator {
+	GDCLASS(TerramanLevelGeneratorFlat, TerramanLevelGenerator);
 
 public:
 	int get_floor_position() const;
@@ -37,10 +37,10 @@ public:
 	Dictionary get_channel_map();
 	void set_channel_map(const Dictionary &map);
 
-	virtual void _generate_chunk(Ref<VoxelChunk> chunk);
+	virtual void _generate_chunk(Ref<TerraChunk> chunk);
 
-	VoxelmanLevelGeneratorFlat();
-	~VoxelmanLevelGeneratorFlat();
+	TerramanLevelGeneratorFlat();
+	~TerramanLevelGeneratorFlat();
 
 protected:
 	static void _bind_methods();

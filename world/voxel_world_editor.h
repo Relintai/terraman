@@ -20,22 +20,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_WORLD_EDITOR_PLUGIN_H
-#define VOXEL_WORLD_EDITOR_PLUGIN_H
+#ifndef TERRA_WORLD_EDITOR_PLUGIN_H
+#define TERRA_WORLD_EDITOR_PLUGIN_H
 
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
 
 #include "../defines.h"
 
-class VoxelWorld;
+class TerraWorld;
 class SpatialEditorPlugin;
 
-class VoxelWorldEditor : public PanelContainer {
-	GDCLASS(VoxelWorldEditor, PanelContainer);
+class TerraWorldEditor : public PanelContainer {
+	GDCLASS(TerraWorldEditor, PanelContainer);
 
 public:
-	enum VoxelWorldEditorToolMode {
+	enum TerraWorldEditorToolMode {
 		TOOL_MODE_ADD = 0,
 		TOOL_MODE_REMOVE,
 	};
@@ -43,12 +43,12 @@ public:
 public:
 	bool forward_spatial_input_event(Camera *p_camera, const Ref<InputEvent> &p_event);
 
-	void edit(VoxelWorld *p_world);
+	void edit(TerraWorld *p_world);
 	bool do_input_action(Camera *p_camera, const Point2 &p_point, bool p_click);
 
-	VoxelWorldEditor();
-	VoxelWorldEditor(EditorNode *p_editor);
-	~VoxelWorldEditor();
+	TerraWorldEditor();
+	TerraWorldEditor(EditorNode *p_editor);
+	~TerraWorldEditor();
 
 	HBoxContainer *spatial_editor_hb;
 
@@ -66,8 +66,8 @@ private:
 
 	Ref<ButtonGroup> _tool_button_group;
 
-	VoxelWorldEditorToolMode _tool_mode;
-	VoxelWorld *_world;
+	TerraWorldEditorToolMode _tool_mode;
+	TerraWorld *_world;
 
 	HSlider *_isolevel_slider;
 
@@ -81,10 +81,10 @@ private:
 	int _channel_isolevel;
 };
 
-class VoxelWorldEditorPlugin : public EditorPlugin {
-	GDCLASS(VoxelWorldEditorPlugin, EditorPlugin);
+class TerraWorldEditorPlugin : public EditorPlugin {
+	GDCLASS(TerraWorldEditorPlugin, EditorPlugin);
 
-	VoxelWorldEditor *voxel_world_editor;
+	TerraWorldEditor *voxel_world_editor;
 	EditorNode *editor;
 
 protected:
@@ -92,14 +92,14 @@ protected:
 
 public:
 	virtual bool forward_spatial_gui_input(Camera *p_camera, const Ref<InputEvent> &p_event) { return voxel_world_editor->forward_spatial_input_event(p_camera, p_event); }
-	virtual String get_name() const { return "VoxelWorldEditor"; }
+	virtual String get_name() const { return "TerraWorldEditor"; }
 	bool has_main_screen() const { return false; }
 	virtual void edit(Object *p_object);
 	virtual bool handles(Object *p_object) const;
 	virtual void make_visible(bool p_visible);
 
-	VoxelWorldEditorPlugin(EditorNode *p_node);
-	~VoxelWorldEditorPlugin();
+	TerraWorldEditorPlugin(EditorNode *p_node);
+	~TerraWorldEditorPlugin();
 };
 
 #endif

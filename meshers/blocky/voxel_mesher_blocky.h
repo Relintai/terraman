@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_MESHER_BLOCKY_H
-#define VOXEL_MESHER_BLOCKY_H
+#ifndef TERRA_MESHER_BLOCKY_H
+#define TERRA_MESHER_BLOCKY_H
 
 #include "core/version.h"
 
@@ -36,17 +36,17 @@ SOFTWARE.
 
 #include "../default/voxel_mesher_default.h"
 
-class VoxelMesherBlocky : public VoxelMesherDefault {
-	GDCLASS(VoxelMesherBlocky, VoxelMesherDefault);
+class TerraMesherBlocky : public TerraMesherDefault {
+	GDCLASS(TerraMesherBlocky, TerraMesherDefault);
 
 public:
 	bool get_always_add_colors() const;
 	void set_always_add_colors(const bool value);
 
-	void _add_chunk(Ref<VoxelChunk> p_chunk);
+	void _add_chunk(Ref<TerraChunk> p_chunk);
 
-	VoxelMesherBlocky();
-	~VoxelMesherBlocky();
+	TerraMesherBlocky();
+	~TerraMesherBlocky();
 
 protected:
 	static void _bind_methods();

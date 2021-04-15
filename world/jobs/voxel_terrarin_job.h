@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_TERRARIN_JOB_H
-#define VOXEL_TERRARIN_JOB_H
+#ifndef TERRA_TERRARIN_JOB_H
+#define TERRA_TERRARIN_JOB_H
 
 #include "voxel_job.h"
 
@@ -31,24 +31,24 @@ SOFTWARE.
 
 include_pool_vector
 
-		class VoxelMesher;
+		class TerraMesher;
 
-class VoxelTerrarinJob : public VoxelJob {
-	GDCLASS(VoxelTerrarinJob, VoxelJob);
+class TerraTerrarinJob : public TerraJob {
+	GDCLASS(TerraTerrarinJob, TerraJob);
 
 public:
 	//Meshers
-	Ref<VoxelMesher> get_mesher(const int index) const;
-	void set_mesher(const int index, const Ref<VoxelMesher> &mesher);
+	Ref<TerraMesher> get_mesher(const int index) const;
+	void set_mesher(const int index, const Ref<TerraMesher> &mesher);
 	void remove_mesher(const int index);
-	void add_mesher(const Ref<VoxelMesher> &mesher);
+	void add_mesher(const Ref<TerraMesher> &mesher);
 	int get_mesher_count() const;
 
 	//Liquid Meshers
-	Ref<VoxelMesher> get_liquid_mesher(const int index) const;
-	void set_liquid_mesher(const int index, const Ref<VoxelMesher> &mesher);
+	Ref<TerraMesher> get_liquid_mesher(const int index) const;
+	void set_liquid_mesher(const int index, const Ref<TerraMesher> &mesher);
 	void remove_liquid_mesher(const int index);
-	void add_liquid_mesher(const Ref<VoxelMesher> &mesher);
+	void add_liquid_mesher(const Ref<TerraMesher> &mesher);
 	int get_liquid_mesher_count() const;
 
 	void phase_setup();
@@ -63,14 +63,14 @@ public:
 	void _reset();
 	void _physics_process(float delta);
 
-	VoxelTerrarinJob();
-	~VoxelTerrarinJob();
+	TerraTerrarinJob();
+	~TerraTerrarinJob();
 
 protected:
 	static void _bind_methods();
 
-	Vector<Ref<VoxelMesher>> _meshers;
-	Vector<Ref<VoxelMesher>> _liquid_meshers;
+	Vector<Ref<TerraMesher>> _meshers;
+	Vector<Ref<TerraMesher>> _liquid_meshers;
 
 	PoolVector<Vector3> temp_arr_collider;
 	PoolVector<Vector3> temp_arr_collider_liquid;

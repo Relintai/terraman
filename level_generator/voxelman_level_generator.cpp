@@ -24,20 +24,20 @@ SOFTWARE.
 
 #include "../world/voxel_chunk.h"
 
-void VoxelmanLevelGenerator::generate_chunk(Ref<VoxelChunk> chunk) {
+void TerramanLevelGenerator::generate_chunk(Ref<TerraChunk> chunk) {
 	if (has_method("_generate_chunk")) {
 		call("_generate_chunk", chunk);
 	}
 }
 
-VoxelmanLevelGenerator::VoxelmanLevelGenerator() {
+TerramanLevelGenerator::TerramanLevelGenerator() {
 }
 
-VoxelmanLevelGenerator::~VoxelmanLevelGenerator() {
+TerramanLevelGenerator::~TerramanLevelGenerator() {
 }
 
-void VoxelmanLevelGenerator::_bind_methods() {
-	BIND_VMETHOD(MethodInfo("_generate_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "VoxelChunk")));
+void TerramanLevelGenerator::_bind_methods() {
+	BIND_VMETHOD(MethodInfo("_generate_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 
-	ClassDB::bind_method(D_METHOD("generate_chunk", "chunk"), &VoxelmanLevelGenerator::generate_chunk);
+	ClassDB::bind_method(D_METHOD("generate_chunk", "chunk"), &TerramanLevelGenerator::generate_chunk);
 }

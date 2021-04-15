@@ -1,9 +1,9 @@
 #include "voxelman_light.h"
 
-VoxelmanLight::VoxelmanLight() {
+TerramanLight::TerramanLight() {
 }
-VoxelmanLight::~VoxelmanLight() {
+TerramanLight::~TerramanLight() {
 }
 
-void VoxelmanLight::_bind_methods() {
+void TerramanLight::_bind_methods() {
 }

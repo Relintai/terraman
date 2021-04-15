@@ -25,65 +25,65 @@ sources = [
 
     "register_types.cpp",
 
-    #"library/voxelman_library.cpp",
-    #"library/voxelman_library_simple.cpp",
+    "library/voxelman_library.cpp",
+    "library/voxelman_library_simple.cpp",
     
-    #"nodes/voxelman_light.cpp",
+    "nodes/voxelman_light.cpp",
 
-    #"library/voxel_surface.cpp",
-    #"library/voxel_surface_simple.cpp",
+    "library/voxel_surface.cpp",
+    "library/voxel_surface_simple.cpp",
 
-    #"data/voxel_light.cpp",
+    "data/voxel_light.cpp",
 
-    #"meshers/voxel_mesher.cpp",
+    "meshers/voxel_mesher.cpp",
 
-    #"meshers/marching_cubes/marching_cubes_cell_data.cpp",
-    #"meshers/marching_cubes/voxel_mesher_marching_cubes.cpp",
-    #"meshers/marching_cubes/marching_cubes_tables.cpp",
+    "meshers/marching_cubes/marching_cubes_cell_data.cpp",
+    "meshers/marching_cubes/voxel_mesher_marching_cubes.cpp",
+    "meshers/marching_cubes/marching_cubes_tables.cpp",
 
-    #"meshers/blocky/voxel_mesher_blocky.cpp",
-    #"meshers/blocky/voxel_mesher_liquid_blocky.cpp",
-    #"meshers/default/voxel_mesher_default.cpp",
+    "meshers/blocky/voxel_mesher_blocky.cpp",
+    "meshers/blocky/voxel_mesher_liquid_blocky.cpp",
+    "meshers/default/voxel_mesher_default.cpp",
 
-    #"world/voxel_world.cpp",
-    #"world/voxel_chunk.cpp",
-    #"world/voxel_structure.cpp",
-    #"world/block_voxel_structure.cpp",
-    #"world/environment_data.cpp",
+    "world/voxel_world.cpp",
+    "world/voxel_chunk.cpp",
+    "world/voxel_structure.cpp",
+    "world/block_voxel_structure.cpp",
+    "world/environment_data.cpp",
 
-    #"world/blocky/voxel_chunk_blocky.cpp",
-    #"world/blocky/voxel_world_blocky.cpp",
+    "world/blocky/voxel_chunk_blocky.cpp",
+    "world/blocky/voxel_world_blocky.cpp",
 
-    #"world/default/voxel_world_default.cpp",
-   # "world/default/voxel_chunk_default.cpp",
+    "world/default/voxel_world_default.cpp",
+    "world/default/voxel_chunk_default.cpp",
 
-   # "world/marching_cubes/voxel_chunk_marching_cubes.cpp",
-   # "world/marching_cubes/voxel_world_marching_cubes.cpp",
+    "world/marching_cubes/voxel_chunk_marching_cubes.cpp",
+    "world/marching_cubes/voxel_world_marching_cubes.cpp",
 
-    #"meshers/cubic/voxel_mesher_cubic.cpp",
-    #"meshers/cubic/voxel_cube_points.cpp",
+    "meshers/cubic/voxel_mesher_cubic.cpp",
+    "meshers/cubic/voxel_cube_points.cpp",
 
-    #"level_generator/voxelman_level_generator.cpp",
-    #"level_generator/voxelman_level_generator_flat.cpp",
+    "level_generator/voxelman_level_generator.cpp",
+    "level_generator/voxelman_level_generator_flat.cpp",
 
-    #"world/cubic/voxel_chunk_cubic.cpp",
-    #"world/cubic/voxel_world_cubic.cpp",
+    "world/cubic/voxel_chunk_cubic.cpp",
+    "world/cubic/voxel_world_cubic.cpp",
 
-    #"areas/world_area.cpp",
+    "areas/world_area.cpp",
 
-    #"world/voxel_world_editor.cpp",
+    "world/voxel_world_editor.cpp",
     
-    #"thirdparty/lz4/lz4.c",
+    "thirdparty/lz4/lz4.c",
 
-    #"world/jobs/voxel_job.cpp",
-    #"world/jobs/voxel_terrarin_job.cpp",
-    #"world/jobs/voxel_light_job.cpp",
-    #"world/jobs/voxel_prop_job.cpp",
+    "world/jobs/voxel_job.cpp",
+    "world/jobs/voxel_terrarin_job.cpp",
+    "world/jobs/voxel_light_job.cpp",
+    "world/jobs/voxel_prop_job.cpp",
 ]
 
-#if has_texture_packer:
-#    sources.append("library/voxelman_library_merger.cpp")
-#    sources.append("library/voxel_surface_merger.cpp")
+if has_texture_packer:
+    sources.append("library/voxelman_library_merger.cpp")
+    sources.append("library/voxel_surface_merger.cpp")
 
 if ARGUMENTS.get('custom_modules_shared', 'no') == 'yes':
     # Shared lib compilation

@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_MESHER_DEFAULT_H
-#define VOXEL_MESHER_DEFAULT_H
+#ifndef TERRA_MESHER_DEFAULT_H
+#define TERRA_MESHER_DEFAULT_H
 
 #include "core/version.h"
 
@@ -36,19 +36,19 @@ SOFTWARE.
 
 #include "../voxel_mesher.h"
 
-class VoxelMesherDefault : public VoxelMesher {
-	GDCLASS(VoxelMesherDefault, VoxelMesher);
+class TerraMesherDefault : public TerraMesher {
+	GDCLASS(TerraMesherDefault, TerraMesher);
 
 public:
 	int get_build_flags() const;
 	void set_build_flags(const int flags);
 
-	VoxelMesherDefault();
-	~VoxelMesherDefault();
+	TerraMesherDefault();
+	~TerraMesherDefault();
 
 protected:
-	virtual void _bake_colors(Ref<VoxelChunk> p_chunk);
-	virtual void _bake_liquid_colors(Ref<VoxelChunk> p_chunk);
+	virtual void _bake_colors(Ref<TerraChunk> p_chunk);
+	virtual void _bake_liquid_colors(Ref<TerraChunk> p_chunk);
 
 	static void _bind_methods();
 

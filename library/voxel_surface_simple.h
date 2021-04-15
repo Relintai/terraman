@@ -20,31 +20,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef VOXEL_SURFACE_SIMPLE_H
-#define VOXEL_SURFACE_SIMPLE_H
+#ifndef TERRA_SURFACE_SIMPLE_H
+#define TERRA_SURFACE_SIMPLE_H
 
 #include "voxel_surface.h"
 
-class VoxelSurfaceSimple : public VoxelSurface {
-	GDCLASS(VoxelSurfaceSimple, VoxelSurface)
+class TerraSurfaceSimple : public TerraSurface {
+	GDCLASS(TerraSurfaceSimple, TerraSurface)
 
 public:
-	int get_atlas_x(const VoxelSurfaceSides side) const;
-	void set_atlas_x(const VoxelSurfaceSides side, int value);
+	int get_atlas_x(const TerraSurfaceSides side) const;
+	void set_atlas_x(const TerraSurfaceSides side, int value);
 
-	int get_atlas_y(const VoxelSurfaceSides side) const;
-	void set_atlas_y(const VoxelSurfaceSides side, int value);
+	int get_atlas_y(const TerraSurfaceSides side) const;
+	void set_atlas_y(const TerraSurfaceSides side, int value);
 
 	void refresh_rects();
 
-	VoxelSurfaceSimple();
-	~VoxelSurfaceSimple();
+	TerraSurfaceSimple();
+	~TerraSurfaceSimple();
 
 protected:
 	static void _bind_methods();
 
 private:
-	int _atlas_positions[VOXEL_SIDES_ARRAY_SIZE];
+	int _atlas_positions[TERRA_SIDES_ARRAY_SIZE];
 };
 
 #endif
