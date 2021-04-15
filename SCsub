@@ -37,10 +37,6 @@ sources = [
 
     "meshers/voxel_mesher.cpp",
 
-    "meshers/marching_cubes/marching_cubes_cell_data.cpp",
-    "meshers/marching_cubes/voxel_mesher_marching_cubes.cpp",
-    "meshers/marching_cubes/marching_cubes_tables.cpp",
-
     "meshers/blocky/voxel_mesher_blocky.cpp",
     "meshers/blocky/voxel_mesher_liquid_blocky.cpp",
     "meshers/default/voxel_mesher_default.cpp",
@@ -56,9 +52,6 @@ sources = [
 
     "world/default/voxel_world_default.cpp",
     "world/default/voxel_chunk_default.cpp",
-
-    "world/marching_cubes/voxel_chunk_marching_cubes.cpp",
-    "world/marching_cubes/voxel_world_marching_cubes.cpp",
 
     "level_generator/voxelman_level_generator.cpp",
     "level_generator/voxelman_level_generator_flat.cpp",
