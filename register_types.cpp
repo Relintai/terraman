@@ -49,9 +49,6 @@ SOFTWARE.
 #include "world/default/voxel_chunk_default.h"
 #include "world/default/voxel_world_default.h"
 
-#include "meshers/cubic/voxel_cube_points.h"
-#include "meshers/cubic/voxel_mesher_cubic.h"
-
 #include "level_generator/voxelman_level_generator.h"
 #include "level_generator/voxelman_level_generator_flat.h"
 
@@ -64,9 +61,6 @@ SOFTWARE.
 
 #include "world/blocky/voxel_chunk_blocky.h"
 #include "world/blocky/voxel_world_blocky.h"
-
-#include "world/cubic/voxel_chunk_cubic.h"
-#include "world/cubic/voxel_world_cubic.h"
 
 #include "world/marching_cubes/voxel_chunk_marching_cubes.h"
 #include "world/marching_cubes/voxel_world_marching_cubes.h"
@@ -109,9 +103,6 @@ void register_terraman_types() {
 	ClassDB::register_class<TerraChunkDefault>();
 	ClassDB::register_class<TerraWorldDefault>();
 
-	ClassDB::register_class<TerraMesherCubic>();
-	ClassDB::register_class<TerraCubePoints>();
-
 	ClassDB::register_class<TerraMesherBlocky>();
 	ClassDB::register_class<TerraWorldBlocky>();
 	ClassDB::register_class<TerraChunkBlocky>();
@@ -119,9 +110,6 @@ void register_terraman_types() {
 
 	ClassDB::register_class<TerraWorldMarchingCubes>();
 	ClassDB::register_class<TerraChunkMarchingCubes>();
-
-	ClassDB::register_class<TerraWorldCubic>();
-	ClassDB::register_class<TerraChunkCubic>();
 
 	ClassDB::register_class<TerramanLevelGenerator>();
 	ClassDB::register_class<TerramanLevelGeneratorFlat>();
