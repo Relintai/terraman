@@ -1281,7 +1281,7 @@ void TerraChunk::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "world_height"), "set_world_height", "get_world_height");
 
 	ClassDB::bind_method(D_METHOD("get_position"), &TerraChunk::get_position);
-	ClassDB::bind_method(D_METHOD("set_position", "x", "y", "z"), &TerraChunk::set_position);
+	ClassDB::bind_method(D_METHOD("set_position", "x", "z"), &TerraChunk::set_position);
 
 	ClassDB::bind_method(D_METHOD("get_world_position"), &TerraChunk::get_world_position);
 	ClassDB::bind_method(D_METHOD("get_world_size"), &TerraChunk::get_world_size);
@@ -1320,12 +1320,12 @@ void TerraChunk::_bind_methods() {
 	//Terra Data
 	ClassDB::bind_method(D_METHOD("channel_setup"), &TerraChunk::channel_setup);
 
-	ClassDB::bind_method(D_METHOD("set_size", "size_x", "size_y", "size_z", "margin_start", "margin_end"), &TerraChunk::set_size, DEFVAL(0), DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("set_size", "size_x", "size_z", "margin_start", "margin_end"), &TerraChunk::set_size, DEFVAL(0), DEFVAL(0));
 
-	ClassDB::bind_method(D_METHOD("validate_data_position", "x", "y", "z"), &TerraChunk::validate_data_position);
+	ClassDB::bind_method(D_METHOD("validate_data_position", "x", "z"), &TerraChunk::validate_data_position);
 
-	ClassDB::bind_method(D_METHOD("get_voxel", "x", "y", "z", "index"), &TerraChunk::get_voxel);
-	ClassDB::bind_method(D_METHOD("set_voxel", "value", "x", "y", "z", "index"), &TerraChunk::set_voxel);
+	ClassDB::bind_method(D_METHOD("get_voxel", "x", "z", "index"), &TerraChunk::get_voxel);
+	ClassDB::bind_method(D_METHOD("set_voxel", "value", "x", "z", "index"), &TerraChunk::set_voxel);
 
 	ClassDB::bind_method(D_METHOD("channel_get_count"), &TerraChunk::channel_get_count);
 	ClassDB::bind_method(D_METHOD("channel_set_count", "count"), &TerraChunk::channel_set_count);
@@ -1343,8 +1343,8 @@ void TerraChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("channel_get_compressed", "index"), &TerraChunk::channel_get_compressed);
 	ClassDB::bind_method(D_METHOD("channel_set_compressed", "index", "array"), &TerraChunk::channel_set_compressed);
 
-	ClassDB::bind_method(D_METHOD("get_index", "x", "y", "z"), &TerraChunk::get_index);
-	ClassDB::bind_method(D_METHOD("get_data_index", "x", "y", "z"), &TerraChunk::get_data_index);
+	ClassDB::bind_method(D_METHOD("get_index", "x", "z"), &TerraChunk::get_index);
+	ClassDB::bind_method(D_METHOD("get_data_index", "x", "z"), &TerraChunk::get_data_index);
 	ClassDB::bind_method(D_METHOD("get_data_size"), &TerraChunk::get_data_size);
 
 	ClassDB::bind_method(D_METHOD("voxel_structure_get", "index"), &TerraChunk::voxel_structure_get);
