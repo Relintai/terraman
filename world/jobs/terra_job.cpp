@@ -106,43 +106,36 @@ void TerraJob::generate_ao() {
 	ERR_FAIL_COND(!_chunk.is_valid());
 
 	int data_size_x = _chunk->get_data_size_x();
-	int data_size_y = _chunk->get_data_size_y();
 	int data_size_z = _chunk->get_data_size_z();
 
-	ERR_FAIL_COND(data_size_x == 0 || data_size_y == 0 || data_size_z == 0);
+	ERR_FAIL_COND(data_size_x == 0 || data_size_z == 0);
 
 	int margin_start = _chunk->get_margin_start();
 	int margin_end = _chunk->get_margin_end();
 
 	int ssize_x = _chunk->get_size_x();
-	int ssize_y = _chunk->get_size_y();
 	int ssize_z = _chunk->get_size_z();
 
 	int size_x = ssize_x + margin_end;
-	int size_y = ssize_y + margin_end;
 	int size_z = ssize_z + margin_end;
 
-	for (int y = margin_start - 1; y < size_y - 1; ++y) {
-		for (int z = margin_start - 1; z < size_z - 1; ++z) {
-			for (int x = margin_start - 1; x < size_x - 1; ++x) {
-				int current = _chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+	for (int z = margin_start - 1; z < size_z - 1; ++z) {
+		for (int x = margin_start - 1; x < size_x - 1; ++x) {
+			int current = _chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
 
-				int sum = _chunk->get_voxel(x + 1, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x - 1, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y + 1, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y - 1, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y, z + 1, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
-				sum += _chunk->get_voxel(x, y, z - 1, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+			int sum = _chunk->get_voxel(x + 1, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+			sum += _chunk->get_voxel(x - 1, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+			sum += _chunk->get_voxel(x, z + 1, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
+			sum += _chunk->get_voxel(x, z - 1, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL);
 
-				sum /= 6;
+			sum /= 6;
 
-				sum -= current;
+			sum -= current;
 
-				if (sum < 0)
-					sum = 0;
+			if (sum < 0)
+				sum = 0;
 
-				_chunk->set_voxel(sum, x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_AO);
-			}
+			_chunk->set_voxel(sum, x, z, TerraChunkDefault::DEFAULT_CHANNEL_AO);
 		}
 	}
 }
@@ -154,11 +147,9 @@ void TerraJob::generate_random_ao(int seed, int octaves, int period, float persi
 	int margin_end = _chunk->get_margin_end();
 
 	int size_x = _chunk->get_size_x();
-	int size_y = _chunk->get_size_y();
 	int size_z = _chunk->get_size_z();
 
 	int position_x = _chunk->get_position_x();
-	int position_y = _chunk->get_position_y();
 	int position_z = _chunk->get_position_z();
 
 	Ref<OpenSimplexNoise> noise;
@@ -171,19 +162,18 @@ void TerraJob::generate_random_ao(int seed, int octaves, int period, float persi
 
 	for (int x = -margin_start; x < size_x + margin_end; ++x) {
 		for (int z = -margin_start; z < size_z + margin_end; ++z) {
-			for (int y = -margin_start; y < size_y + margin_end; ++y) {
-				float val = noise->get_noise_3d(x + (position_x * size_x), y + (position_y * size_y), z + (position_z * size_z));
 
-				val *= scale_factor;
+			float val = noise->get_noise_3d(x + (position_x * size_x), 0, z + (position_z * size_z));
 
-				if (val > 1)
-					val = 1;
+			val *= scale_factor;
 
-				if (val < 0)
-					val = -val;
+			if (val > 1)
+				val = 1;
 
-				_chunk->set_voxel(int(val * 255.0), x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
-			}
+			if (val < 0)
+				val = -val;
+
+			_chunk->set_voxel(int(val * 255.0), x, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 		}
 	}
 }

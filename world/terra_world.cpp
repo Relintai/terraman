@@ -57,13 +57,6 @@ void TerraWorld::set_chunk_size_x(const int value) {
 	_chunk_size_x = value;
 }
 
-int TerraWorld::get_chunk_size_y() const {
-	return _chunk_size_y;
-}
-void TerraWorld::set_chunk_size_y(const int value) {
-	_chunk_size_y = value;
-}
-
 int TerraWorld::get_chunk_size_z() const {
 	return _chunk_size_z;
 }
@@ -106,6 +99,13 @@ void TerraWorld::set_use_threads(const bool value) {
 
 		c->set_is_build_threaded(_use_threads);
 	}
+}
+
+_FORCE_INLINE_ float TerraWorld::get_world_height() const {
+	return _world_height;
+}
+void TerraWorld::set_world_height(const float value) {
+	_world_height = value;
 }
 
 int TerraWorld::get_max_concurrent_generations() const {
@@ -259,16 +259,16 @@ void TerraWorld::voxel_structures_set(const Vector<Variant> &structures) {
 	}
 }
 
-void TerraWorld::chunk_add(Ref<TerraChunk> chunk, const int x, const int y, const int z) {
+void TerraWorld::chunk_add(Ref<TerraChunk> chunk, const int x, const int z) {
 	ERR_FAIL_COND(!chunk.is_valid());
 	ERR_FAIL_COND_MSG(chunk->get_voxel_world() != NULL && chunk->get_voxel_world() != this, "Chunk is already owned by an another world!");
 
-	IntPos pos(x, y, z);
+	IntPos pos(x, z);
 
 	//ERR_FAIL_COND(_chunks.has(pos));
 
 	chunk->set_voxel_world(this);
-	chunk->set_position(x, y, z);
+	chunk->set_position(x, z);
 	chunk->world_transform_changed();
 
 	if (!_chunks.has(pos))
@@ -283,19 +283,19 @@ void TerraWorld::chunk_add(Ref<TerraChunk> chunk, const int x, const int y, cons
 	if (has_method("_chunk_added"))
 		call("_chunk_added", chunk);
 }
-bool TerraWorld::chunk_has(const int x, const int y, const int z) const {
-	return _chunks.has(IntPos(x, y, z));
+bool TerraWorld::chunk_has(const int x, const int z) const {
+	return _chunks.has(IntPos(x, z));
 }
-Ref<TerraChunk> TerraWorld::chunk_get(const int x, const int y, const int z) {
-	IntPos pos(x, y, z);
+Ref<TerraChunk> TerraWorld::chunk_get(const int x, const int z) {
+	IntPos pos(x, z);
 
 	if (_chunks.has(pos))
 		return _chunks.get(pos);
 
 	return Ref<TerraChunk>();
 }
-Ref<TerraChunk> TerraWorld::chunk_remove(const int x, const int y, const int z) {
-	IntPos pos(x, y, z);
+Ref<TerraChunk> TerraWorld::chunk_remove(const int x, const int z) {
+	IntPos pos(x, z);
 
 	if (!_chunks.has(pos))
 		return NULL;
@@ -322,7 +322,7 @@ Ref<TerraChunk> TerraWorld::chunk_remove_index(const int index) {
 
 	Ref<TerraChunk> chunk = _chunks_vector.get(index);
 	_chunks_vector.remove(index);
-	_chunks.erase(IntPos(chunk->get_position_x(), chunk->get_position_y(), chunk->get_position_z()));
+	_chunks.erase(IntPos(chunk->get_position_x(), chunk->get_position_z()));
 	chunk->exit_tree();
 
 	return chunk;
@@ -350,18 +350,18 @@ void TerraWorld::chunks_clear() {
 	_generating.clear();
 }
 
-Ref<TerraChunk> TerraWorld::chunk_get_or_create(int x, int y, int z) {
-	Ref<TerraChunk> chunk = chunk_get(x, y, z);
+Ref<TerraChunk> TerraWorld::chunk_get_or_create(int x, int z) {
+	Ref<TerraChunk> chunk = chunk_get(x, z);
 
 	if (!chunk.is_valid()) {
-		chunk = chunk_create(x, y, z);
+		chunk = chunk_create(x, z);
 	}
 
 	return chunk;
 }
 
-Ref<TerraChunk> TerraWorld::chunk_create(const int x, const int y, const int z) {
-	Ref<TerraChunk> c = call("_create_chunk", x, y, z, Ref<TerraChunk>());
+Ref<TerraChunk> TerraWorld::chunk_create(const int x, const int z) {
+	Ref<TerraChunk> c = call("_create_chunk", x, z, Ref<TerraChunk>());
 
 	generation_queue_add_to(c);
 
@@ -371,10 +371,10 @@ Ref<TerraChunk> TerraWorld::chunk_create(const int x, const int y, const int z) 
 void TerraWorld::chunk_setup(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	call("_create_chunk", chunk->get_position_x(), chunk->get_position_y(), chunk->get_position_z(), chunk);
+	call("_create_chunk", chunk->get_position_x(), chunk->get_position_z(), chunk);
 }
 
-Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int y, const int z, Ref<TerraChunk> chunk) {
+Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int z, Ref<TerraChunk> chunk) {
 	if (!chunk.is_valid()) {
 		chunk.instance();
 	}
@@ -383,7 +383,7 @@ Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int y, const int z,
 
 	ERR_FAIL_COND_V(!chunk.is_valid(), NULL);
 
-	chunk->set_name("Chunk[" + String::num(x) + "," + String::num(y) + "," + String::num(z) + "]");
+	chunk->set_name("Chunk[" + String::num(x) + "," + String::num(z) + "]");
 
 	chunk->set_voxel_world(this);
 
@@ -391,13 +391,14 @@ Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int y, const int z,
 	if (chunk->has_method("set_is_build_threaded"))
 		chunk->call("set_is_build_threaded", _use_threads);
 
-	chunk->set_position(x, y, z);
+	chunk->set_position(x, z);
+	chunk->set_world_height(_world_height);
 	chunk->set_library(_library);
 	chunk->set_voxel_scale(_voxel_scale);
-	chunk->set_size(_chunk_size_x, _chunk_size_y, _chunk_size_z, _data_margin_start, _data_margin_end);
+	chunk->set_size(_chunk_size_x, _chunk_size_z, _data_margin_start, _data_margin_end);
 	//chunk->set_translation(Vector3(x * _chunk_size_x * _voxel_scale, y * _chunk_size_y * _voxel_scale, z * _chunk_size_z * _voxel_scale));
 
-	chunk_add(chunk, x, y, z);
+	chunk_add(chunk, x, z);
 
 	return chunk;
 }
@@ -440,7 +441,7 @@ void TerraWorld::chunks_set(const Vector<Variant> &chunks) {
 			if (_chunks_vector.find(chunk) != -1)
 				continue;
 
-			chunk_add(chunk, chunk->get_position_x(), chunk->get_position_y(), chunk->get_position_z());
+			chunk_add(chunk, chunk->get_position_x(), chunk->get_position_z());
 		}
 	} else {
 		_chunks_vector.clear();
@@ -487,10 +488,9 @@ bool TerraWorld::can_chunk_do_build_step() {
 
 bool TerraWorld::is_position_walkable(const Vector3 &p_pos) {
 	int x = static_cast<int>(Math::floor(p_pos.x / (_chunk_size_x * _voxel_scale)));
-	int y = static_cast<int>(Math::floor(p_pos.y / (_chunk_size_y * _voxel_scale)));
 	int z = static_cast<int>(Math::floor(p_pos.z / (_chunk_size_z * _voxel_scale)));
 
-	Ref<TerraChunk> c = chunk_get(x, y, z);
+	Ref<TerraChunk> c = chunk_get(x, z);
 
 	if (!c.is_valid())
 		return false;
@@ -705,29 +705,23 @@ uint8_t TerraWorld::get_voxel_at_world_position(const Vector3 &world_position, c
 
 	//Note: floor is needed to handle negative numbers properly
 	int x = static_cast<int>(Math::floor(pos.x / get_chunk_size_x()));
-	int y = static_cast<int>(Math::floor(pos.y / get_chunk_size_y()));
 	int z = static_cast<int>(Math::floor(pos.z / get_chunk_size_z()));
 
 	int bx = static_cast<int>(Math::floor(pos.x)) % get_chunk_size_x();
-	int by = static_cast<int>(Math::floor(pos.y)) % get_chunk_size_y();
 	int bz = static_cast<int>(Math::floor(pos.z)) % get_chunk_size_z();
 
 	if (bx < 0) {
 		bx += get_chunk_size_x();
 	}
 
-	if (by < 0) {
-		by += get_chunk_size_y();
-	}
-
 	if (bz < 0) {
 		bz += get_chunk_size_z();
 	}
 
-	Ref<TerraChunk> chunk = chunk_get(x, y, z);
+	Ref<TerraChunk> chunk = chunk_get(x, z);
 
 	if (chunk.is_valid())
-		return chunk->get_voxel(bx, by, bz, channel_index);
+		return chunk->get_voxel(bx, bz, channel_index);
 
 	return 0;
 }
@@ -737,19 +731,13 @@ void TerraWorld::set_voxel_at_world_position(const Vector3 &world_position, cons
 
 	//Note: floor is needed to handle negative numbers properly
 	int x = static_cast<int>(Math::floor(pos.x / get_chunk_size_x()));
-	int y = static_cast<int>(Math::floor(pos.y / get_chunk_size_y()));
 	int z = static_cast<int>(Math::floor(pos.z / get_chunk_size_z()));
 
 	int bx = static_cast<int>(Math::floor(pos.x)) % get_chunk_size_x();
-	int by = static_cast<int>(Math::floor(pos.y)) % get_chunk_size_y();
 	int bz = static_cast<int>(Math::floor(pos.z)) % get_chunk_size_z();
 
 	if (bx < 0) {
 		bx += get_chunk_size_x();
-	}
-
-	if (by < 0) {
-		by += get_chunk_size_y();
 	}
 
 	if (bz < 0) {
@@ -758,24 +746,16 @@ void TerraWorld::set_voxel_at_world_position(const Vector3 &world_position, cons
 
 	if (get_data_margin_end() > 0) {
 		if (bx == 0) {
-			Ref<TerraChunk> chunk = chunk_get_or_create(x - 1, y, z);
-			chunk->set_voxel(data, get_chunk_size_x(), by, bz, channel_index);
-
-			if (rebuild)
-				chunk->build();
-		}
-
-		if (by == 0) {
-			Ref<TerraChunk> chunk = chunk_get_or_create(x, y - 1, z);
-			chunk->set_voxel(data, bx, get_chunk_size_y(), bz, channel_index);
+			Ref<TerraChunk> chunk = chunk_get_or_create(x - 1, z);
+			chunk->set_voxel(data, get_chunk_size_x(), bz, channel_index);
 
 			if (rebuild)
 				chunk->build();
 		}
 
 		if (bz == 0) {
-			Ref<TerraChunk> chunk = chunk_get_or_create(x, y, z - 1);
-			chunk->set_voxel(data, bx, by, get_chunk_size_z(), channel_index);
+			Ref<TerraChunk> chunk = chunk_get_or_create(x, z - 1);
+			chunk->set_voxel(data, bx, get_chunk_size_z(), channel_index);
 
 			if (rebuild)
 				chunk->build();
@@ -784,32 +764,24 @@ void TerraWorld::set_voxel_at_world_position(const Vector3 &world_position, cons
 
 	if (get_data_margin_start() > 0) {
 		if (bx == get_chunk_size_x() - 1) {
-			Ref<TerraChunk> chunk = chunk_get_or_create(x + 1, y, z);
-			chunk->set_voxel(data, -1, by, bz, channel_index);
-
-			if (rebuild)
-				chunk->build();
-		}
-
-		if (by == get_chunk_size_y() - 1) {
-			Ref<TerraChunk> chunk = chunk_get_or_create(x, y + 1, z);
-			chunk->set_voxel(data, bx, -1, bz, channel_index);
+			Ref<TerraChunk> chunk = chunk_get_or_create(x + 1, z);
+			chunk->set_voxel(data, -1, bz, channel_index);
 
 			if (rebuild)
 				chunk->build();
 		}
 
 		if (bz == get_chunk_size_z() - 1) {
-			Ref<TerraChunk> chunk = chunk_get_or_create(x, y, z + 1);
-			chunk->set_voxel(data, bx, by, -1, channel_index);
+			Ref<TerraChunk> chunk = chunk_get_or_create(x, z + 1);
+			chunk->set_voxel(data, bx, -1, channel_index);
 
 			if (rebuild)
 				chunk->build();
 		}
 	}
 
-	Ref<TerraChunk> chunk = chunk_get_or_create(x, y, z);
-	chunk->set_voxel(data, bx, by, bz, channel_index);
+	Ref<TerraChunk> chunk = chunk_get_or_create(x, z);
+	chunk->set_voxel(data, bx, bz, channel_index);
 
 	if (rebuild)
 		chunk->build();
@@ -820,20 +792,18 @@ Ref<TerraChunk> TerraWorld::get_chunk_at_world_position(const Vector3 &world_pos
 
 	//Note: floor is needed to handle negative numbers proiberly
 	int x = static_cast<int>(Math::floor(pos.x / get_chunk_size_x()));
-	int y = static_cast<int>(Math::floor(pos.y / get_chunk_size_y()));
 	int z = static_cast<int>(Math::floor(pos.z / get_chunk_size_z()));
 
-	return chunk_get(x, y, z);
+	return chunk_get(x, z);
 }
 Ref<TerraChunk> TerraWorld::get_or_create_chunk_at_world_position(const Vector3 &world_position) {
 	Vector3 pos = world_position / get_voxel_scale();
 
 	//Note: floor is needed to handle negative numbers proiberly
 	int x = static_cast<int>(Math::floor(pos.x / get_chunk_size_x()));
-	int y = static_cast<int>(Math::floor(pos.y / get_chunk_size_y()));
 	int z = static_cast<int>(Math::floor(pos.z / get_chunk_size_z()));
 
-	return chunk_get_or_create(x, y, z);
+	return chunk_get_or_create(x, z);
 }
 
 void TerraWorld::set_voxel_with_tool(const bool mode_add, const Vector3 hit_position, const Vector3 hit_normal, const int selected_voxel, const int isolevel) {
@@ -850,11 +820,11 @@ TerraWorld::TerraWorld() {
 	_is_priority_generation = true;
 
 	_chunk_size_x = 16;
-	_chunk_size_y = 16;
 	_chunk_size_z = 16;
 	_current_seed = 0;
 	_data_margin_start = 0;
 	_data_margin_end = 0;
+	_world_height = 256;
 
 	set_use_threads(true);
 	set_max_concurrent_generations(3);
@@ -897,7 +867,7 @@ void TerraWorld::_generate_chunk(Ref<TerraChunk> chunk) {
 			continue;
 
 		if (structure->get_use_aabb()) {
-			if (structure->get_chunk_aabb().has_point(Vector3(chunk->get_position_x(), chunk->get_position_y(), chunk->get_position_z())))
+			if (structure->get_chunk_aabb().has_point(Vector3(chunk->get_position_x(), 1, chunk->get_position_z())))
 				structure->write_to_chunk(chunk);
 		} else {
 			structure->write_to_chunk(chunk);
@@ -1038,10 +1008,6 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_chunk_size_x", "value"), &TerraWorld::set_chunk_size_x);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "chunk_size_x"), "set_chunk_size_x", "get_chunk_size_x");
 
-	ClassDB::bind_method(D_METHOD("get_chunk_size_y"), &TerraWorld::get_chunk_size_y);
-	ClassDB::bind_method(D_METHOD("set_chunk_size_y", "value"), &TerraWorld::set_chunk_size_y);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "chunk_size_y"), "set_chunk_size_y", "get_chunk_size_y");
-
 	ClassDB::bind_method(D_METHOD("get_chunk_size_z"), &TerraWorld::get_chunk_size_z);
 	ClassDB::bind_method(D_METHOD("set_chunk_size_z", "value"), &TerraWorld::set_chunk_size_z);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "chunk_size_z"), "set_chunk_size_z", "get_chunk_size_z");
@@ -1053,6 +1019,10 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_data_margin_end"), &TerraWorld::get_data_margin_end);
 	ClassDB::bind_method(D_METHOD("set_data_margin_end", "value"), &TerraWorld::set_data_margin_end);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "data_margin_end"), "set_data_margin_end", "get_data_margin_end");
+
+	ClassDB::bind_method(D_METHOD("get_world_height"), &TerraChunk::get_world_height);
+	ClassDB::bind_method(D_METHOD("set_world_height", "height"), &TerraChunk::set_world_height);
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "world_height"), "set_world_height", "get_world_height");
 
 	ClassDB::bind_method(D_METHOD("get_current_seed"), &TerraWorld::get_current_seed);
 	ClassDB::bind_method(D_METHOD("set_current_seed", "value"), &TerraWorld::set_current_seed);
@@ -1114,10 +1084,10 @@ void TerraWorld::_bind_methods() {
 
 	BIND_VMETHOD(MethodInfo("_chunk_added", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 
-	ClassDB::bind_method(D_METHOD("chunk_add", "chunk", "x", "y", "z"), &TerraWorld::chunk_add);
-	ClassDB::bind_method(D_METHOD("chunk_has", "x", "y", "z"), &TerraWorld::chunk_has);
-	ClassDB::bind_method(D_METHOD("chunk_get", "x", "y", "z"), &TerraWorld::chunk_get);
-	ClassDB::bind_method(D_METHOD("chunk_remove", "x", "y", "z"), &TerraWorld::chunk_remove);
+	ClassDB::bind_method(D_METHOD("chunk_add", "chunk", "x", "z"), &TerraWorld::chunk_add);
+	ClassDB::bind_method(D_METHOD("chunk_has", "x", "z"), &TerraWorld::chunk_has);
+	ClassDB::bind_method(D_METHOD("chunk_get", "x", "z"), &TerraWorld::chunk_get);
+	ClassDB::bind_method(D_METHOD("chunk_remove", "x", "z"), &TerraWorld::chunk_remove);
 	ClassDB::bind_method(D_METHOD("chunk_remove_index", "index"), &TerraWorld::chunk_remove_index);
 
 	ClassDB::bind_method(D_METHOD("chunk_get_index", "index"), &TerraWorld::chunk_get_index);
@@ -1146,11 +1116,11 @@ void TerraWorld::_bind_methods() {
 	BIND_VMETHOD(MethodInfo("_prepare_chunk_for_generation", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo("_generate_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 
-	ClassDB::bind_method(D_METHOD("chunk_get_or_create", "x", "y", "z"), &TerraWorld::chunk_get_or_create);
-	ClassDB::bind_method(D_METHOD("chunk_create", "x", "y", "z"), &TerraWorld::chunk_create);
+	ClassDB::bind_method(D_METHOD("chunk_get_or_create", "x", "z"), &TerraWorld::chunk_get_or_create);
+	ClassDB::bind_method(D_METHOD("chunk_create", "x", "z"), &TerraWorld::chunk_create);
 	ClassDB::bind_method(D_METHOD("chunk_setup", "chunk"), &TerraWorld::chunk_setup);
 
-	ClassDB::bind_method(D_METHOD("_create_chunk", "x", "y", "z", "chunk"), &TerraWorld::_create_chunk);
+	ClassDB::bind_method(D_METHOD("_create_chunk", "x", "z", "chunk"), &TerraWorld::_create_chunk);
 	ClassDB::bind_method(D_METHOD("_generate_chunk", "chunk"), &TerraWorld::_generate_chunk);
 
 	ClassDB::bind_method(D_METHOD("can_chunk_do_build_step"), &TerraWorld::can_chunk_do_build_step);

@@ -33,7 +33,7 @@ public:
 	~TerraWorldBlocky();
 
 protected:
-	Ref<TerraChunk> _create_chunk(int x, int y, int z, Ref<TerraChunk> p_chunk);
+	Ref<TerraChunk> _create_chunk(int x, int z, Ref<TerraChunk> p_chunk);
 
 	static void _bind_methods();
 };

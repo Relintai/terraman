@@ -39,6 +39,7 @@ void TerramanLevelGeneratorFlat::set_channel_map(const Dictionary &map) {
 }
 
 void TerramanLevelGeneratorFlat::_generate_chunk(Ref<TerraChunk> chunk) {
+	/*
 	int dymin = chunk->get_position_y() * chunk->get_size_y();
 	int dymax = dymin + chunk->get_size_y() + chunk->get_margin_end();
 
@@ -80,6 +81,7 @@ void TerramanLevelGeneratorFlat::_generate_chunk(Ref<TerraChunk> chunk) {
 
 		keyptr = _channel_map.next(keyptr);
 	}
+	*/
 }
 
 TerramanLevelGeneratorFlat::TerramanLevelGeneratorFlat() {

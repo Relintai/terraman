@@ -640,19 +640,17 @@ void TerraChunkDefault::draw_debug_voxels(int max, Color color) {
 	int a = 0;
 
 	int64_t sx = static_cast<int64_t>(_size_x);
-	int64_t sy = static_cast<int64_t>(_size_y);
-	int64_t sz = static_cast<int64_t>(_size_y);
+	int64_t sz = static_cast<int64_t>(_size_z);
 
-	for (int y = 0; y < sy; ++y) {
 		for (int z = 0; z < sz; ++z) {
 			for (int x = 0; x < sx; ++x) {
-				int type = get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_TYPE);
+				int type = get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_TYPE);
 
 				if (type == 0) {
 					continue;
 				}
 
-				draw_cross_voxels_fill(Vector3(x, y, z), get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL) / 255.0 * get_voxel_scale() * 2.0);
+				draw_cross_voxels_fill(Vector3(x, get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL), z), get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_ISOLEVEL) / 255.0 * get_voxel_scale() * 2.0);
 
 				++a;
 
@@ -661,7 +659,6 @@ void TerraChunkDefault::draw_debug_voxels(int max, Color color) {
 				}
 			}
 		}
-	}
 
 	debug_mesh_send();
 }
@@ -679,10 +676,9 @@ void TerraChunkDefault::draw_debug_voxel_lights() {
 		Ref<TerraLight> v = _lights[i];
 
 		int pos_x = v->get_world_position_x() - (_size_x * _position_x);
-		int pos_y = v->get_world_position_y() - (_size_y * _position_y);
 		int pos_z = v->get_world_position_z() - (_size_z * _position_z);
 
-		draw_cross_voxels_fill(Vector3(pos_x, pos_y, pos_z), 1.0);
+		draw_cross_voxels_fill(Vector3(pos_x, 0, pos_z), 1.0);
 	}
 
 	debug_mesh_send();
@@ -756,13 +752,13 @@ void TerraChunkDefault::_bake_light(Ref<TerraLight> light) {
 	int size = light->get_size();
 
 	int local_x = light->get_world_position_x() - (_position_x * _size_x);
-	int local_y = light->get_world_position_y() - (_position_y * _size_y);
+	int local_y = light->get_world_position_y();
 	int local_z = light->get_world_position_z() - (_position_z * _size_z);
 
 	ERR_FAIL_COND(size < 0);
 
 	int64_t dsx = static_cast<int64_t>(_data_size_x);
-	int64_t dsy = static_cast<int64_t>(_data_size_y);
+	int64_t dsy = static_cast<int64_t>(_world_height);
 	int64_t dsz = static_cast<int64_t>(_data_size_z);
 
 	uint8_t *channel_color_r = channel_get(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
@@ -793,7 +789,7 @@ void TerraChunkDefault::_bake_light(Ref<TerraLight> light) {
 				if (str < 0)
 					continue;
 
-				int index = get_data_index(x, y, z);
+				int index = get_data_index(x, z);
 
 				int r = color.r * str * 255.0;
 				int g = color.g * str * 255.0;

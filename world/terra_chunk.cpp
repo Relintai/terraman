@@ -96,12 +96,6 @@ _FORCE_INLINE_ int TerraChunk::get_position_x() const {
 void TerraChunk::set_position_x(const int value) {
 	_position_x = value;
 }
-_FORCE_INLINE_ int TerraChunk::get_position_y() const {
-	return _position_y;
-}
-void TerraChunk::set_position_y(const int value) {
-	_position_y = value;
-}
 _FORCE_INLINE_ int TerraChunk::get_position_z() const {
 	return _position_z;
 }
@@ -109,26 +103,25 @@ void TerraChunk::set_position_z(const int value) {
 	_position_z = value;
 }
 
-_FORCE_INLINE_ Vector3 TerraChunk::get_position() const {
-	return Vector3(_position_x, _position_y, _position_z);
+_FORCE_INLINE_ Vector2 TerraChunk::get_position() const {
+	return Vector2(_position_x, _position_z);
 }
-_FORCE_INLINE_ Vector3 TerraChunk::get_world_position() const {
-	return Vector3(_position_x * _size_x * _voxel_scale, _position_y * _size_y * _voxel_scale, _position_z * _size_z * _voxel_scale);
+_FORCE_INLINE_ Vector2 TerraChunk::get_world_position() const {
+	return Vector2(_position_x * _size_x * _voxel_scale, _position_z * _size_z * _voxel_scale);
 }
 
 _FORCE_INLINE_ Vector3 TerraChunk::get_world_size() const {
-	return Vector3(_size_x * _voxel_scale, _size_y * _voxel_scale, _size_z * _voxel_scale);
+	return Vector3(_size_x * _voxel_scale, _world_height * _voxel_scale, _size_z * _voxel_scale);
 }
 
 _FORCE_INLINE_ AABB TerraChunk::get_world_aabb() const {
-	return AABB(get_world_position(), get_world_size());
+	Vector2 v = get_world_position();
+
+	return AABB(Vector3(v.x, 0, v.y), get_world_size());
 }
 
 _FORCE_INLINE_ int TerraChunk::get_size_x() const {
 	return _size_x;
-}
-_FORCE_INLINE_ int TerraChunk::get_size_y() const {
-	return _size_y;
 }
 _FORCE_INLINE_ int TerraChunk::get_size_z() const {
 	return _size_z;
@@ -137,22 +130,16 @@ _FORCE_INLINE_ int TerraChunk::get_size_z() const {
 _FORCE_INLINE_ void TerraChunk::set_size_x(const int value) {
 	_size_x = value;
 }
-_FORCE_INLINE_ void TerraChunk::set_size_y(const int value) {
-	_size_y = value;
-}
 _FORCE_INLINE_ void TerraChunk::set_size_z(const int value) {
 	_size_z = value;
 }
 
 _FORCE_INLINE_ Vector3 TerraChunk::get_size() const {
-	return Vector3(_size_x, _size_y, _size_z);
+	return Vector3(_size_x, _world_height, _size_z);
 }
 
 _FORCE_INLINE_ int TerraChunk::get_data_size_x() const {
 	return _data_size_x;
-}
-_FORCE_INLINE_ int TerraChunk::get_data_size_y() const {
-	return _data_size_y;
 }
 _FORCE_INLINE_ int TerraChunk::get_data_size_z() const {
 	return _data_size_z;
@@ -161,16 +148,19 @@ _FORCE_INLINE_ int TerraChunk::get_data_size_z() const {
 _FORCE_INLINE_ void TerraChunk::set_data_size_x(const int value) {
 	_data_size_x = value;
 }
-_FORCE_INLINE_ void TerraChunk::set_data_size_y(const int value) {
-	_data_size_y = value;
-}
 _FORCE_INLINE_ void TerraChunk::set_data_size_z(const int value) {
 	_data_size_z = value;
 }
 
-void TerraChunk::set_position(const int x, const int y, const int z) {
+_FORCE_INLINE_ float TerraChunk::get_world_height() const {
+	return _world_height;
+}
+void TerraChunk::set_world_height(const float value) {
+	_world_height = value;
+}
+
+void TerraChunk::set_position(const int x, const int z) {
 	_position_x = x;
-	_position_y = y;
 	_position_z = z;
 }
 
@@ -289,8 +279,8 @@ void TerraChunk::channel_setup() {
 	call("_channel_setup");
 }
 
-void TerraChunk::set_size(const int size_x, const int size_y, const int size_z, const int margin_start, const int margin_end) {
-	if (_size_x == size_x && _size_y == size_y && _size_z == size_z && _margin_start == margin_start && _margin_end == margin_end) {
+void TerraChunk::set_size(const int size_x, const int size_z, const int margin_start, const int margin_end) {
+	if (_size_x == size_x && _size_z == size_z && _margin_start == margin_start && _margin_end == margin_end) {
 		return;
 	}
 
@@ -305,47 +295,43 @@ void TerraChunk::set_size(const int size_x, const int size_y, const int size_z, 
 	channel_setup();
 
 	_size_x = size_x;
-	_size_y = size_y;
 	_size_z = size_z;
 
 	_data_size_x = size_x + margin_start + margin_end;
-	_data_size_y = size_y + margin_start + margin_end;
 	_data_size_z = size_z + margin_start + margin_end;
 
 	_margin_start = margin_start;
 	_margin_end = margin_end;
 }
 
-bool TerraChunk::validate_data_position(const int x, const int y, const int z) const {
-	return x < _data_size_x && y < _data_size_y && z < _data_size_z;
+bool TerraChunk::validate_data_position(const int x, const int z) const {
+	return x < _data_size_x && z < _data_size_z;
 }
 
-uint8_t TerraChunk::get_voxel(const int p_x, const int p_y, const int p_z, const int p_channel_index) const {
+uint8_t TerraChunk::get_voxel(const int p_x, const int p_z, const int p_channel_index) const {
 	int x = p_x + _margin_start;
-	int y = p_y + _margin_start;
 	int z = p_z + _margin_start;
 
 	ERR_FAIL_INDEX_V(p_channel_index, _channels.size(), 0);
-	ERR_FAIL_COND_V_MSG(!validate_data_position(x, y, z), 0, "Error, index out of range! " + String::num(x) + " " + String::num(y) + " " + String::num(z));
+	ERR_FAIL_COND_V_MSG(!validate_data_position(x, z), 0, "Error, index out of range! " + String::num(x) + " " + String::num(z));
 
 	uint8_t *ch = _channels.get(p_channel_index);
 
 	if (!ch)
 		return 0;
 
-	return ch[get_data_index(x, y, z)];
+	return ch[get_data_index(x, z)];
 }
-void TerraChunk::set_voxel(const uint8_t p_value, const int p_x, const int p_y, const int p_z, const int p_channel_index) {
+void TerraChunk::set_voxel(const uint8_t p_value, const int p_x, const int p_z, const int p_channel_index) {
 	int x = p_x + _margin_start;
-	int y = p_y + _margin_start;
 	int z = p_z + _margin_start;
 
 	ERR_FAIL_INDEX(p_channel_index, _channels.size());
-	ERR_FAIL_COND_MSG(!validate_data_position(x, y, z), "Error, index out of range! " + String::num(x) + " " + String::num(y) + " " + String::num(z));
+	ERR_FAIL_COND_MSG(!validate_data_position(x, z), "Error, index out of range! " + String::num(x) + " " + String::num(z));
 
 	uint8_t *ch = channel_get_valid(p_channel_index);
 
-	ch[get_data_index(x, y, z)] = p_value;
+	ch[get_data_index(x, z)] = p_value;
 }
 
 int TerraChunk::channel_get_count() const {
@@ -393,7 +379,7 @@ void TerraChunk::channel_allocate(const int channel_index, const uint8_t default
 	if (_channels[channel_index] != NULL)
 		return;
 
-	uint32_t size = _data_size_x * _data_size_y * _data_size_z;
+	uint32_t size = _data_size_x * _data_size_z;
 
 	uint8_t *ch = memnew_arr(uint8_t, size);
 	memset(ch, default_value, size);
@@ -450,7 +436,7 @@ uint8_t *TerraChunk::channel_get_valid(const int channel_index, const uint8_t de
 PoolByteArray TerraChunk::channel_get_array(const int channel_index) const {
 	PoolByteArray arr;
 
-	uint32_t size = _data_size_x * _data_size_y * _data_size_z;
+	uint32_t size = _data_size_x * _data_size_z;
 
 	if (channel_index >= _channels.size())
 		return arr;
@@ -493,7 +479,7 @@ void TerraChunk::channel_set_array(const int channel_index, const PoolByteArray 
 PoolByteArray TerraChunk::channel_get_compressed(const int channel_index) const {
 	PoolByteArray arr;
 
-	int size = _data_size_x * _data_size_y * _data_size_z;
+	int size = _data_size_x * _data_size_z;
 
 	if (channel_index >= _channels.size())
 		return arr;
@@ -523,7 +509,7 @@ void TerraChunk::channel_set_compressed(const int channel_index, const PoolByteA
 	if (data.size() == 0)
 		return;
 
-	int size = _data_size_x * _data_size_y * _data_size_z;
+	int size = _data_size_x * _data_size_z;
 
 	if (_channels.size() <= channel_index)
 		channel_set_count(channel_index + 1);
@@ -555,16 +541,16 @@ void TerraChunk::channel_set_compressed(const int channel_index, const PoolByteA
 #endif
 }
 
-_FORCE_INLINE_ int TerraChunk::get_index(const int x, const int y, const int z) const {
-	return (y + _margin_start) + _data_size_y * ((x + _margin_start) + _data_size_x * (z + _margin_start));
+_FORCE_INLINE_ int TerraChunk::get_index(const int x, const int z) const {
+	return ((x + _margin_start) + _data_size_x * (z + _margin_start));
 }
 
-_FORCE_INLINE_ int TerraChunk::get_data_index(const int x, const int y, const int z) const {
-	return y + _data_size_y * (x + _data_size_x * z);
+_FORCE_INLINE_ int TerraChunk::get_data_index(const int x, const int z) const {
+	return (x + _data_size_x * z);
 }
 
 _FORCE_INLINE_ int TerraChunk::get_data_size() const {
-	return _data_size_x * _data_size_y * _data_size_z;
+	return _data_size_x * _data_size_z;
 }
 
 //Terra Structures
@@ -1015,21 +1001,20 @@ TerraChunk::TerraChunk() {
 	_voxel_world = NULL;
 
 	_position_x = 0;
-	_position_y = 0;
 	_position_z = 0;
 
 	_size_x = 0;
-	_size_y = 0;
 	_size_z = 0;
 
 	_data_size_x = 0;
-	_data_size_y = 0;
 	_data_size_z = 0;
 
 	_margin_start = 0;
 	_margin_end = 0;
 
 	_current_job = -1;
+
+	_world_height = 256;
 
 	_queued_generation = false;
 }
@@ -1144,7 +1129,7 @@ void TerraChunk::_world_transform_changed() {
 		wt = _voxel_world->get_transform();
 	}
 
-	set_transform(wt * Transform(Basis(), Vector3(_position_x * static_cast<int>(_size_x) * _voxel_scale, _position_y * static_cast<int>(_size_y) * _voxel_scale, _position_z * static_cast<int>(_size_z) * _voxel_scale)));
+	set_transform(wt * Transform(Basis(), Vector3(_position_x * static_cast<int>(_size_x) * _voxel_scale, 0, _position_z * static_cast<int>(_size_z) * _voxel_scale)));
 }
 
 /*
@@ -1271,10 +1256,6 @@ void TerraChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_position_x", "value"), &TerraChunk::set_position_x);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "position_x"), "set_position_x", "get_position_x");
 
-	ClassDB::bind_method(D_METHOD("get_position_y"), &TerraChunk::get_position_y);
-	ClassDB::bind_method(D_METHOD("set_position_y", "value"), &TerraChunk::set_position_y);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "position_y"), "set_position_y", "get_position_y");
-
 	ClassDB::bind_method(D_METHOD("get_position_z"), &TerraChunk::get_position_z);
 	ClassDB::bind_method(D_METHOD("set_position_z", "value"), &TerraChunk::set_position_z);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "position_z"), "set_position_z", "get_position_z");
@@ -1282,10 +1263,6 @@ void TerraChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_size_x"), &TerraChunk::get_size_x);
 	ClassDB::bind_method(D_METHOD("set_size_x"), &TerraChunk::set_size_x);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_x"), "set_size_x", "get_size_x");
-
-	ClassDB::bind_method(D_METHOD("get_size_y"), &TerraChunk::get_size_y);
-	ClassDB::bind_method(D_METHOD("set_size_y"), &TerraChunk::set_size_y);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_y"), "set_size_y", "get_size_y");
 
 	ClassDB::bind_method(D_METHOD("get_size_z"), &TerraChunk::get_size_z);
 	ClassDB::bind_method(D_METHOD("set_size_z"), &TerraChunk::set_size_z);
@@ -1295,13 +1272,13 @@ void TerraChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_data_size_x"), &TerraChunk::set_data_size_x);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "data_size_x"), "set_data_size_x", "get_data_size_x");
 
-	ClassDB::bind_method(D_METHOD("get_data_size_y"), &TerraChunk::get_data_size_y);
-	ClassDB::bind_method(D_METHOD("set_data_size_y"), &TerraChunk::set_data_size_y);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "data_size_y"), "set_data_size_y", "get_data_size_y");
-
 	ClassDB::bind_method(D_METHOD("get_data_size_z"), &TerraChunk::get_data_size_z);
 	ClassDB::bind_method(D_METHOD("set_data_size_z"), &TerraChunk::set_data_size_z);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "data_size_z"), "set_data_size_z", "get_data_size_z");
+
+	ClassDB::bind_method(D_METHOD("get_world_height"), &TerraChunk::get_world_height);
+	ClassDB::bind_method(D_METHOD("set_world_height", "height"), &TerraChunk::set_world_height);
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "world_height"), "set_world_height", "get_world_height");
 
 	ClassDB::bind_method(D_METHOD("get_position"), &TerraChunk::get_position);
 	ClassDB::bind_method(D_METHOD("set_position", "x", "y", "z"), &TerraChunk::set_position);

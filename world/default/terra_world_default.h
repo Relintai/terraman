@@ -50,7 +50,7 @@ public:
 
 protected:
 	void _update_lods();
-	Ref<TerraChunk> _create_chunk(int x, int y, int z, Ref<TerraChunk> p_chunk);
+	Ref<TerraChunk> _create_chunk(int x, int z, Ref<TerraChunk> p_chunk);
 	virtual void _chunk_added(Ref<TerraChunk> chunk);
 	int _get_channel_index_info(const ChannelTypeInfo channel_type);
 

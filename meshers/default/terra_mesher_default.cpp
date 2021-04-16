@@ -63,17 +63,16 @@ void TerraMesherDefault::_bake_colors(Ref<TerraChunk> chunk) {
 		}
 
 		unsigned int x = (unsigned int)(vert.x / _voxel_scale);
-		unsigned int y = (unsigned int)(vert.y / _voxel_scale);
 		unsigned int z = (unsigned int)(vert.z / _voxel_scale);
 
-		if (chunk->validate_data_position(x, y, z)) {
+		if (chunk->validate_data_position(x, z)) {
 			Color light = Color(
-					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
-					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
-					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
+					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
+					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
+					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
 
-			float ao = (chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
-			float rao = chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
+			float ao = (chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
+			float rao = chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
 
 			ao += rao;
 
@@ -122,17 +121,17 @@ void TerraMesherDefault::_bake_liquid_colors(Ref<TerraChunk> chunk) {
 		}
 
 		unsigned int x = (unsigned int)(vert.x / _voxel_scale);
-		unsigned int y = (unsigned int)(vert.y / _voxel_scale);
+		//unsigned int y = (unsigned int)(vert.y / _voxel_scale);
 		unsigned int z = (unsigned int)(vert.z / _voxel_scale);
 
-		if (chunk->validate_data_position(x, y, z)) {
+		if (chunk->validate_data_position(x, z)) {
 			Color light = Color(
-					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
-					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
-					chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
+					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
+					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
+					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
 
-			float ao = (chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
-			float rao = chunk->get_voxel(x, y, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
+			float ao = (chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
+			float rao = chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
 
 			ao += rao;
 

@@ -108,33 +108,30 @@ public:
 
 	int get_position_x() const;
 	void set_position_x(const int value);
-	int get_position_y() const;
-	void set_position_y(const int value);
 	int get_position_z() const;
 	void set_position_z(const int value);
 
 	int get_size_x() const;
-	int get_size_y() const;
 	int get_size_z() const;
 	void set_size_x(const int value);
-	void set_size_y(const int value);
 	void set_size_z(const int value);
 
 	int get_data_size_x() const;
-	int get_data_size_y() const;
 	int get_data_size_z() const;
 	void set_data_size_x(const int value);
-	void set_data_size_y(const int value);
 	void set_data_size_z(const int value);
 
-	Vector3 get_position() const;
+	float get_world_height() const;
+	void set_world_height(const float value);
+
+	Vector2 get_position() const;
 	Vector3 get_size() const;
 
-	Vector3 get_world_position() const;
+	Vector2 get_world_position() const;
 	Vector3 get_world_size() const;
 	AABB get_world_aabb() const;
 
-	void set_position(const int x, const int y, const int z);
+	void set_position(const int x, const int z);
 
 	int get_margin_start() const;
 	int get_margin_end() const;
@@ -165,12 +162,12 @@ public:
 	//Channels
 	void channel_setup();
 
-	void set_size(const int size_x, const int size_y, const int size_z, const int margin_start = 0, const int margin_end = 0);
+	void set_size(const int size_x, const int size_z, const int margin_start = 0, const int margin_end = 0);
 
-	bool validate_data_position(const int x, const int y, const int z) const;
+	bool validate_data_position(const int x, const int z) const;
 
-	uint8_t get_voxel(const int p_x, const int p_y, const int p_z, const int p_index) const;
-	void set_voxel(const uint8_t p_value, const int p_x, const int p_y, const int p_z, const int p_index);
+	uint8_t get_voxel(const int p_x, const int p_z, const int p_index) const;
+	void set_voxel(const uint8_t p_value, const int p_x, const int p_z, const int p_index);
 
 	int channel_get_count() const;
 	void channel_set_count(const int count);
@@ -190,8 +187,8 @@ public:
 	PoolByteArray channel_get_compressed(const int channel_index) const;
 	void channel_set_compressed(const int channel_index, const PoolByteArray &data);
 
-	int get_index(const int x, const int y, const int z) const;
-	int get_data_index(const int x, const int y, const int z) const;
+	int get_index(const int x, const int z) const;
+	int get_data_index(const int x, const int z) const;
 	int get_data_size() const;
 
 	//Terra Structures
@@ -353,19 +350,18 @@ protected:
 	TerraWorld *_voxel_world;
 
 	int _position_x;
-	int _position_y;
 	int _position_z;
 
 	int _size_x;
-	int _size_y;
 	int _size_z;
 
 	int _data_size_x;
-	int _data_size_y;
 	int _data_size_z;
 
 	int _margin_start;
 	int _margin_end;
+
+	float _world_height;
 
 	Vector<uint8_t *> _channels;
 

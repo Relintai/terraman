@@ -70,9 +70,6 @@ public:
 	int get_chunk_size_x() const;
 	void set_chunk_size_x(const int value);
 
-	int get_chunk_size_y() const;
-	void set_chunk_size_y(const int value);
-
 	int get_chunk_size_z() const;
 	void set_chunk_size_z(const int value);
 
@@ -87,6 +84,9 @@ public:
 
 	bool get_use_threads() const;
 	void set_use_threads(const bool value);
+
+	float get_world_height() const;
+	void set_world_height(const float value);
 
 	int get_max_concurrent_generations() const;
 	void set_max_concurrent_generations(const int value);
@@ -133,10 +133,10 @@ public:
 	void voxel_structures_set(const Vector<Variant> &structures);
 
 	//Chunks
-	void chunk_add(Ref<TerraChunk> chunk, const int x, const int y, const int z);
-	bool chunk_has(const int x, const int y, const int z) const;
-	Ref<TerraChunk> chunk_get(const int x, const int y, const int z);
-	Ref<TerraChunk> chunk_remove(const int x, const int y, const int z);
+	void chunk_add(Ref<TerraChunk> chunk, const int x, const int z);
+	bool chunk_has(const int x, const int z) const;
+	Ref<TerraChunk> chunk_get(const int x, const int z);
+	Ref<TerraChunk> chunk_remove(const int x, const int z);
 	Ref<TerraChunk> chunk_remove_index(const int index);
 	Ref<TerraChunk> chunk_get_index(const int index);
 
@@ -144,8 +144,8 @@ public:
 
 	void chunks_clear();
 
-	Ref<TerraChunk> chunk_get_or_create(const int x, const int y, const int z);
-	Ref<TerraChunk> chunk_create(const int x, const int y, const int z);
+	Ref<TerraChunk> chunk_get_or_create(const int x, const int z);
+	Ref<TerraChunk> chunk_create(const int x, const int z);
 	void chunk_setup(Ref<TerraChunk> chunk);
 
 	void chunk_generate(Ref<TerraChunk> chunk);
@@ -196,7 +196,7 @@ public:
 
 protected:
 	virtual void _generate_chunk(Ref<TerraChunk> chunk);
-	virtual Ref<TerraChunk> _create_chunk(int x, int y, int z, Ref<TerraChunk> p_chunk);
+	virtual Ref<TerraChunk> _create_chunk(int x, int z, Ref<TerraChunk> p_chunk);
 	virtual int _get_channel_index_info(const ChannelTypeInfo channel_type);
 	virtual void _set_voxel_with_tool(const bool mode_add, const Vector3 hit_position, const Vector3 hit_normal, const int selected_voxel, const int isolevel);
 
@@ -211,20 +211,17 @@ public:
 
 		IntPos() {
 			x = 0;
-			y = 0;
 			z = 0;
 		}
 
-		IntPos(int p_x, int p_y, int p_z) {
+		IntPos(int p_x, int p_z) {
 			x = p_x;
-			y = p_y;
 			z = p_z;
 		}
 
-		IntPos(const Vector3 &p) {
+		IntPos(const Vector2 &p) {
 			x = p.x;
-			y = p.y;
-			z = p.z;
+			z = p.y;
 		}
 	};
 
@@ -242,11 +239,11 @@ private:
 	bool _is_priority_generation;
 
 	int _chunk_size_x;
-	int _chunk_size_y;
 	int _chunk_size_z;
 	int _current_seed;
 	int _data_margin_start;
 	int _data_margin_end;
+	float _world_height;
 
 	Ref<TerramanLibrary> _library;
 	Ref<TerramanLevelGenerator> _level_generator;
@@ -274,7 +271,7 @@ private:
 };
 
 _FORCE_INLINE_ bool operator==(const TerraWorld::IntPos &a, const TerraWorld::IntPos &b) {
-	return a.x == b.x && a.y == b.y && a.z == b.z;
+	return a.x == b.x && a.z == b.z;
 }
 
 VARIANT_ENUM_CAST(TerraWorld::ChannelTypeInfo);

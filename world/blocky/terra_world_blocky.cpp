@@ -30,7 +30,7 @@ SOFTWARE.
 #include "../jobs/terra_prop_job.h"
 #include "../jobs/terra_terrarin_job.h"
 
-Ref<TerraChunk> TerraWorldBlocky::_create_chunk(int x, int y, int z, Ref<TerraChunk> chunk) {
+Ref<TerraChunk> TerraWorldBlocky::_create_chunk(int x, int z, Ref<TerraChunk> chunk) {
 
 	if (!chunk.is_valid()) {
 		chunk = Ref<TerraChunk>(memnew(TerraChunkBlocky));
@@ -55,7 +55,7 @@ Ref<TerraChunk> TerraWorldBlocky::_create_chunk(int x, int y, int z, Ref<TerraCh
 		chunk->job_add(pj);
 	}
 
-	return TerraWorld::_create_chunk(x, y, z, chunk);
+	return TerraWorld::_create_chunk(x, z, chunk);
 }
 
 TerraWorldBlocky::TerraWorldBlocky() {

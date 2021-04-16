@@ -83,35 +83,29 @@ PoolColorArray TerraWorldDefault::get_vertex_colors(const Transform &transform, 
 
 		//Note: floor is needed to handle negative numbers proiberly
 		int x = static_cast<int>(Math::floor(pos.x / get_chunk_size_x()));
-		int y = static_cast<int>(Math::floor(pos.y / get_chunk_size_y()));
 		int z = static_cast<int>(Math::floor(pos.z / get_chunk_size_z()));
 
 		int bx = static_cast<int>(Math::floor(pos.x)) % get_chunk_size_x();
-		int by = static_cast<int>(Math::floor(pos.y)) % get_chunk_size_y();
 		int bz = static_cast<int>(Math::floor(pos.z)) % get_chunk_size_z();
 
 		if (bx < 0) {
 			bx += get_chunk_size_x();
 		}
 
-		if (by < 0) {
-			by += get_chunk_size_y();
-		}
-
 		if (bz < 0) {
 			bz += get_chunk_size_z();
 		}
 
-		Ref<TerraChunk> chunk = chunk_get(x, y, z);
+		Ref<TerraChunk> chunk = chunk_get(x, z);
 
 		if (chunk.is_valid()) {
 			Color light = Color(
-					chunk->get_voxel(bx, by, bz, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
-					chunk->get_voxel(bx, by, bz, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
-					chunk->get_voxel(bx, by, bz, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
+					chunk->get_voxel(bx, bz, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
+					chunk->get_voxel(bx, bz, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
+					chunk->get_voxel(bx, bz, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
 
-			float ao = (chunk->get_voxel(bx, by, bz, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * ao_strength;
-			float rao = chunk->get_voxel(bx, by, bz, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
+			float ao = (chunk->get_voxel(bx, bz, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * ao_strength;
+			float rao = chunk->get_voxel(bx, bz, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
 
 			ao += rao;
 
@@ -147,7 +141,6 @@ void TerraWorldDefault::_update_lods() {
 	Vector3 ppos = get_player()->get_transform().origin;
 
 	int ppx = int(ppos.x / get_chunk_size_x() / get_voxel_scale());
-	int ppy = int(ppos.y / get_chunk_size_y() / get_voxel_scale());
 	int ppz = int(ppos.z / get_chunk_size_z() / get_voxel_scale());
 
 	for (int i = 0; i < chunk_get_count(); ++i) {
@@ -157,10 +150,9 @@ void TerraWorldDefault::_update_lods() {
 			continue;
 
 		int dx = Math::abs(ppx - c->get_position_x());
-		int dy = Math::abs(ppy - c->get_position_y());
 		int dz = Math::abs(ppz - c->get_position_z());
 
-		int mr = MAX(MAX(dx, dy), dz);
+		int mr = MAX(dx, dz);
 
 		mr -= _chunk_lod_falloff;
 
@@ -172,7 +164,7 @@ void TerraWorldDefault::_update_lods() {
 	}
 }
 
-Ref<TerraChunk> TerraWorldDefault::_create_chunk(int x, int y, int z, Ref<TerraChunk> chunk) {
+Ref<TerraChunk> TerraWorldDefault::_create_chunk(int x, int z, Ref<TerraChunk> chunk) {
 	if (!chunk.is_valid()) {
 		chunk = Ref<TerraChunk>(memnew(TerraChunkDefault));
 	}
@@ -200,7 +192,7 @@ Ref<TerraChunk> TerraWorldDefault::_create_chunk(int x, int y, int z, Ref<TerraC
 		vcd->set_lod_num(_num_lods);
 	}
 
-	return TerraWorld::_create_chunk(x, y, z, chunk);
+	return TerraWorld::_create_chunk(x, z, chunk);
 }
 
 void TerraWorldDefault::_chunk_added(Ref<TerraChunk> chunk) {
