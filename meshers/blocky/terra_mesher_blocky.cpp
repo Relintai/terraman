@@ -42,12 +42,18 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 
 	int x_size = chunk->get_size_x();
 	int z_size = chunk->get_size_z();
+	float world_height = chunk->get_world_height();
 
 	float voxel_scale = get_voxel_scale();
 
 	uint8_t *channel_type = chunk->channel_get(_channel_index_type);
 
 	if (!channel_type)
+		return;
+
+	uint8_t *channel_isolevel = chunk->channel_get(_channel_index_isolevel);
+
+	if (!channel_isolevel)
 		return;
 
 	uint8_t *channel_color_r = NULL;
@@ -57,7 +63,8 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 	uint8_t *channel_rao = NULL;
 
 	Color base_light(_base_light_value, _base_light_value, _base_light_value);
-	Color light(1, 1, 1);
+	Color light[4]{ Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1) };
+
 	bool use_lighting = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
 	bool use_ao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_AO) != 0;
 	bool use_rao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_RAO) != 0;
@@ -74,32 +81,20 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			channel_rao = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
-	Vector<uint8_t> liquids;
-	for (int i = 0; i < _library->voxel_surface_get_num(); ++i) {
-		Ref<TerraSurface> surface = _library->voxel_surface_get(i);
+	int lod_index = 1;
+	for (int z = chunk->get_margin_start(); z < z_size + chunk->get_margin_end(); z += lod_index) {
+		for (int x = chunk->get_margin_start(); x < x_size + chunk->get_margin_end(); x += lod_index) {
 
-		if (!surface.is_valid())
-			continue;
+			int indexes[4] = {
+				chunk->get_data_index(x + lod_index, z),
+				chunk->get_data_index(x, z),
+				chunk->get_data_index(x, z + lod_index),
+				chunk->get_data_index(x + lod_index, z + lod_index)
+			};
 
-		if (surface->get_liquid())
-			liquids.push_back(static_cast<uint8_t>(i + 1));
-	}
-
-	for (int z = chunk->get_margin_start(); z < z_size + chunk->get_margin_start(); ++z) {
-		for (int x = chunk->get_margin_start(); x < x_size + chunk->get_margin_start(); ++x) {
-
-			int index = chunk->get_data_index(x, z);
-			int indexxp = chunk->get_data_index(x + 1, z);
-			int indexxn = chunk->get_data_index(x - 1, z);
-			int indexzp = chunk->get_data_index(x, z + 1);
-			int indexzn = chunk->get_data_index(x, z - 1);
-
-			uint8_t type = channel_type[index];
+			uint8_t type = channel_type[indexes[0]];
 
 			if (type == 0)
-				continue;
-
-			if (liquids.find(type) != -1)
 				continue;
 
 			Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
@@ -107,319 +102,82 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			if (!surface.is_valid())
 				continue;
 
-			uint8_t neighbours[] = {
-				channel_type[indexxp],
-				channel_type[indexxn],
-				channel_type[indexzp],
-				channel_type[indexzn],
+			uint8_t isolevels[] = {
+				channel_isolevel[indexes[0]],
+				channel_isolevel[indexes[1]],
+				channel_isolevel[indexes[2]],
+				channel_isolevel[indexes[3]],
 			};
 
-			for (int i = 0; i < 6; ++i) {
-				if (liquids.find(neighbours[i]) != -1) {
-					neighbours[i] = 0;
-				}
-			}
+			if (use_lighting) {
+				for (int i = 0; i < 4; ++i) {
+					int indx = indexes[i];
 
-			//x + 1
-			if (neighbours[0] == 0) {
-				if (use_lighting) {
-					light = Color(channel_color_r[indexxp] / 255.0,
-							channel_color_g[indexxp] / 255.0,
-							channel_color_b[indexxp] / 255.0);
+					light[i] = Color(channel_color_r[indx] / 255.0,
+							channel_color_g[indx] / 255.0,
+							channel_color_b[indx] / 255.0);
 
 					float ao = 0;
 
 					if (use_ao)
-						ao = channel_ao[indexxp] / 255.0;
+						ao = channel_ao[indx] / 255.0;
 
 					if (use_rao) {
-						float rao = channel_rao[indexxp] / 255.0;
+						float rao = channel_rao[indx] / 255.0;
 						ao += rao;
 					}
 
-					light += base_light;
+					light[i] += base_light;
 
 					if (ao > 0)
-						light -= Color(ao, ao, ao) * _ao_strength;
+						light[i] -= Color(ao, ao, ao) * _ao_strength;
 
-					light.r = CLAMP(light.r, 0, 1.0);
-					light.g = CLAMP(light.g, 0, 1.0);
-					light.b = CLAMP(light.b, 0, 1.0);
-				}
-
-				int vc = get_vertex_count();
-				add_indices(vc + 2);
-				add_indices(vc + 1);
-				add_indices(vc + 0);
-				add_indices(vc + 3);
-				add_indices(vc + 2);
-				add_indices(vc + 0);
-
-				Vector2 uvs[] = {
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
-				};
-
-				Vector3 verts[] = {
-					Vector3(1, 0, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(1, 1, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(1, 1, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(1, 0, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale
-				};
-
-				for (int i = 0; i < 4; ++i) {
-					add_normal(Vector3(1, 0, 0));
-
-					if (use_lighting || _always_add_colors)
-						add_color(light);
-
-					add_uv(uvs[i]);
-					add_vertex(verts[i]);
+					light[i].r = CLAMP(light[i].r, 0, 1.0);
+					light[i].g = CLAMP(light[i].g, 0, 1.0);
+					light[i].b = CLAMP(light[i].b, 0, 1.0);
 				}
 			}
 
-			//x - 1
-			if (neighbours[1] == 0) {
-				if (use_lighting) {
-					light = Color(channel_color_r[indexxn] / 255.0,
-							channel_color_g[indexxn] / 255.0,
-							channel_color_b[indexxn] / 255.0);
+			int vc = get_vertex_count();
+			add_indices(vc + 2);
+			add_indices(vc + 1);
+			add_indices(vc + 0);
+			add_indices(vc + 3);
+			add_indices(vc + 2);
+			add_indices(vc + 0);
 
-					float ao = 0;
+			Vector2 uvs[] = {
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+			};
 
-					if (use_ao)
-						ao = channel_ao[indexxn] / 255.0;
 
-					if (use_rao) {
-						float rao = channel_rao[indexxn] / 255.0;
-						ao += rao;
-					}
 
-					light += base_light;
+			Vector3 verts[] = {
+				Vector3(x + lod_index, isolevels[0] / 255.0 * world_height, z) * voxel_scale,
+				Vector3(x, isolevels[1] / 255.0 * world_height, z) * voxel_scale,
+				Vector3(x, isolevels[2] / 255.0 * world_height, z + lod_index) * voxel_scale,
+				Vector3(x + lod_index, isolevels[3] / 255.0 * world_height, z + lod_index) * voxel_scale
+			};
 
-					if (ao > 0)
-						light -= Color(ao, ao, ao) * _ao_strength;
 
-					light.r = CLAMP(light.r, 0, 1.0);
-					light.g = CLAMP(light.g, 0, 1.0);
-					light.b = CLAMP(light.b, 0, 1.0);
-				}
+			Vector3 normals[] = {
+				(verts[0] - verts[1]).cross(verts[0] - verts[2]).normalized(),
+				(verts[0] - verts[1]).cross(verts[1] - verts[2]).normalized(),
+				(verts[1] - verts[2]).cross(verts[2] - verts[0]).normalized(),
+				(verts[2] - verts[3]).cross(verts[3] - verts[0]).normalized(),
+			};
 
-				int vc = get_vertex_count();
-				add_indices(vc + 0);
-				add_indices(vc + 1);
-				add_indices(vc + 2);
+			for (int i = 0; i < 4; ++i) {
+				add_normal(normals[i]);
 
-				add_indices(vc + 0);
-				add_indices(vc + 2);
-				add_indices(vc + 3);
+				if (use_lighting || _always_add_colors)
+					add_color(light[i]);
 
-				Vector2 uvs[] = {
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
-				};
-
-				Vector3 verts[] = {
-					Vector3(0, 0, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(0, 1, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(0, 1, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(0, 0, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale
-				};
-
-				for (int i = 0; i < 4; ++i) {
-					add_normal(Vector3(-1, 0, 0));
-
-					if (use_lighting || _always_add_colors)
-						add_color(light);
-
-					add_uv(uvs[i]);
-					add_vertex(verts[i]);
-				}
-			}
-			/*
-			//y + 1
-			if (neighbours[2] == 0) {
-				if (use_lighting) {
-					light = Color(channel_color_r[indexyp] / 255.0,
-							channel_color_g[indexyp] / 255.0,
-							channel_color_b[indexyp] / 255.0);
-
-					float ao = 0;
-
-					if (use_ao)
-						ao = channel_ao[indexyp] / 255.0;
-
-					if (use_rao) {
-						float rao = channel_rao[indexyp] / 255.0;
-						ao += rao;
-					}
-
-					light += base_light;
-
-					if (ao > 0)
-						light -= Color(ao, ao, ao) * _ao_strength;
-				}
-
-				light.r = CLAMP(light.r, 0, 1.0);
-				light.g = CLAMP(light.g, 0, 1.0);
-				light.b = CLAMP(light.b, 0, 1.0);
-
-				int vc = get_vertex_count();
-				add_indices(vc + 2);
-				add_indices(vc + 1);
-				add_indices(vc + 0);
-				add_indices(vc + 3);
-				add_indices(vc + 2);
-				add_indices(vc + 0);
-
-				Vector2 uvs[] = {
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
-				};
-
-				Vector3 verts[] = {
-					Vector3(1, 1, 0) * voxel_scale + Vector3(x - 1, y - 1, z - 1) * voxel_scale,
-					Vector3(0, 1, 0) * voxel_scale + Vector3(x - 1, y - 1, z - 1) * voxel_scale,
-					Vector3(0, 1, 1) * voxel_scale + Vector3(x - 1, y - 1, z - 1) * voxel_scale,
-					Vector3(1, 1, 1) * voxel_scale + Vector3(x - 1, y - 1, z - 1) * voxel_scale
-				};
-
-				for (int i = 0; i < 4; ++i) {
-					add_normal(Vector3(0, 1, 0));
-
-					if (use_lighting || _always_add_colors)
-						add_color(light);
-
-					add_uv(uvs[i]);
-					add_vertex(verts[i]);
-				}
-			}
-*/
-			//z + 1
-			if (neighbours[2] == 0) {
-				if (use_lighting) {
-					light = Color(channel_color_r[indexzp] / 255.0,
-							channel_color_g[indexzp] / 255.0,
-							channel_color_b[indexzp] / 255.0);
-
-					float ao = 0;
-
-					if (use_ao)
-						ao = channel_ao[indexzp] / 255.0;
-
-					if (use_rao) {
-						float rao = channel_rao[indexzp] / 255.0;
-						ao += rao;
-					}
-
-					light += base_light;
-
-					if (ao > 0)
-						light -= Color(ao, ao, ao) * _ao_strength;
-
-					light.r = CLAMP(light.r, 0, 1.0);
-					light.g = CLAMP(light.g, 0, 1.0);
-					light.b = CLAMP(light.b, 0, 1.0);
-				}
-
-				int vc = get_vertex_count();
-				add_indices(vc + 2);
-				add_indices(vc + 1);
-				add_indices(vc + 0);
-				add_indices(vc + 3);
-				add_indices(vc + 2);
-				add_indices(vc + 0);
-
-				Vector2 uvs[] = {
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
-				};
-
-				Vector3 verts[] = {
-					Vector3(1, 0, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(1, 1, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(0, 1, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(0, 0, 1) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale
-				};
-
-				for (int i = 0; i < 4; ++i) {
-					add_normal(Vector3(0, 0, 1));
-
-					if (use_lighting || _always_add_colors)
-						add_color(light);
-
-					add_uv(uvs[i]);
-					add_vertex(verts[i]);
-				}
-			}
-
-			//z - 1
-			if (neighbours[3] == 0) {
-				if (use_lighting) {
-					light = Color(channel_color_r[indexzn] / 255.0,
-							channel_color_g[indexzn] / 255.0,
-							channel_color_b[indexzn] / 255.0);
-
-					float ao = 0;
-
-					if (use_ao)
-						ao = channel_ao[indexzn] / 255.0;
-
-					if (use_rao) {
-						float rao = channel_rao[indexzn] / 255.0;
-						ao += rao;
-					}
-
-					light += base_light;
-
-					if (ao > 0)
-						light -= Color(ao, ao, ao) * _ao_strength;
-
-					light.r = CLAMP(light.r, 0, 1.0);
-					light.g = CLAMP(light.g, 0, 1.0);
-					light.b = CLAMP(light.b, 0, 1.0);
-				}
-
-				int vc = get_vertex_count();
-				add_indices(vc + 0);
-				add_indices(vc + 1);
-				add_indices(vc + 2);
-
-				add_indices(vc + 0);
-				add_indices(vc + 2);
-				add_indices(vc + 3);
-
-				Vector2 uvs[] = {
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-					surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_SIDE, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
-				};
-
-				Vector3 verts[] = {
-					Vector3(1, 0, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(1, 1, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(0, 1, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale,
-					Vector3(0, 0, 0) * voxel_scale + Vector3(x - 1, -1, z - 1) * voxel_scale
-				};
-
-				for (int i = 0; i < 4; ++i) {
-					add_normal(Vector3(0, 0, -1));
-
-					if (use_lighting || _always_add_colors)
-						add_color(light);
-
-					add_uv(uvs[i]);
-					add_vertex(verts[i]);
-				}
+				add_uv(uvs[i]);
+				add_vertex(verts[i]);
 			}
 		}
 	}
