@@ -228,7 +228,7 @@ public:
 	struct IntPosHasher {
 		static _FORCE_INLINE_ uint32_t hash(const IntPos &v) {
 			uint32_t hash = hash_djb2_one_32(v.x);
-			hash = hash_djb2_one_32(v.y, hash);
+			hash = hash_djb2_one_32(v.x, hash);
 			return hash_djb2_one_32(v.z, hash);
 		}
 	};
