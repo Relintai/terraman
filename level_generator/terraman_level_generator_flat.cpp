@@ -39,10 +39,10 @@ void TerramanLevelGeneratorFlat::set_channel_map(const Dictionary &map) {
 }
 
 void TerramanLevelGeneratorFlat::_generate_chunk(Ref<TerraChunk> chunk) {
-	Variant key;
-	while (_channel_map.next(&key)) {
-		int k = key;
-		int value = _channel_map[key];
+	const Variant *key = NULL;
+	while ((key = _channel_map.next(key))) {
+		int k = *key;
+		int value = _channel_map[*key];
 
 		chunk->channel_fill(value, k);
 	}
