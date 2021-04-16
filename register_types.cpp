@@ -23,62 +23,53 @@ SOFTWARE.
 #include "register_types.h"
 
 
-#include "library/voxel_surface.h"
-#include "library/voxel_surface_simple.h"
+#include "library/terra_surface.h"
+#include "library/terra_surface_simple.h"
 
-#include "library/voxelman_library.h"
-#include "library/voxelman_library_simple.h"
+#include "library/terraman_library.h"
+#include "library/terraman_library_simple.h"
 
 #ifdef TEXTURE_PACKER_PRESENT
-#include "library/voxel_surface_merger.h"
-#include "library/voxelman_library_merger.h"
+#include "library/terra_surface_merger.h"
+#include "library/terraman_library_merger.h"
 #endif
 
-#include "data/voxel_light.h"
-#include "meshers/voxel_mesher.h"
+#include "data/terra_light.h"
+#include "meshers/terra_mesher.h"
 
-#include "meshers/marching_cubes/marching_cubes_cell_data.h"
-#include "meshers/marching_cubes/voxel_mesher_marching_cubes.h"
+#include "world/block_terra_structure.h"
+#include "world/terra_environment_data.h"
+#include "world/terra_chunk.h"
+#include "world/terra_structure.h"
+#include "world/terra_world.h"
 
-#include "world/block_voxel_structure.h"
-#include "world/environment_data.h"
-#include "world/voxel_chunk.h"
-#include "world/voxel_structure.h"
-#include "world/voxel_world.h"
+#include "world/default/terra_chunk_default.h"
+#include "world/default/terra_world_default.h"
 
-#include "world/default/voxel_chunk_default.h"
-#include "world/default/voxel_world_default.h"
+#include "level_generator/terraman_level_generator.h"
+#include "level_generator/terraman_level_generator_flat.h"
 
-#include "level_generator/voxelman_level_generator.h"
-#include "level_generator/voxelman_level_generator_flat.h"
+#include "areas/terra_world_area.h"
 
-#include "areas/world_area.h"
+#include "world/terra_world_editor.h"
 
-#include "world/voxel_world_editor.h"
+#include "meshers/blocky/terra_mesher_blocky.h"
+#include "meshers/blocky/terra_mesher_liquid_blocky.h"
 
-#include "meshers/blocky/voxel_mesher_blocky.h"
-#include "meshers/blocky/voxel_mesher_liquid_blocky.h"
+#include "world/blocky/terra_chunk_blocky.h"
+#include "world/blocky/terra_world_blocky.h"
 
-#include "world/blocky/voxel_chunk_blocky.h"
-#include "world/blocky/voxel_world_blocky.h"
+#include "nodes/terraman_light.h"
 
-#include "world/marching_cubes/voxel_chunk_marching_cubes.h"
-#include "world/marching_cubes/voxel_world_marching_cubes.h"
-
-#include "nodes/voxelman_light.h"
-
-#include "world/jobs/voxel_job.h"
-#include "world/jobs/voxel_light_job.h"
-#include "world/jobs/voxel_prop_job.h"
-#include "world/jobs/voxel_terrarin_job.h"
+#include "world/jobs/terra_job.h"
+#include "world/jobs/terra_light_job.h"
+#include "world/jobs/terra_prop_job.h"
+#include "world/jobs/terra_terrarin_job.h"
 
 
 void register_terraman_types() {
 	ClassDB::register_class<TerraMesher>();
 	ClassDB::register_class<TerraMesherDefault>();
-
-	ClassDB::register_class<TerraMesherMarchingCubes>();
-	ClassDB::register_class<MarchingCubesCellData>();
 
 	ClassDB::register_class<TerraSurface>();
 	ClassDB::register_class<TerraSurfaceSimple>();
@@ -107,9 +98,6 @@ void register_terraman_types() {
 	ClassDB::register_class<TerraWorldBlocky>();
 	ClassDB::register_class<TerraChunkBlocky>();
 	ClassDB::register_class<TerraMesherLiquidBlocky>();
-
-	ClassDB::register_class<TerraWorldMarchingCubes>();
-	ClassDB::register_class<TerraChunkMarchingCubes>();
 
 	ClassDB::register_class<TerramanLevelGenerator>();
 	ClassDB::register_class<TerramanLevelGeneratorFlat>();

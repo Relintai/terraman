@@ -25,52 +25,52 @@ sources = [
 
     "register_types.cpp",
 
-    "library/voxelman_library.cpp",
-    "library/voxelman_library_simple.cpp",
+    "library/terraman_library.cpp",
+    "library/terraman_library_simple.cpp",
     
-    "nodes/voxelman_light.cpp",
+    "nodes/terraman_light.cpp",
 
-    "library/voxel_surface.cpp",
-    "library/voxel_surface_simple.cpp",
+    "library/terra_surface.cpp",
+    "library/terra_surface_simple.cpp",
 
-    "data/voxel_light.cpp",
+    "data/terra_light.cpp",
 
-    "meshers/voxel_mesher.cpp",
+    "meshers/terra_mesher.cpp",
 
-    "meshers/blocky/voxel_mesher_blocky.cpp",
-    "meshers/blocky/voxel_mesher_liquid_blocky.cpp",
-    "meshers/default/voxel_mesher_default.cpp",
+    "meshers/blocky/terra_mesher_blocky.cpp",
+    "meshers/blocky/terra_mesher_liquid_blocky.cpp",
+    "meshers/default/terra_mesher_default.cpp",
 
-    "world/voxel_world.cpp",
-    "world/voxel_chunk.cpp",
-    "world/voxel_structure.cpp",
-    "world/block_voxel_structure.cpp",
-    "world/environment_data.cpp",
+    "world/terra_world.cpp",
+    "world/terra_chunk.cpp",
+    "world/terra_structure.cpp",
+    "world/block_terra_structure.cpp",
+    "world/terra_environment_data.cpp",
 
-    "world/blocky/voxel_chunk_blocky.cpp",
-    "world/blocky/voxel_world_blocky.cpp",
+    "world/blocky/terra_chunk_blocky.cpp",
+    "world/blocky/terra_world_blocky.cpp",
 
-    "world/default/voxel_world_default.cpp",
-    "world/default/voxel_chunk_default.cpp",
+    "world/default/terra_world_default.cpp",
+    "world/default/terra_chunk_default.cpp",
 
-    "level_generator/voxelman_level_generator.cpp",
-    "level_generator/voxelman_level_generator_flat.cpp",
+    "level_generator/terraman_level_generator.cpp",
+    "level_generator/terraman_level_generator_flat.cpp",
 
-    "areas/world_area.cpp",
+    "areas/terra_world_area.cpp",
 
-    "world/voxel_world_editor.cpp",
+    "world/terra_world_editor.cpp",
     
     "thirdparty/lz4/lz4.c",
 
-    "world/jobs/voxel_job.cpp",
-    "world/jobs/voxel_terrarin_job.cpp",
-    "world/jobs/voxel_light_job.cpp",
-    "world/jobs/voxel_prop_job.cpp",
+    "world/jobs/terra_job.cpp",
+    "world/jobs/terra_terrarin_job.cpp",
+    "world/jobs/terra_light_job.cpp",
+    "world/jobs/terra_prop_job.cpp",
 ]
 
 if has_texture_packer:
-    sources.append("library/voxelman_library_merger.cpp")
-    sources.append("library/voxel_surface_merger.cpp")
+    sources.append("library/terraman_library_merger.cpp")
+    sources.append("library/terra_surface_merger.cpp")
 
 if ARGUMENTS.get('custom_modules_shared', 'no') == 'yes':
     # Shared lib compilation
