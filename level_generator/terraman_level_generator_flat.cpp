@@ -39,49 +39,13 @@ void TerramanLevelGeneratorFlat::set_channel_map(const Dictionary &map) {
 }
 
 void TerramanLevelGeneratorFlat::_generate_chunk(Ref<TerraChunk> chunk) {
-	/*
-	int dymin = chunk->get_position_y() * chunk->get_size_y();
-	int dymax = dymin + chunk->get_size_y() + chunk->get_margin_end();
-
-	if (_floor_position < dymin)
-		return;
-
-	if (_floor_position > dymax) {
-		Variant key;
-		while (_channel_map.next(&key)) {
-			int k = key;
-			int value = _channel_map[key];
-
-			chunk->channel_fill(value, k);
-		}
-
-		return;
-	}
-
-	const Variant *keyptr = NULL;
-	keyptr = _channel_map.next(keyptr);
-	while (keyptr) {
-		Variant key = (*keyptr);
+	Variant key;
+	while (_channel_map.next(&key)) {
 		int k = key;
 		int value = _channel_map[key];
 
-		uint8_t *channel = chunk->channel_get_valid(k, 0);
-
-		if (!channel)
-			continue;
-
-		int ty = _floor_position - dymin;
-		for (int y = 0; y < ty; ++y) {
-			for (int z = 0; z < chunk->get_data_size_z(); ++z) {
-				for (int x = 0; x < chunk->get_data_size_x(); ++x) {
-					channel[chunk->get_data_index(x, y, z)] = value;
-				}
-			}
-		}
-
-		keyptr = _channel_map.next(keyptr);
+		chunk->channel_fill(value, k);
 	}
-	*/
 }
 
 TerramanLevelGeneratorFlat::TerramanLevelGeneratorFlat() {
