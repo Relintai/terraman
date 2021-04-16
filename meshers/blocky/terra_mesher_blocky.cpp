@@ -302,7 +302,7 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			}
 */
 			//z + 1
-			if (neighbours[4] == 0) {
+			if (neighbours[2] == 0) {
 				if (use_lighting) {
 					light = Color(channel_color_r[indexzp] / 255.0,
 							channel_color_g[indexzp] / 255.0,
@@ -362,7 +362,7 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			}
 
 			//z - 1
-			if (neighbours[5] == 0) {
+			if (neighbours[3] == 0) {
 				if (use_lighting) {
 					light = Color(channel_color_r[indexzn] / 255.0,
 							channel_color_g[indexzn] / 255.0,
