@@ -64,7 +64,7 @@ sources = [
 
     "world/jobs/terra_job.cpp",
     "world/jobs/terra_terrarin_job.cpp",
-    "world/jobs/terra_terrarin_job_step.cpp",
+    "world/jobs/terra_mesher_job_step.cpp",
     "world/jobs/terra_light_job.cpp",
     "world/jobs/terra_prop_job.cpp",
 ]

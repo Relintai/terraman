@@ -31,11 +31,11 @@ SOFTWARE.
 #include "core/reference.h"
 #endif
 
-class TerraTerrarinJobStep : public Reference {
-	GDCLASS(TerraTerrarinJobStep, Reference);
+class TerraMesherJobStep : public Reference {
+	GDCLASS(TerraMesherJobStep, Reference);
 
 public:
-	enum TerraTerrarinJobStepType {
+	enum TerraMesherJobStepType {
 		TYPE_NORMAL = 0,
 		TYPE_DROP_UV2,
 		TYPE_MERGE_VERTS,
@@ -44,22 +44,22 @@ public:
 
 	static const String BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE;
 
-	TerraTerrarinJobStepType get_job_type() const;
-	void set_job_type(const TerraTerrarinJobStepType value);
+	TerraMesherJobStepType get_job_type() const;
+	void set_job_type(const TerraMesherJobStepType value);
 
 	int get_lod_index() const;
 	void set_lod_index(const int value);
 
-	TerraTerrarinJobStep();
-	~TerraTerrarinJobStep();
+	TerraMesherJobStep();
+	~TerraMesherJobStep();
 
 protected:
 	static void _bind_methods();
 
-	TerraTerrarinJobStepType _job_type;
+	TerraMesherJobStepType _job_type;
 	int _lod_index;
 };
 
-VARIANT_ENUM_CAST(TerraTerrarinJobStep::TerraTerrarinJobStepType);
+VARIANT_ENUM_CAST(TerraMesherJobStep::TerraMesherJobStepType);
 
 #endif

@@ -20,39 +20,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "terra_terrarin_job_step.h"
+#include "terra_mesher_job_step.h"
 
-const String TerraTerrarinJobStep::BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE = "Normal,Drop UV2,Merge Verts,Bake Texture";
+const String TerraMesherJobStep::BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE = "Normal,Drop UV2,Merge Verts,Bake Texture";
 
-TerraTerrarinJobStep::TerraTerrarinJobStepType TerraTerrarinJobStep::get_job_type() const {
+TerraMesherJobStep::TerraMesherJobStepType TerraMesherJobStep::get_job_type() const {
 	return _job_type;
 }
-void TerraTerrarinJobStep::set_job_type(const TerraTerrarinJobStep::TerraTerrarinJobStepType value) {
+void TerraMesherJobStep::set_job_type(const TerraMesherJobStep::TerraMesherJobStepType value) {
 	_job_type = value;
 }
 
-int TerraTerrarinJobStep::get_lod_index() const {
+int TerraMesherJobStep::get_lod_index() const {
 	return _lod_index;
 }
-void TerraTerrarinJobStep::set_lod_index(const int value) {
+void TerraMesherJobStep::set_lod_index(const int value) {
 	_lod_index = value;
 }
 
-TerraTerrarinJobStep::TerraTerrarinJobStep() {
+TerraMesherJobStep::TerraMesherJobStep() {
 	_job_type = TYPE_NORMAL;
 	_lod_index = 0;
 }
 
-TerraTerrarinJobStep::~TerraTerrarinJobStep() {
+TerraMesherJobStep::~TerraMesherJobStep() {
 }
 
-void TerraTerrarinJobStep::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_job_type"), &TerraTerrarinJobStep::get_job_type);
-	ClassDB::bind_method(D_METHOD("set_job_type", "value"), &TerraTerrarinJobStep::set_job_type);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "job_type", PROPERTY_HINT_ENUM, TerraTerrarinJobStep::BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE), "set_job_type", "get_job_type");
+void TerraMesherJobStep::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_job_type"), &TerraMesherJobStep::get_job_type);
+	ClassDB::bind_method(D_METHOD("set_job_type", "value"), &TerraMesherJobStep::set_job_type);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "job_type", PROPERTY_HINT_ENUM, TerraMesherJobStep::BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE), "set_job_type", "get_job_type");
 
-	ClassDB::bind_method(D_METHOD("get_lod_index"), &TerraTerrarinJobStep::get_lod_index);
-	ClassDB::bind_method(D_METHOD("set_lod_index", "value"), &TerraTerrarinJobStep::set_lod_index);
+	ClassDB::bind_method(D_METHOD("get_lod_index"), &TerraMesherJobStep::get_lod_index);
+	ClassDB::bind_method(D_METHOD("set_lod_index", "value"), &TerraMesherJobStep::set_lod_index);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "lod_index"), "set_lod_index", "get_lod_index");
 
 	BIND_ENUM_CONSTANT(TYPE_NORMAL);
