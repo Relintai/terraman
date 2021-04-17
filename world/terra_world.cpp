@@ -85,41 +85,11 @@ void TerraWorld::set_current_seed(const int value) {
 	_current_seed = value;
 }
 
-bool TerraWorld::get_use_threads() const {
-	return _use_threads;
-}
-void TerraWorld::set_use_threads(const bool value) {
-	_use_threads = OS::get_singleton()->can_use_threads() ? value : false;
-
-	for (int i = 0; i < chunk_get_count(); ++i) {
-		Ref<TerraChunk> c = chunk_get_index(i);
-
-		if (!c.is_valid())
-			continue;
-
-		c->set_is_build_threaded(_use_threads);
-	}
-}
-
 _FORCE_INLINE_ float TerraWorld::get_world_height() const {
 	return _world_height;
 }
 void TerraWorld::set_world_height(const float value) {
 	_world_height = value;
-}
-
-int TerraWorld::get_max_concurrent_generations() const {
-	return _max_concurrent_generations;
-}
-void TerraWorld::set_max_concurrent_generations(const int value) {
-	_max_concurrent_generations = OS::get_singleton()->can_use_threads() ? value : 1;
-}
-
-int TerraWorld::get_max_frame_chunk_build_steps() const {
-	return _max_frame_chunk_build_steps;
-}
-void TerraWorld::set_max_frame_chunk_build_steps(const int value) {
-	_max_frame_chunk_build_steps = value;
 }
 
 Ref<TerramanLibrary> TerraWorld::get_library() {
@@ -826,9 +796,6 @@ TerraWorld::TerraWorld() {
 	_data_margin_end = 0;
 	_world_height = 256;
 
-	set_use_threads(true);
-	set_max_concurrent_generations(3);
-
 	_voxel_scale = 1;
 	_chunk_spawn_range = 4;
 
@@ -1027,18 +994,6 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_current_seed"), &TerraWorld::get_current_seed);
 	ClassDB::bind_method(D_METHOD("set_current_seed", "value"), &TerraWorld::set_current_seed);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "current_seed"), "set_current_seed", "get_current_seed");
-
-	ClassDB::bind_method(D_METHOD("get_use_threads"), &TerraWorld::get_use_threads);
-	ClassDB::bind_method(D_METHOD("set_use_threads", "value"), &TerraWorld::set_use_threads);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_threads"), "set_use_threads", "get_use_threads");
-
-	ClassDB::bind_method(D_METHOD("get_max_concurrent_generations"), &TerraWorld::get_max_concurrent_generations);
-	ClassDB::bind_method(D_METHOD("set_max_concurrent_generations", "value"), &TerraWorld::set_max_concurrent_generations);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_concurrent_generations"), "set_max_concurrent_generations", "get_max_concurrent_generations");
-
-	ClassDB::bind_method(D_METHOD("get_max_frame_chunk_build_steps"), &TerraWorld::get_max_frame_chunk_build_steps);
-	ClassDB::bind_method(D_METHOD("set_max_frame_chunk_build_steps", "value"), &TerraWorld::set_max_frame_chunk_build_steps);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_frame_chunk_build_steps"), "set_max_frame_chunk_build_steps", "get_max_frame_chunk_build_steps");
 
 	ClassDB::bind_method(D_METHOD("get_library"), &TerraWorld::get_library);
 	ClassDB::bind_method(D_METHOD("set_library", "library"), &TerraWorld::set_library);

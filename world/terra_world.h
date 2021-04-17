@@ -82,17 +82,8 @@ public:
 	int get_current_seed() const;
 	void set_current_seed(const int value);
 
-	bool get_use_threads() const;
-	void set_use_threads(const bool value);
-
 	float get_world_height() const;
 	void set_world_height(const float value);
-
-	int get_max_concurrent_generations() const;
-	void set_max_concurrent_generations(const int value);
-
-	int get_max_frame_chunk_build_steps() const;
-	void set_max_frame_chunk_build_steps(const int value);
 
 	Ref<TerramanLibrary> get_library();
 	void set_library(const Ref<TerramanLibrary> &library);
