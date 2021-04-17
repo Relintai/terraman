@@ -65,7 +65,7 @@ SOFTWARE.
 #include "world/jobs/terra_light_job.h"
 #include "world/jobs/terra_prop_job.h"
 #include "world/jobs/terra_terrarin_job.h"
-
+#include "world/jobs/terra_terrarin_job_step.h"
 
 void register_terraman_types() {
 	ClassDB::register_class<TerraMesher>();
@@ -106,6 +106,7 @@ void register_terraman_types() {
 
 	ClassDB::register_class<TerraJob>();
 	ClassDB::register_class<TerraTerrarinJob>();
+	ClassDB::register_class<TerraTerrarinJobStep>();
 	ClassDB::register_class<TerraLightJob>();
 	ClassDB::register_class<TerraPropJob>();
 
