@@ -1020,8 +1020,8 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_data_margin_end", "value"), &TerraWorld::set_data_margin_end);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "data_margin_end"), "set_data_margin_end", "get_data_margin_end");
 
-	ClassDB::bind_method(D_METHOD("get_world_height"), &TerraChunk::get_world_height);
-	ClassDB::bind_method(D_METHOD("set_world_height", "height"), &TerraChunk::set_world_height);
+	ClassDB::bind_method(D_METHOD("get_world_height"), &TerraWorld::get_world_height);
+	ClassDB::bind_method(D_METHOD("set_world_height", "height"), &TerraWorld::set_world_height);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "world_height"), "set_world_height", "get_world_height");
 
 	ClassDB::bind_method(D_METHOD("get_current_seed"), &TerraWorld::get_current_seed);
