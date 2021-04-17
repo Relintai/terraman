@@ -31,6 +31,10 @@ SOFTWARE.
 #include "core/reference.h"
 #endif
 
+#ifdef MESH_UTILS_PRESENT
+#include "../../../mesh_utils/fast_quadratic_mesh_simplifier.h"
+#endif
+
 class TerraMesherJobStep : public Reference {
 	GDCLASS(TerraMesherJobStep, Reference);
 
@@ -40,6 +44,8 @@ public:
 		TYPE_DROP_UV2,
 		TYPE_MERGE_VERTS,
 		TYPE_BAKE_TEXTURE,
+		TYPE_SIMPLIFY_MESH,
+		TYPE_OTHER,
 	};
 
 	static const String BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE;
@@ -50,6 +56,17 @@ public:
 	int get_lod_index() const;
 	void set_lod_index(const int value);
 
+	#ifdef MESH_UTILS_PRESENT
+		Ref<FastQuadraticMeshSimplifier> get_fqms();
+		void set_fqms(const Ref<FastQuadraticMeshSimplifier> &val);
+
+		float get_simplification_step_ratio() const;
+		void set_simplification_step_ratio(const float value);
+
+		int get_simplification_steps() const;
+		void set_simplification_steps(const float value);
+	#endif
+
 	TerraMesherJobStep();
 	~TerraMesherJobStep();
 
@@ -58,6 +75,12 @@ protected:
 
 	TerraMesherJobStepType _job_type;
 	int _lod_index;
+
+	#ifdef MESH_UTILS_PRESENT
+		Ref<FastQuadraticMeshSimplifier> _fqms;
+		float _simplification_step_ratio;
+		int _simplification_steps;
+	#endif
 };
 
 VARIANT_ENUM_CAST(TerraMesherJobStep::TerraMesherJobStepType);
