@@ -41,6 +41,7 @@ class TerraMesherJobStep : public Reference {
 public:
 	enum TerraMesherJobStepType {
 		TYPE_NORMAL = 0,
+		TYPE_NORMAL_LOD,
 		TYPE_DROP_UV2,
 		TYPE_MERGE_VERTS,
 		TYPE_BAKE_TEXTURE,
@@ -64,7 +65,10 @@ public:
 		void set_simplification_step_ratio(const float value);
 
 		int get_simplification_steps() const;
-		void set_simplification_steps(const float value);
+		void set_simplification_steps(const int value);
+
+		float get_simplification_agressiveness() const;
+		void set_simplification_agressiveness(const float value);
 	#endif
 
 	TerraMesherJobStep();
@@ -80,6 +84,7 @@ protected:
 		Ref<FastQuadraticMeshSimplifier> _fqms;
 		float _simplification_step_ratio;
 		int _simplification_steps;
+		float _simplification_agressiveness;
 	#endif
 };
 

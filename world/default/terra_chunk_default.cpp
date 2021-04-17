@@ -74,10 +74,12 @@ void TerraChunkDefault::set_current_lod_level(const int value) {
 	if (_current_lod_level < 0)
 		_current_lod_level = 0;
 
-	if (_current_lod_level > _lod_num)
-		_current_lod_level = _lod_num;
+	int lod_num = mesh_rid_get_count(MESH_INDEX_TERRARIN, MESH_TYPE_INDEX_MESH_INSTANCE);
 
-	for (int i = 0; i < _lod_num + 1; ++i) {
+	if (_current_lod_level > lod_num)
+		_current_lod_level = lod_num;
+
+	for (int i = 0; i < lod_num; ++i) {
 		bool vis = false;
 
 		if (i == _current_lod_level)
@@ -707,7 +709,9 @@ void TerraChunkDefault::_visibility_changed(bool visible) {
 		return;
 	}
 
-	for (int i = 0; i < _lod_num + 1; ++i) {
+	int lod_num = mesh_rid_get_count(MESH_INDEX_TERRARIN, MESH_TYPE_INDEX_MESH_INSTANCE);
+
+	for (int i = 0; i < lod_num; ++i) {
 		RID rid = mesh_rid_get_index(MESH_INDEX_TERRARIN, MESH_TYPE_INDEX_MESH_INSTANCE, i);
 
 		if (rid != RID())

@@ -22,7 +22,7 @@ SOFTWARE.
 
 #include "terra_mesher_job_step.h"
 
-const String TerraMesherJobStep::BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE = "Normal,Drop UV2,Merge Verts,Bake Texture,Simplify Mesh";
+const String TerraMesherJobStep::BINDING_STRING_TERRA_TERRARIN_JOB_STEP_TYPE = "Normal,Normal LOD,Drop UV2,Merge Verts,Bake Texture,Simplify Mesh";
 
 TerraMesherJobStep::TerraMesherJobStepType TerraMesherJobStep::get_job_type() const {
 	return _job_type;
@@ -56,14 +56,28 @@ void TerraMesherJobStep::set_simplification_step_ratio(const float value) {
 int TerraMesherJobStep::get_simplification_steps() const {
 	return _simplification_steps;
 }
-void TerraMesherJobStep::set_simplification_steps(const float value) {
+void TerraMesherJobStep::set_simplification_steps(const int value) {
 	_simplification_steps = value;
 }
+
+float TerraMesherJobStep::get_simplification_agressiveness() const {
+	return _simplification_agressiveness;
+}
+void TerraMesherJobStep::set_simplification_agressiveness(const float value) {
+	_simplification_agressiveness = value;
+}
+
 #endif
 
 TerraMesherJobStep::TerraMesherJobStep() {
 	_job_type = TYPE_NORMAL;
 	_lod_index = 0;
+
+#ifdef MESH_UTILS_PRESENT
+	_simplification_step_ratio = 0.8;
+	_simplification_steps = 2;
+	_simplification_agressiveness = 7;
+#endif
 }
 
 TerraMesherJobStep::~TerraMesherJobStep() {
@@ -85,17 +99,22 @@ void TerraMesherJobStep::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_fqms"), &TerraMesherJobStep::get_fqms);
 	ClassDB::bind_method(D_METHOD("set_fqms", "value"), &TerraMesherJobStep::set_fqms);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fqms", PROPERTY_HINT_RESOURCE_TYPE, "FastQuadraticMeshSimplifier"), "set_fqms", "get_fqms");
-	
+
 	ClassDB::bind_method(D_METHOD("get_simplification_step_ratio"), &TerraMesherJobStep::get_simplification_step_ratio);
 	ClassDB::bind_method(D_METHOD("set_simplification_step_ratio", "value"), &TerraMesherJobStep::set_simplification_step_ratio);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "simplification_step_ratio"), "set_simplification_step_ratio", "get_simplification_step_ratio");
-	
+
 	ClassDB::bind_method(D_METHOD("get_simplification_steps"), &TerraMesherJobStep::get_simplification_steps);
 	ClassDB::bind_method(D_METHOD("set_simplification_steps", "value"), &TerraMesherJobStep::set_simplification_steps);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "simplification_steps"), "set_simplification_steps", "get_simplification_steps");
+
+	ClassDB::bind_method(D_METHOD("get_simplification_agressiveness"), &TerraMesherJobStep::get_simplification_agressiveness);
+	ClassDB::bind_method(D_METHOD("set_simplification_agressiveness", "value"), &TerraMesherJobStep::set_simplification_agressiveness);
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "simplification_agressiveness"), "set_simplification_agressiveness", "get_simplification_agressiveness");
 #endif
 
 	BIND_ENUM_CONSTANT(TYPE_NORMAL);
+	BIND_ENUM_CONSTANT(TYPE_NORMAL_LOD);
 	BIND_ENUM_CONSTANT(TYPE_DROP_UV2);
 	BIND_ENUM_CONSTANT(TYPE_MERGE_VERTS);
 	BIND_ENUM_CONSTANT(TYPE_BAKE_TEXTURE);

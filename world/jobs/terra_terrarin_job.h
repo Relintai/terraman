@@ -25,6 +25,8 @@ SOFTWARE.
 
 #include "terra_job.h"
 
+#include "terra_mesher_job_step.h"
+
 #include "../../defines.h"
 
 #include pool_vector_h
@@ -43,6 +45,12 @@ public:
 	Ref<TerraMesher> get_liquid_mesher() const;
 	void set_liquid_mesher(const Ref<TerraMesher> &mesher);
 
+	Ref<TerraMesherJobStep> get_jobs_step(const int index) const;
+	void set_jobs_step(const int index, const Ref<TerraMesherJobStep> &step);
+	void remove_jobs_step(const int index);
+	void add_jobs_step(const Ref<TerraMesherJobStep> &step);
+	int get_jobs_step_count() const;
+
 	void phase_setup();
 	void phase_terrarin_mesh_setup();
 	void phase_collider();
@@ -55,6 +63,13 @@ public:
 	void _reset();
 	void _physics_process(float delta);
 
+	void step_type_normal();
+	void step_type_normal_lod();
+	void step_type_drop_uv2();
+	void step_type_merge_verts();
+	void step_type_bake_texture();
+	void step_type_simplify_mesh();
+
 	TerraTerrarinJob();
 	~TerraTerrarinJob();
 
@@ -63,6 +78,10 @@ protected:
 
 	Ref<TerraMesher> _mesher;
 	Ref<TerraMesher> _liquid_mesher;
+
+	Vector<Ref<TerraMesherJobStep> > _job_steps;
+	int _current_job_step;
+	int _current_mesh;
 
 	PoolVector<Vector3> temp_arr_collider;
 	PoolVector<Vector3> temp_arr_collider_liquid;
