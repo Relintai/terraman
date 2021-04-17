@@ -47,8 +47,8 @@ Ref<TerraChunk> TerraWorldBlocky::_create_chunk(int x, int z, Ref<TerraChunk> ch
 		pj.instance();
 		pj->set_prop_mesher(Ref<TerraMesher>(memnew(TerraMesherBlocky)));
 
-		tj->add_mesher(Ref<TerraMesher>(memnew(TerraMesherBlocky())));
-		tj->add_liquid_mesher(Ref<TerraMesher>(memnew(TerraMesherLiquidBlocky())));
+		tj->set_mesher(Ref<TerraMesher>(memnew(TerraMesherBlocky())));
+		tj->set_liquid_mesher(Ref<TerraMesher>(memnew(TerraMesherLiquidBlocky())));
 
 		chunk->job_add(lj);
 		chunk->job_add(tj);

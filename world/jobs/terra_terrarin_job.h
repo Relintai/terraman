@@ -37,19 +37,11 @@ class TerraTerrarinJob : public TerraJob {
 	GDCLASS(TerraTerrarinJob, TerraJob);
 
 public:
-	//Meshers
-	Ref<TerraMesher> get_mesher(const int index) const;
-	void set_mesher(const int index, const Ref<TerraMesher> &mesher);
-	void remove_mesher(const int index);
-	void add_mesher(const Ref<TerraMesher> &mesher);
-	int get_mesher_count() const;
+	Ref<TerraMesher> get_mesher() const;
+	void set_mesher(const Ref<TerraMesher> &mesher);
 
-	//Liquid Meshers
-	Ref<TerraMesher> get_liquid_mesher(const int index) const;
-	void set_liquid_mesher(const int index, const Ref<TerraMesher> &mesher);
-	void remove_liquid_mesher(const int index);
-	void add_liquid_mesher(const Ref<TerraMesher> &mesher);
-	int get_liquid_mesher_count() const;
+	Ref<TerraMesher> get_liquid_mesher() const;
+	void set_liquid_mesher(const Ref<TerraMesher> &mesher);
 
 	void phase_setup();
 	void phase_terrarin_mesh_setup();
@@ -69,8 +61,8 @@ public:
 protected:
 	static void _bind_methods();
 
-	Vector<Ref<TerraMesher>> _meshers;
-	Vector<Ref<TerraMesher>> _liquid_meshers;
+	Ref<TerraMesher> _mesher;
+	Ref<TerraMesher> _liquid_mesher;
 
 	PoolVector<Vector3> temp_arr_collider;
 	PoolVector<Vector3> temp_arr_collider_liquid;

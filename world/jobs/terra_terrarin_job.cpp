@@ -34,119 +34,54 @@ SOFTWARE.
 #include "../../../mesh_utils/fast_quadratic_mesh_simplifier.h"
 #endif
 
-Ref<TerraMesher> TerraTerrarinJob::get_mesher(int index) const {
-	ERR_FAIL_INDEX_V(index, _meshers.size(), Ref<TerraMesher>());
-
-	return _meshers.get(index);
+Ref<TerraMesher> TerraTerrarinJob::get_mesher() const {
+	return _mesher;
 }
-void TerraTerrarinJob::set_mesher(int index, const Ref<TerraMesher> &mesher) {
-	ERR_FAIL_INDEX(index, _meshers.size());
-
-	_meshers.set(index, mesher);
-}
-void TerraTerrarinJob::remove_mesher(const int index) {
-	ERR_FAIL_INDEX(index, _meshers.size());
-
-	_meshers.remove(index);
-}
-void TerraTerrarinJob::add_mesher(const Ref<TerraMesher> &mesher) {
-	_meshers.push_back(mesher);
-}
-int TerraTerrarinJob::get_mesher_count() const {
-	return _meshers.size();
+void TerraTerrarinJob::set_mesher(const Ref<TerraMesher> &mesher) {
+	_mesher = mesher;
 }
 
-Ref<TerraMesher> TerraTerrarinJob::get_liquid_mesher(int index) const {
-	ERR_FAIL_INDEX_V(index, _liquid_meshers.size(), Ref<TerraMesher>());
-
-	return _liquid_meshers.get(index);
+Ref<TerraMesher> TerraTerrarinJob::get_liquid_mesher() const {
+	return _liquid_mesher;
 }
-void TerraTerrarinJob::set_liquid_mesher(int index, const Ref<TerraMesher> &mesher) {
-	ERR_FAIL_INDEX(index, _liquid_meshers.size());
-
-	_liquid_meshers.set(index, mesher);
-}
-void TerraTerrarinJob::remove_liquid_mesher(const int index) {
-	ERR_FAIL_INDEX(index, _liquid_meshers.size());
-
-	_liquid_meshers.remove(index);
-}
-void TerraTerrarinJob::add_liquid_mesher(const Ref<TerraMesher> &mesher) {
-	_liquid_meshers.push_back(mesher);
-}
-int TerraTerrarinJob::get_liquid_mesher_count() const {
-	return _liquid_meshers.size();
+void TerraTerrarinJob::set_liquid_mesher(const Ref<TerraMesher> &mesher) {
+	_liquid_mesher = mesher;
 }
 
 void TerraTerrarinJob::phase_setup() {
-	for (int i = 0; i < _meshers.size(); ++i) {
-		Ref<TerraMesher> mesher = _meshers.get(i);
-
-		ERR_CONTINUE(!mesher.is_valid());
-
-		mesher->set_library(_chunk->get_library());
-		mesher->reset();
+	if (_mesher.is_valid()) {
+		_mesher->set_library(_chunk->get_library());
+		_mesher->reset();
 	}
 
-	for (int i = 0; i < _liquid_meshers.size(); ++i) {
-		Ref<TerraMesher> mesher = _liquid_meshers.get(i);
-
-		ERR_CONTINUE(!mesher.is_valid());
-
-		mesher->set_library(_chunk->get_library());
-		mesher->reset();
+	if (_liquid_mesher.is_valid()) {
+		_liquid_mesher->set_library(_chunk->get_library());
+		_liquid_mesher->reset();
 	}
 
 	next_phase();
 }
 
 void TerraTerrarinJob::phase_terrarin_mesh_setup() {
-	int starti = 0;
-
-	if (has_meta("tms_m")) {
-		starti = get_meta("tms_m");
+	if (should_return()) {
+		return;
 	}
 
-	for (int i = starti; i < _meshers.size(); ++i) {
-		if (should_return()) {
-			set_meta("tms_m", i);
-			return;
+	if (_mesher.is_valid()) {
+		if (should_do()) {
+			_mesher->add_chunk(_chunk);
+
+			if (should_return()) {
+				return;
+			}
 		}
-
-		Ref<TerraMesher> mesher = _meshers.get(i);
-
-		ERR_CONTINUE(!mesher.is_valid());
-
-		mesher->add_chunk(_chunk);
 	}
 
-	starti = 0;
-
-	if (has_meta("tms_lm")) {
-		starti = get_meta("tms_lm");
+	if (_liquid_mesher.is_valid()) {
+		_liquid_mesher->add_chunk(_chunk);
 	}
 
-	for (int i = starti; i < _liquid_meshers.size(); ++i) {
-		if (should_return()) {
-			set_meta("tms_lm", i);
-			return;
-		}
-
-		Ref<TerraMesher> mesher = _liquid_meshers.get(i);
-
-		ERR_CONTINUE(!mesher.is_valid());
-
-		mesher->add_chunk(_chunk);
-	}
-
-	if (has_meta("tms_m")) {
-		remove_meta("tms_m");
-	}
-
-	if (has_meta("tms_lm")) {
-		remove_meta("tms_lm");
-	}
-
+	reset_stages();
 	next_phase();
 }
 
@@ -158,61 +93,35 @@ void TerraTerrarinJob::phase_collider() {
 		return;
 	}
 
-	int starti = 0;
+	ERR_FAIL_COND(!_mesher.is_valid());
 
-	if (has_meta("bpc_aa")) {
-		starti = get_meta("bpc_aa");
+	if (should_return()) {
+		return;
 	}
 
-	for (int i = starti; i < _meshers.size(); ++i) {
+	if (should_do()) {
+		temp_arr_collider.append_array(_mesher->build_collider());
+
 		if (should_return()) {
-			set_meta("bpc_aa", i);
 			return;
 		}
-
-		Ref<TerraMesher> mesher = _meshers.get(i);
-
-		ERR_CONTINUE(!mesher.is_valid());
-
-		temp_arr_collider.append_array(mesher->build_collider());
 	}
 
 	if (Engine::get_singleton()->is_editor_hint()) {
-		starti = 0;
-
-		if (has_meta("bpc_laa")) {
-			starti = get_meta("bpc_laa");
+		if (_liquid_mesher.is_valid()) {
+			temp_arr_collider_liquid.append_array(_liquid_mesher->build_collider());
 		}
-
-		for (int i = 0; i < _liquid_meshers.size(); ++i) {
-			if (should_return()) {
-				set_meta("bpc_laa", i);
-				return;
-			}
-
-			Ref<TerraMesher> mesher = _liquid_meshers.get(i);
-
-			ERR_CONTINUE(!mesher.is_valid());
-
-			temp_arr_collider_liquid.append_array(mesher->build_collider());
-		}
-	}
-
-	if (has_meta("bpc_aa")) {
-		remove_meta("bpc_aa");
-	}
-
-	if (has_meta("bpc_laa")) {
-		remove_meta("bpc_laa");
 	}
 
 	if (temp_arr_collider.size() == 0 && temp_arr_collider_liquid.size() == 0) {
+		reset_stages();
 		next_phase();
 		next_phase();
 		return;
 	}
 
 	set_build_phase_type(BUILD_PHASE_TYPE_PHYSICS_PROCESS);
+	reset_stages();
 	next_phase();
 }
 
@@ -248,130 +157,47 @@ void TerraTerrarinJob::phase_physics_process() {
 	}
 
 	set_build_phase_type(BUILD_PHASE_TYPE_NORMAL);
+	reset_stages();
 	next_phase();
 }
 
 void TerraTerrarinJob::phase_terrarin_mesh() {
 	Ref<TerraChunkDefault> chunk = _chunk;
 
+	ERR_FAIL_COND(!_mesher.is_valid());
+
+	if (should_return()) {
+		return;
+	}
+
 	if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
-		int starti = 0;
+		if (should_do()) {
+			_mesher->bake_colors(_chunk);
 
-		if (has_meta("bptm_ulm")) {
-			starti = get_meta("bptm_ulm");
-		}
-
-		for (int i = starti; i < _meshers.size(); ++i) {
 			if (should_return()) {
-				set_meta("bptm_ulm", i);
+				return;
 			}
-
-			Ref<TerraMesher> mesher = _meshers.get(i);
-
-			ERR_CONTINUE(!mesher.is_valid());
-
-			mesher->bake_colors(_chunk);
 		}
 
-		starti = 0;
+		if (should_do()) {
+			_liquid_mesher->bake_colors(_chunk);
 
-		if (has_meta("bptm_ullm")) {
-			starti = get_meta("bptm_ullm");
-		}
-
-		for (int i = starti; i < _liquid_meshers.size(); ++i) {
 			if (should_return()) {
-				set_meta("bptm_ullm", i);
+				return;
 			}
-
-			Ref<TerraMesher> mesher = _liquid_meshers.get(i);
-
-			ERR_CONTINUE(!mesher.is_valid());
-
-			mesher->bake_colors(_chunk);
 		}
 	}
 
-	int starti = 0;
-
-	if (has_meta("bptm_mm")) {
-		starti = get_meta("bptm_mm");
-	}
-
-	Ref<TerraMesher> mesher;
-	for (int i = starti; i < _meshers.size(); ++i) {
-		if (should_return()) {
-			set_meta("bptm_mm", i);
-		}
-
-		Ref<TerraMesher> m = _meshers.get(i);
-
-		ERR_CONTINUE(!m.is_valid());
-
-		if (!mesher.is_valid()) {
-			mesher = m;
-			mesher->set_material(_chunk->get_library()->material_get(0));
-			continue;
-		}
-
-		mesher->set_material(_chunk->get_library()->material_get(0));
-		mesher->add_mesher(m);
-	}
-
-	ERR_FAIL_COND(!mesher.is_valid());
-
-	starti = 0;
-
-	if (has_meta("bptm_lmm")) {
-		starti = get_meta("bptm_lmm");
-	}
-
-	Ref<TerraMesher> liquid_mesher;
-	for (int i = starti; i < _liquid_meshers.size(); ++i) {
-		if (should_return()) {
-			set_meta("bptm_lmm", i);
-		}
-
-		Ref<TerraMesher> m = _liquid_meshers.get(i);
-
-		ERR_CONTINUE(!m.is_valid());
-
-		if (!liquid_mesher.is_valid()) {
-			liquid_mesher = m;
-			liquid_mesher->set_material(_chunk->get_library()->material_get(0));
-			continue;
-		}
-
-		liquid_mesher->set_material(_chunk->get_library()->material_get(0));
-		liquid_mesher->add_mesher(m);
-	}
-
-	if (mesher->get_vertex_count() == 0 && liquid_mesher.is_valid() && liquid_mesher->get_vertex_count() == 0) {
-		if (has_meta("bptm_ulm")) {
-			remove_meta("bptm_ulm");
-		}
-
-		if (has_meta("bptm_ullm")) {
-			remove_meta("bptm_ullm");
-		}
-
-		if (has_meta("bptm_mm")) {
-			remove_meta("bptm_mm");
-		}
-
-		if (has_meta("bptm_lmm")) {
-			remove_meta("bptm_lmm");
-		}
-
+	if (_mesher->get_vertex_count() == 0 && (!_liquid_mesher.is_valid() || _liquid_mesher->get_vertex_count() == 0)) {
 		reset_stages();
 		next_phase();
 
 		return;
 	}
 
-	if (mesher->get_vertex_count() != 0) {
+	if (_mesher->get_vertex_count() != 0) {
 		if (should_do()) {
-			temp_mesh_arr = mesher->build_mesh();
+			temp_mesh_arr = _mesher->build_mesh();
 
 			if (should_return()) {
 				return;
@@ -412,6 +238,7 @@ void TerraTerrarinJob::phase_terrarin_mesh() {
 				return;
 			}
 		}
+
 
 		if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_CREATE_LODS) != 0) {
 			if (should_do()) {
@@ -508,9 +335,9 @@ void TerraTerrarinJob::phase_terrarin_mesh() {
 		}
 	}
 
-	if (liquid_mesher.is_valid() && liquid_mesher->get_vertex_count() != 0) {
+	if (_liquid_mesher.is_valid() && _liquid_mesher->get_vertex_count() != 0) {
 		if (should_do()) {
-			temp_mesh_arr = liquid_mesher->build_mesh();
+			temp_mesh_arr = _liquid_mesher->build_mesh();
 
 			if (should_return()) {
 				return;
@@ -606,30 +433,21 @@ void TerraTerrarinJob::_reset() {
 	_build_done = false;
 	_phase = 0;
 
-	for (int i = 0; i < _meshers.size(); ++i) {
-		Ref<TerraMesher> mesher = _meshers.get(i);
+	ERR_FAIL_COND(!_mesher.is_valid());
 
-		ERR_CONTINUE(!mesher.is_valid());
+	_mesher->set_voxel_scale(_chunk->get_voxel_scale());
 
-		mesher->set_voxel_scale(_chunk->get_voxel_scale());
+	Ref<TerraChunkDefault> chunk = _chunk;
+	Ref<TerraMesherDefault> md = _mesher;
 
-		Ref<TerraChunkDefault> chunk = _chunk;
-		Ref<TerraMesherDefault> md = mesher;
-
-		if (chunk.is_valid() && md.is_valid()) {
-			md->set_build_flags(chunk->get_build_flags());
-		}
+	if (chunk.is_valid() && md.is_valid()) {
+		md->set_build_flags(chunk->get_build_flags());
 	}
 
-	for (int i = 0; i < _liquid_meshers.size(); ++i) {
-		Ref<TerraMesher> mesher = _liquid_meshers.get(i);
+	if (_liquid_mesher.is_valid()) {
+		_liquid_mesher->set_voxel_scale(_chunk->get_voxel_scale());
 
-		ERR_CONTINUE(!mesher.is_valid());
-
-		mesher->set_voxel_scale(_chunk->get_voxel_scale());
-
-		Ref<TerraChunkDefault> chunk = _chunk;
-		Ref<TerraMesherDefault> md = mesher;
+		md = _liquid_mesher;
 
 		if (chunk.is_valid() && md.is_valid()) {
 			md->set_build_flags(chunk->get_build_flags());
@@ -646,22 +464,16 @@ TerraTerrarinJob::TerraTerrarinJob() {
 }
 
 TerraTerrarinJob::~TerraTerrarinJob() {
-	_meshers.clear();
-	_liquid_meshers.clear();
+	_mesher.unref();
+	_liquid_mesher.unref();
 }
 
 void TerraTerrarinJob::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_mesher", "index"), &TerraTerrarinJob::get_mesher);
-	ClassDB::bind_method(D_METHOD("set_mesher", "index", "mesher"), &TerraTerrarinJob::set_mesher);
-	ClassDB::bind_method(D_METHOD("remove_mesher", "index"), &TerraTerrarinJob::remove_mesher);
-	ClassDB::bind_method(D_METHOD("add_mesher", "mesher"), &TerraTerrarinJob::add_mesher);
-	ClassDB::bind_method(D_METHOD("get_mesher_count"), &TerraTerrarinJob::get_mesher_count);
+	ClassDB::bind_method(D_METHOD("get_mesher"), &TerraTerrarinJob::get_mesher);
+	ClassDB::bind_method(D_METHOD("set_mesher", "mesher"), &TerraTerrarinJob::set_mesher);
 
-	ClassDB::bind_method(D_METHOD("get_liquid_mesher", "index"), &TerraTerrarinJob::get_liquid_mesher);
-	ClassDB::bind_method(D_METHOD("set_liquid_mesher", "index", "mesher"), &TerraTerrarinJob::set_liquid_mesher);
-	ClassDB::bind_method(D_METHOD("remove_liquid_mesher", "index"), &TerraTerrarinJob::remove_liquid_mesher);
-	ClassDB::bind_method(D_METHOD("add_liquid_mesher", "mesher"), &TerraTerrarinJob::add_liquid_mesher);
-	ClassDB::bind_method(D_METHOD("get_liquid_mesher_count"), &TerraTerrarinJob::get_liquid_mesher_count);
+	ClassDB::bind_method(D_METHOD("get_liquid_mesher"), &TerraTerrarinJob::get_liquid_mesher);
+	ClassDB::bind_method(D_METHOD("set_liquid_mesher", "mesher"), &TerraTerrarinJob::set_liquid_mesher);
 
 	ClassDB::bind_method(D_METHOD("_physics_process", "delta"), &TerraTerrarinJob::_physics_process);
 }
