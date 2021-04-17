@@ -251,7 +251,6 @@ private:
 	NodePath _player_path;
 	Spatial *_player;
 
-	bool _use_threads;
 	int _max_concurrent_generations;
 	Vector<Ref<TerraChunk> > _generation_queue;
 	Vector<Ref<TerraChunk> > _generating;

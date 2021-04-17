@@ -357,10 +357,6 @@ Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int z, Ref<TerraChu
 
 	chunk->set_voxel_world(this);
 
-	//TODO this will need to be changed
-	if (chunk->has_method("set_is_build_threaded"))
-		chunk->call("set_is_build_threaded", _use_threads);
-
 	chunk->set_position(x, z);
 	chunk->set_world_height(_world_height);
 	chunk->set_library(_library);

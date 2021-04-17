@@ -35,13 +35,6 @@ SOFTWARE.
 #include "../../thread_pool/thread_pool.h"
 #endif
 
-_FORCE_INLINE_ bool TerraChunk::get_is_build_threaded() const {
-	return _is_build_threaded;
-}
-_FORCE_INLINE_ void TerraChunk::set_is_build_threaded(const bool value) {
-	_is_build_threaded = value;
-}
-
 _FORCE_INLINE_ bool TerraChunk::get_process() const {
 	return _is_processing;
 }
@@ -985,7 +978,6 @@ Vector3 TerraChunk::to_global(Vector3 p_local) const {
 }
 
 TerraChunk::TerraChunk() {
-	_is_build_threaded = false;
 	_is_processing = false;
 	_is_phisics_processing = false;
 	_is_in_tree = false;
@@ -1227,10 +1219,6 @@ void TerraChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_physics_process", "value"), &TerraChunk::set_physics_process);
 
 	ClassDB::bind_method(D_METHOD("is_in_tree"), &TerraChunk::is_in_tree);
-
-	ClassDB::bind_method(D_METHOD("get_is_build_threaded"), &TerraChunk::get_is_build_threaded);
-	ClassDB::bind_method(D_METHOD("set_is_build_threaded", "value"), &TerraChunk::set_is_build_threaded);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_build_threaded", PROPERTY_HINT_NONE, "", 0), "set_is_build_threaded", "get_is_build_threaded");
 
 	ClassDB::bind_method(D_METHOD("get_transform"), &TerraChunk::get_transform);
 	ClassDB::bind_method(D_METHOD("set_transform", "value"), &TerraChunk::set_transform);
