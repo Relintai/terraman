@@ -31,6 +31,13 @@ void TerraMesherBlocky::set_always_add_colors(const bool value) {
 	_always_add_colors = value;
 }
 
+int TerraMesherBlocky::get_lod_index() const {
+	return _lod_index;
+}
+void TerraMesherBlocky::set_lod_index(const int value) {
+	_lod_index = value;
+}
+
 void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 	Ref<TerraChunkDefault> chunk = p_chunk;
 
@@ -81,15 +88,20 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			channel_rao = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
-	int lod_index = 1;
-	for (int z = chunk->get_margin_start(); z < z_size + chunk->get_margin_end(); z += lod_index) {
-		for (int x = chunk->get_margin_start(); x < x_size + chunk->get_margin_end(); x += lod_index) {
+	int lod_skip = 1;
+
+	if (_lod_index > 0) {
+		lod_skip = _lod_index * 2;
+	}
+
+	for (int z = chunk->get_margin_start(); z < z_size + chunk->get_margin_end(); z += lod_skip) {
+		for (int x = chunk->get_margin_start(); x < x_size + chunk->get_margin_end(); x += lod_skip) {
 
 			int indexes[4] = {
-				chunk->get_data_index(x + lod_index, z),
+				chunk->get_data_index(x + lod_skip, z),
 				chunk->get_data_index(x, z),
-				chunk->get_data_index(x, z + lod_index),
-				chunk->get_data_index(x + lod_index, z + lod_index)
+				chunk->get_data_index(x, z + lod_skip),
+				chunk->get_data_index(x + lod_skip, z + lod_skip)
 			};
 
 			uint8_t type = channel_type[indexes[0]];
@@ -153,15 +165,12 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 			};
 
-
-
 			Vector3 verts[] = {
-				Vector3(x + lod_index, isolevels[0] / 255.0 * world_height, z) * voxel_scale,
+				Vector3(x + lod_skip, isolevels[0] / 255.0 * world_height, z) * voxel_scale,
 				Vector3(x, isolevels[1] / 255.0 * world_height, z) * voxel_scale,
-				Vector3(x, isolevels[2] / 255.0 * world_height, z + lod_index) * voxel_scale,
-				Vector3(x + lod_index, isolevels[3] / 255.0 * world_height, z + lod_index) * voxel_scale
+				Vector3(x, isolevels[2] / 255.0 * world_height, z + lod_skip) * voxel_scale,
+				Vector3(x + lod_skip, isolevels[3] / 255.0 * world_height, z + lod_skip) * voxel_scale
 			};
-
 
 			Vector3 normals[] = {
 				(verts[0] - verts[1]).cross(verts[0] - verts[2]).normalized(),
@@ -185,6 +194,7 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 
 TerraMesherBlocky::TerraMesherBlocky() {
 	_always_add_colors = false;
+	_lod_index = 0;
 }
 
 TerraMesherBlocky::~TerraMesherBlocky() {
@@ -196,4 +206,8 @@ void TerraMesherBlocky::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_always_add_colors"), &TerraMesherBlocky::get_always_add_colors);
 	ClassDB::bind_method(D_METHOD("set_always_add_colors", "value"), &TerraMesherBlocky::set_always_add_colors);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "always_add_colors"), "set_always_add_colors", "get_always_add_colors");
+
+	ClassDB::bind_method(D_METHOD("get_lod_index"), &TerraMesherBlocky::get_lod_index);
+	ClassDB::bind_method(D_METHOD("set_lod_index", "value"), &TerraMesherBlocky::set_lod_index);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "lod_index"), "set_lod_index", "get_lod_index");
 }

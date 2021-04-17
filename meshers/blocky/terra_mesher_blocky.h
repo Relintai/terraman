@@ -43,6 +43,9 @@ public:
 	bool get_always_add_colors() const;
 	void set_always_add_colors(const bool value);
 
+	int get_lod_index() const;
+	void set_lod_index(const int value);
+
 	void _add_chunk(Ref<TerraChunk> p_chunk);
 
 	TerraMesherBlocky();
@@ -53,6 +56,7 @@ protected:
 
 private:
 	bool _always_add_colors;
+	int _lod_index;
 };
 
 #endif
