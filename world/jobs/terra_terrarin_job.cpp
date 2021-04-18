@@ -203,10 +203,12 @@ void TerraTerrarinJob::phase_terrarin_mesh() {
 		}
 
 		if (should_do()) {
-			_liquid_mesher->bake_colors(_chunk);
+			if (_liquid_mesher.is_valid()) {
+				_liquid_mesher->bake_colors(_chunk);
 
-			if (should_return()) {
-				return;
+				if (should_return()) {
+					return;
+				}
 			}
 		}
 	}
