@@ -89,7 +89,7 @@ void register_terraman_types() {
 	ClassDB::register_class<TerraChunk>();
 	ClassDB::register_class<TerraStructure>();
 	ClassDB::register_class<BlockTerraStructure>();
-	ClassDB::register_class<EnvironmentData>();
+	ClassDB::register_class<TerraEnvironmentData>();
 
 	ClassDB::register_class<TerraChunkDefault>();
 	ClassDB::register_class<TerraWorldDefault>();

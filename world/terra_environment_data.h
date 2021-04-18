@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef ENVIRONMENT_DATA_H
-#define ENVIRONMENT_DATA_H
+#ifndef TERRA_ENVIRONMENT_DATA_H
+#define TERRA_ENVIRONMENT_DATA_H
 
 #include "core/version.h"
 
@@ -40,8 +40,8 @@ SOFTWARE.
 #include "scene/3d/world_environment.h"
 #include "scene/main/node.h"
 
-class EnvironmentData : public Resource {
-	GDCLASS(EnvironmentData, Resource);
+class TerraEnvironmentData : public Resource {
+	GDCLASS(TerraEnvironmentData, Resource);
 
 public:
 	Ref<Environment> get_environment();
@@ -57,8 +57,8 @@ public:
 	void setup(WorldEnvironment *world_environment, DirectionalLight *primary_light, DirectionalLight *secondary_light);
 	void setup_bind(Node *world_environment, Node *primary_light, Node *secondary_light);
 
-	EnvironmentData();
-	~EnvironmentData();
+	TerraEnvironmentData();
+	~TerraEnvironmentData();
 
 public:
 	enum {
