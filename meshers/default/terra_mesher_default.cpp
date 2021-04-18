@@ -51,28 +51,31 @@ void TerraMesherDefault::_bake_colors(Ref<TerraChunk> chunk) {
 	if (_vertices.size() == 0)
 		return;
 
+	uint8_t *channel_color_r = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+	uint8_t *channel_color_g = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+	uint8_t *channel_color_b = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+	uint8_t *channel_ao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_AO);
+	uint8_t *channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
+
 	Color base_light(_base_light_value, _base_light_value, _base_light_value);
 
 	for (int i = 0; i < _vertices.size(); ++i) {
 		Vertex vertex = _vertices[i];
 		Vector3 vert = vertex.vertex;
 
-		//Is this needed?
-		if (vert.x < 0 || vert.y < 0 || vert.z < 0) {
-			continue;
-		}
-
 		unsigned int x = (unsigned int)(vert.x / _voxel_scale);
 		unsigned int z = (unsigned int)(vert.z / _voxel_scale);
 
 		if (chunk->validate_data_position(x, z)) {
-			Color light = Color(
-					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
-					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
-					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
+			int indx = chunk->get_data_index(x, z);
 
-			float ao = (chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
-			float rao = chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
+			Color light = Color(
+					channel_color_r[indx] / 255.0,
+					channel_color_g[indx] / 255.0,
+					channel_color_b[indx] / 255.0);
+
+			float ao = (channel_ao[indx] / 255.0) * _ao_strength;
+			float rao = channel_rao[indx] / 255.0;
 
 			ao += rao;
 
@@ -109,6 +112,12 @@ void TerraMesherDefault::_bake_liquid_colors(Ref<TerraChunk> chunk) {
 	if (_vertices.size() == 0)
 		return;
 
+	uint8_t *channel_color_r = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+	uint8_t *channel_color_g = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+	uint8_t *channel_color_b = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+	uint8_t *channel_ao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_AO);
+	uint8_t *channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
+
 	Color base_light(_base_light_value, _base_light_value, _base_light_value);
 
 	for (int i = 0; i < _vertices.size(); ++i) {
@@ -125,13 +134,15 @@ void TerraMesherDefault::_bake_liquid_colors(Ref<TerraChunk> chunk) {
 		unsigned int z = (unsigned int)(vert.z / _voxel_scale);
 
 		if (chunk->validate_data_position(x, z)) {
-			Color light = Color(
-					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R) / 255.0,
-					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G) / 255.0,
-					chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B) / 255.0);
+			int indx = chunk->get_data_index(x, z);
 
-			float ao = (chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_AO) / 255.0) * _ao_strength;
-			float rao = chunk->get_voxel(x, z, TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO) / 255.0;
+			Color light = Color(
+					channel_color_r[indx] / 255.0,
+					channel_color_g[indx] / 255.0,
+					channel_color_b[indx] / 255.0);
+
+			float ao = (channel_ao[indx] / 255.0) * _ao_strength;
+			float rao = channel_rao[indx] / 255.0;
 
 			ao += rao;
 
