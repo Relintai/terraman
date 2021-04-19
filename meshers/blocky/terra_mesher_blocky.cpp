@@ -159,9 +159,9 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			add_indices(vc + 0);
 
 			Vector2 uvs[] = {
-				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
-				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
 				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
 				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
 			};
 
