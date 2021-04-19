@@ -180,6 +180,29 @@ Ref<TerraChunk> TerraWorldDefault::_create_chunk(int x, int z, Ref<TerraChunk> c
 		pj.instance();
 		pj->set_prop_mesher(Ref<TerraMesher>(memnew(TerraMesherDefault)));
 
+		Ref<TerraMesherJobStep> s;
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL);
+		tj->add_jobs_step(s);
+		
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL_LOD);
+		s->set_lod_index(1);
+		tj->add_jobs_step(s);
+
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL_LOD);
+		s->set_lod_index(2);
+		tj->add_jobs_step(s);
+
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_MERGE_VERTS);
+		tj->add_jobs_step(s);
+
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_BAKE_TEXTURE);
+		tj->add_jobs_step(s);
+
 		chunk->job_add(lj);
 		chunk->job_add(tj);
 		chunk->job_add(pj);

@@ -47,6 +47,29 @@ Ref<TerraChunk> TerraWorldBlocky::_create_chunk(int x, int z, Ref<TerraChunk> ch
 		pj.instance();
 		pj->set_prop_mesher(Ref<TerraMesher>(memnew(TerraMesherBlocky)));
 
+		Ref<TerraMesherJobStep> s;
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL);
+		tj->add_jobs_step(s);
+		
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL_LOD);
+		s->set_lod_index(1);
+		tj->add_jobs_step(s);
+
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL_LOD);
+		s->set_lod_index(2);
+		tj->add_jobs_step(s);
+
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_MERGE_VERTS);
+		tj->add_jobs_step(s);
+
+		s.instance();
+		s->set_job_type(TerraMesherJobStep::TYPE_BAKE_TEXTURE);
+		tj->add_jobs_step(s);
+
 		tj->set_mesher(Ref<TerraMesher>(memnew(TerraMesherBlocky())));
 		tj->set_liquid_mesher(Ref<TerraMesher>(memnew(TerraMesherLiquidBlocky())));
 
