@@ -194,13 +194,13 @@ void TerraTerrarinJob::phase_terrarin_mesh() {
 	}
 
 	if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
-		if (should_do()) {
-			_mesher->bake_colors(_chunk);
+		//if (should_do()) {
+		//	_mesher->bake_colors(_chunk);
 
-			if (should_return()) {
-				return;
-			}
-		}
+		//	if (should_return()) {
+		//		return;
+		//	}
+		//}
 
 		if (should_do()) {
 			if (_liquid_mesher.is_valid()) {
@@ -431,9 +431,14 @@ void TerraTerrarinJob::_physics_process(float delta) {
 }
 
 void TerraTerrarinJob::step_type_normal() {
-	temp_mesh_arr = _mesher->build_mesh();
-
 	Ref<TerraChunkDefault> chunk = _chunk;
+
+	//TODO make this automatic in build_mesh
+	if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
+		_mesher->bake_colors(_chunk);
+	}
+
+	temp_mesh_arr = _mesher->build_mesh();
 
 	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
@@ -457,12 +462,18 @@ void TerraTerrarinJob::step_type_normal_lod() {
 
 	ERR_FAIL_COND(!step.is_valid());
 
+	Ref<TerraChunkDefault> chunk = _chunk;
+
 	mesher->set_lod_index(step->get_lod_index());
 	_mesher->reset();
 	_mesher->add_chunk(_chunk);
-	temp_mesh_arr = _mesher->build_mesh();
 
-	Ref<TerraChunkDefault> chunk = _chunk;
+	//TODO make this automatic in build_mesh
+	if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
+		_mesher->bake_colors(_chunk);
+	}
+
+	temp_mesh_arr = _mesher->build_mesh();
 
 	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
