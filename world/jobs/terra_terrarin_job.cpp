@@ -458,6 +458,8 @@ void TerraTerrarinJob::step_type_normal_lod() {
 	ERR_FAIL_COND(!step.is_valid());
 
 	mesher->set_lod_index(step->get_lod_index());
+	_mesher->reset();
+	_mesher->add_chunk(_chunk);
 	temp_mesh_arr = _mesher->build_mesh();
 
 	Ref<TerraChunkDefault> chunk = _chunk;
@@ -501,6 +503,8 @@ void TerraTerrarinJob::step_type_merge_verts() {
 
 	Ref<TerraChunkDefault> chunk = _chunk;
 	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+
+	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 	int matnum = chunk->get_library()->material_get_num();
 	int mindex = matnum <= _current_mesh ? matnum - 1 : _current_mesh;
