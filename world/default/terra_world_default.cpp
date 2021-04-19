@@ -65,6 +65,13 @@ void TerraWorldDefault::update_lods() {
 	call("_update_lods");
 }
 
+int TerraWorldDefault::get_chunk_lod_first_falloff() const {
+	return _chunk_lod_first_falloff;
+}
+void TerraWorldDefault::set_chunk_lod_first_falloff(const int value) {
+	_chunk_lod_first_falloff = value;
+}
+
 int TerraWorldDefault::get_chunk_lod_falloff() const {
 	return _chunk_lod_falloff;
 }
@@ -154,9 +161,9 @@ void TerraWorldDefault::_update_lods() {
 
 		int mr = MAX(dx, dz);
 
-		mr -= _chunk_lod_falloff;
+		mr -= _chunk_lod_first_falloff;
+		mr /= _chunk_lod_falloff;
 
-		//Todo 3 should be _num_lod, but it's NYI, because chunk can only handle 3 lod levels for now -> FQMS needs to be fixed
 		mr = CLAMP(mr, 0, _num_lods - 1);
 
 		if (c->get_current_lod_level() != mr)
@@ -240,6 +247,7 @@ int TerraWorldDefault::_get_channel_index_info(const TerraWorld::ChannelTypeInfo
 }
 
 TerraWorldDefault::TerraWorldDefault() {
+	_chunk_lod_first_falloff = 2;
 	_chunk_lod_falloff = 2;
 	_lod_update_timer = 0;
 	_lod_update_interval = 0.5;
@@ -292,6 +300,10 @@ void TerraWorldDefault::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_lod_update_interval"), &TerraWorldDefault::get_lod_update_interval);
 	ClassDB::bind_method(D_METHOD("set_lod_update_interval", "value"), &TerraWorldDefault::set_lod_update_interval);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "lod_update_interval"), "set_lod_update_interval", "get_lod_update_interval");
+
+	ClassDB::bind_method(D_METHOD("get_chunk_lod_first_falloff"), &TerraWorldDefault::get_chunk_lod_first_falloff);
+	ClassDB::bind_method(D_METHOD("set_chunk_lod_first_falloff", "value"), &TerraWorldDefault::set_chunk_lod_first_falloff);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "chunk_lod_first_falloff"), "set_chunk_lod_first_falloff", "get_chunk_lod_first_falloff");
 
 	ClassDB::bind_method(D_METHOD("get_chunk_lod_falloff"), &TerraWorldDefault::get_chunk_lod_falloff);
 	ClassDB::bind_method(D_METHOD("set_chunk_lod_falloff", "value"), &TerraWorldDefault::set_chunk_lod_falloff);
