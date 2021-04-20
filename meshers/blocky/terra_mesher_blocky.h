@@ -35,6 +35,7 @@ SOFTWARE.
 #include "core/math/vector3.h"
 
 #include "../default/terra_mesher_default.h"
+#include "../../world/default/terra_chunk_default.h"
 
 class TerraMesherBlocky : public TerraMesherDefault {
 	GDCLASS(TerraMesherBlocky, TerraMesherDefault);
@@ -47,6 +48,14 @@ public:
 	void set_lod_index(const int value);
 
 	void _add_chunk(Ref<TerraChunk> p_chunk);
+
+	void add_chunk_normal(Ref<TerraChunkDefault> chunk);
+
+	void add_chunk_lod(Ref<TerraChunkDefault> chunk);
+	void create_margin_zmin(Ref<TerraChunkDefault> chunk);
+	void create_margin_zmax(Ref<TerraChunkDefault> chunk);
+	void create_margin_xmin(Ref<TerraChunkDefault> chunk);
+	void create_margin_xmax(Ref<TerraChunkDefault> chunk);
 
 	TerraMesherBlocky();
 	~TerraMesherBlocky();

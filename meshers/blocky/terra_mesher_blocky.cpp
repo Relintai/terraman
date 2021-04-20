@@ -22,7 +22,7 @@ SOFTWARE.
 
 #include "terra_mesher_blocky.h"
 
-#include "../../world/default/terra_chunk_default.h"
+#include "core/math/math_funcs.h"
 
 bool TerraMesherBlocky::get_always_add_colors() const {
 	return _always_add_colors;
@@ -42,6 +42,19 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 	Ref<TerraChunkDefault> chunk = p_chunk;
 
 	ERR_FAIL_COND(!chunk.is_valid());
+	ERR_FAIL_COND(chunk->get_margin_end() < 1);
+	ERR_FAIL_COND(chunk->get_margin_start() < 1);
+
+	if (_lod_index == 0) {
+		add_chunk_normal(chunk);
+	} else {
+		//todo give error message if the chunk is badly sized for the given lod index?
+
+		add_chunk_lod(chunk);
+	}
+}
+
+void TerraMesherBlocky::add_chunk_normal(Ref<TerraChunkDefault> chunk) {
 
 	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
 	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
@@ -88,14 +101,166 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
-	int lod_skip = 1;
+	int margin_start = chunk->get_margin_start();
+	//z_size + margin_start is fine, x, and z are in data space.
+	for (int z = margin_start; z < z_size + margin_start; ++z) {
+		for (int x = margin_start; x < x_size + margin_start; ++x) {
 
-	if (_lod_index > 0) {
-		lod_skip = _lod_index * 2;
+			int indexes[4] = {
+				chunk->get_data_index(x + 1, z),
+				chunk->get_data_index(x, z),
+				chunk->get_data_index(x, z + 1),
+				chunk->get_data_index(x + 1, z + 1)
+			};
+
+			uint8_t type = channel_type[indexes[0]];
+
+			if (type == 0)
+				continue;
+
+			Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+
+			if (!surface.is_valid())
+				continue;
+
+			uint8_t isolevels[] = {
+				channel_isolevel[indexes[0]],
+				channel_isolevel[indexes[1]],
+				channel_isolevel[indexes[2]],
+				channel_isolevel[indexes[3]],
+			};
+
+			if (use_lighting) {
+				for (int i = 0; i < 4; ++i) {
+					int indx = indexes[i];
+
+					light[i] = Color(channel_color_r[indx] / 255.0,
+							channel_color_g[indx] / 255.0,
+							channel_color_b[indx] / 255.0);
+
+					float ao = 0;
+
+					if (use_ao)
+						ao = channel_ao[indx] / 255.0;
+
+					if (use_rao) {
+						float rao = channel_rao[indx] / 255.0;
+						ao += rao;
+					}
+
+					light[i] += base_light;
+
+					if (ao > 0)
+						light[i] -= Color(ao, ao, ao) * _ao_strength;
+
+					light[i].r = CLAMP(light[i].r, 0, 1.0);
+					light[i].g = CLAMP(light[i].g, 0, 1.0);
+					light[i].b = CLAMP(light[i].b, 0, 1.0);
+				}
+			}
+
+			int vc = get_vertex_count();
+			add_indices(vc + 2);
+			add_indices(vc + 1);
+			add_indices(vc + 0);
+			add_indices(vc + 3);
+			add_indices(vc + 2);
+			add_indices(vc + 0);
+
+			Vector2 uvs[] = {
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+				surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+			};
+
+			Vector3 verts[] = {
+				Vector3(x + 1, isolevels[0] / 255.0 * world_height, z) * voxel_scale,
+				Vector3(x, isolevels[1] / 255.0 * world_height, z) * voxel_scale,
+				Vector3(x, isolevels[2] / 255.0 * world_height, z + 1) * voxel_scale,
+				Vector3(x + 1, isolevels[3] / 255.0 * world_height, z + 1) * voxel_scale
+			};
+
+			Vector3 normals[] = {
+				(verts[0] - verts[1]).cross(verts[0] - verts[2]).normalized(),
+				(verts[0] - verts[1]).cross(verts[1] - verts[2]).normalized(),
+				(verts[1] - verts[2]).cross(verts[2] - verts[0]).normalized(),
+				(verts[2] - verts[3]).cross(verts[3] - verts[0]).normalized(),
+			};
+
+			for (int i = 0; i < 4; ++i) {
+				add_normal(normals[i]);
+
+				if (use_lighting || _always_add_colors)
+					add_color(light[i]);
+
+				add_uv(uvs[i]);
+				add_vertex(verts[i]);
+			}
+		}
+	}
+}
+
+void TerraMesherBlocky::add_chunk_lod(Ref<TerraChunkDefault> chunk) {
+
+	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
+	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
+	//		chunk->generate_ao();
+
+	create_margin_zmin(chunk);
+	create_margin_zmax(chunk);
+	create_margin_xmin(chunk);
+	create_margin_xmax(chunk);
+
+	int x_size = chunk->get_size_x();
+	int z_size = chunk->get_size_z();
+	float world_height = chunk->get_world_height();
+
+	float voxel_scale = get_voxel_scale();
+
+	uint8_t *channel_type = chunk->channel_get(_channel_index_type);
+
+	if (!channel_type)
+		return;
+
+	uint8_t *channel_isolevel = chunk->channel_get(_channel_index_isolevel);
+
+	if (!channel_isolevel)
+		return;
+
+	uint8_t *channel_color_r = NULL;
+	uint8_t *channel_color_g = NULL;
+	uint8_t *channel_color_b = NULL;
+	uint8_t *channel_ao = NULL;
+	uint8_t *channel_rao = NULL;
+
+	Color base_light(_base_light_value, _base_light_value, _base_light_value);
+	Color light[4]{ Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1) };
+
+	bool use_lighting = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
+	bool use_ao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_AO) != 0;
+	bool use_rao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_RAO) != 0;
+
+	if (use_lighting) {
+		channel_color_r = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+		channel_color_g = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+		channel_color_b = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+
+		if (use_ao)
+			channel_ao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_AO);
+
+		if (use_rao)
+			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
-	for (int z = chunk->get_margin_start(); z < z_size + chunk->get_margin_end(); z += lod_skip) {
-		for (int x = chunk->get_margin_start(); x < x_size + chunk->get_margin_end(); x += lod_skip) {
+	//todo this should be calculated from size's factors
+	int lod_skip = _lod_index * 2;
+	//int margin_start = chunk->get_margin_start() ;
+
+	int margin_start = chunk->get_margin_start();
+	//z_size + margin_start is fine, x, and z are in data space.
+	for (int z = lod_skip; z < z_size + margin_start - lod_skip; z += lod_skip) {
+		for (int x = lod_skip; x < x_size + margin_start - lod_skip; x += lod_skip) {
 
 			int indexes[4] = {
 				chunk->get_data_index(x + lod_skip, z),
@@ -190,6 +355,336 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 			}
 		}
 	}
+}
+
+void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
+
+	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
+	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
+	//		chunk->generate_ao();
+
+	int x_size = chunk->get_size_x();
+	int x_data_size = chunk->get_data_size_x();
+	float world_height = chunk->get_world_height();
+
+	float voxel_scale = get_voxel_scale();
+
+	uint8_t *channel_type = chunk->channel_get(_channel_index_type);
+
+	if (!channel_type)
+		return;
+
+	uint8_t *channel_isolevel = chunk->channel_get(_channel_index_isolevel);
+
+	if (!channel_isolevel)
+		return;
+
+	uint8_t *channel_color_r = NULL;
+	uint8_t *channel_color_g = NULL;
+	uint8_t *channel_color_b = NULL;
+	uint8_t *channel_ao = NULL;
+	uint8_t *channel_rao = NULL;
+
+	Color base_light(_base_light_value, _base_light_value, _base_light_value);
+	Color light[4]{ Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1) };
+
+	bool use_lighting = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
+	bool use_ao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_AO) != 0;
+	bool use_rao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_RAO) != 0;
+
+	if (use_lighting) {
+		channel_color_r = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+		channel_color_g = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+		channel_color_b = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+
+		if (use_ao)
+			channel_ao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_AO);
+
+		if (use_rao)
+			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
+	}
+
+	int margin_start = chunk->get_margin_start();
+
+	int lod_skip = _lod_index * 2;
+	//z_size + margin_start is fine, x, and z are in data space.
+	int z = 1;
+	float oolod = 1.0 / static_cast<float>(lod_skip);
+
+	for (int x = margin_start + 1; x < x_size + margin_start - 1; ++x) {
+
+		int prev_main_x = x - (x % lod_skip) ;
+		int next_main_x = prev_main_x + lod_skip;
+		next_main_x = CLAMP(next_main_x, 0, x_data_size);
+
+		int indexes[4] = {
+			chunk->get_data_index(x + 1, z), //x + 1
+			chunk->get_data_index(x, z), //x
+			//chunk->get_data_index(x + 1, z), //x + 1
+			//chunk->get_data_index(x, z), //x
+			chunk->get_data_index(prev_main_x, z + 1),
+			chunk->get_data_index(next_main_x, z + 1),
+		};
+
+		uint8_t type = channel_type[indexes[0]];
+
+		if (type == 0)
+			continue;
+
+		Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+
+		if (!surface.is_valid())
+			continue;
+
+		uint8_t isolevels[] = {
+			channel_isolevel[indexes[0]],
+			channel_isolevel[indexes[1]],
+			channel_isolevel[indexes[2]],
+			channel_isolevel[indexes[3]],
+		};
+
+		float x_interp = oolod * (x - prev_main_x);
+		float xp1_interp = 1.0 - (oolod * (next_main_x - (x + 1)));
+
+		if (use_lighting) {
+			for (int i = 0; i < 4; ++i) {
+				int indx = indexes[i];
+
+				light[i] = Color(channel_color_r[indx] / 255.0,
+						channel_color_g[indx] / 255.0,
+						channel_color_b[indx] / 255.0);
+
+				float ao = 0;
+
+				if (use_ao)
+					ao = channel_ao[indx] / 255.0;
+
+				if (use_rao) {
+					float rao = channel_rao[indx] / 255.0;
+					ao += rao;
+				}
+
+				light[i] += base_light;
+
+				if (ao > 0)
+					light[i] -= Color(ao, ao, ao) * _ao_strength;
+
+				light[i].r = CLAMP(light[i].r, 0, 1.0);
+				light[i].g = CLAMP(light[i].g, 0, 1.0);
+				light[i].b = CLAMP(light[i].b, 0, 1.0);
+			}
+		}
+
+		int vc = get_vertex_count();
+		add_indices(vc + 2);
+		add_indices(vc + 1);
+		add_indices(vc + 0);
+		add_indices(vc + 3);
+		add_indices(vc + 2);
+		add_indices(vc + 0);
+
+		Vector2 uvs[] = {
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+		};
+
+		float vi0 = Math::lerp(isolevels[2], isolevels[3], x_interp);
+		float vi1 = Math::lerp(isolevels[2], isolevels[3], xp1_interp);
+
+		Vector3 verts[] = {
+			Vector3(x + 1, isolevels[0] / 255.0 * world_height, z) * voxel_scale,
+			Vector3(x, isolevels[1] / 255.0 * world_height, z) * voxel_scale,
+			Vector3(x, vi0 / 255.0 * world_height, z + 1) * voxel_scale,
+			Vector3(x + 1, vi1 / 255.0 * world_height, z + 1) * voxel_scale
+		};
+
+		Vector3 normals[] = {
+			(verts[0] - verts[1]).cross(verts[0] - verts[2]).normalized(),
+			(verts[0] - verts[1]).cross(verts[1] - verts[2]).normalized(),
+			(verts[1] - verts[2]).cross(verts[2] - verts[0]).normalized(),
+			(verts[2] - verts[3]).cross(verts[3] - verts[0]).normalized(),
+		};
+
+		for (int i = 0; i < 4; ++i) {
+			add_normal(normals[i]);
+
+			if (use_lighting || _always_add_colors)
+				add_color(light[i]);
+
+			add_uv(uvs[i]);
+			add_vertex(verts[i]);
+		}
+	}
+}
+
+void TerraMesherBlocky::create_margin_zmax(Ref<TerraChunkDefault> chunk) {
+
+	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
+	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
+	//		chunk->generate_ao();
+
+	int x_size = chunk->get_size_x();
+	int x_data_size = chunk->get_data_size_x();
+	float world_height = chunk->get_world_height();
+
+	float voxel_scale = get_voxel_scale();
+
+	uint8_t *channel_type = chunk->channel_get(_channel_index_type);
+
+	if (!channel_type)
+		return;
+
+	uint8_t *channel_isolevel = chunk->channel_get(_channel_index_isolevel);
+
+	if (!channel_isolevel)
+		return;
+
+	uint8_t *channel_color_r = NULL;
+	uint8_t *channel_color_g = NULL;
+	uint8_t *channel_color_b = NULL;
+	uint8_t *channel_ao = NULL;
+	uint8_t *channel_rao = NULL;
+
+	Color base_light(_base_light_value, _base_light_value, _base_light_value);
+	Color light[4]{ Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1), Color(1, 1, 1) };
+
+	bool use_lighting = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0;
+	bool use_ao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_AO) != 0;
+	bool use_rao = (get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_RAO) != 0;
+
+	if (use_lighting) {
+		channel_color_r = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_R);
+		channel_color_g = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_G);
+		channel_color_b = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_LIGHT_COLOR_B);
+
+		if (use_ao)
+			channel_ao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_AO);
+
+		if (use_rao)
+			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
+	}
+
+	int margin_start = chunk->get_margin_start();
+
+	int lod_skip = _lod_index * 2;
+	//z_size + margin_start is fine, x, and z are in data space.
+	int z = chunk->get_size_z();
+	float oolod = 1.0 / static_cast<float>(lod_skip);
+
+	for (int x = margin_start + 1; x < x_size + margin_start - 1; ++x) {
+
+		int prev_main_x = x - (x % lod_skip) ;
+		int next_main_x = prev_main_x + lod_skip;
+		next_main_x = CLAMP(next_main_x, 0, x_data_size);
+
+		int indexes[4] = {
+			chunk->get_data_index(next_main_x, z), //x + 1
+			chunk->get_data_index(prev_main_x, z), //x
+			//chunk->get_data_index(x + 1, z), //x + 1
+			//chunk->get_data_index(x, z), //x
+			chunk->get_data_index(x, z + 1),
+			chunk->get_data_index(x + 1, z + 1),
+		};
+
+		uint8_t type = channel_type[indexes[0]];
+
+		if (type == 0)
+			continue;
+
+		Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+
+		if (!surface.is_valid())
+			continue;
+
+		uint8_t isolevels[] = {
+			channel_isolevel[indexes[0]],
+			channel_isolevel[indexes[1]],
+			channel_isolevel[indexes[2]],
+			channel_isolevel[indexes[3]],
+		};
+
+		float x_interp = oolod * (x - prev_main_x);
+		float xp1_interp = 1.0 - (oolod * (next_main_x - (x + 1)));
+
+		if (use_lighting) {
+			for (int i = 0; i < 4; ++i) {
+				int indx = indexes[i];
+
+				light[i] = Color(channel_color_r[indx] / 255.0,
+						channel_color_g[indx] / 255.0,
+						channel_color_b[indx] / 255.0);
+
+				float ao = 0;
+
+				if (use_ao)
+					ao = channel_ao[indx] / 255.0;
+
+				if (use_rao) {
+					float rao = channel_rao[indx] / 255.0;
+					ao += rao;
+				}
+
+				light[i] += base_light;
+
+				if (ao > 0)
+					light[i] -= Color(ao, ao, ao) * _ao_strength;
+
+				light[i].r = CLAMP(light[i].r, 0, 1.0);
+				light[i].g = CLAMP(light[i].g, 0, 1.0);
+				light[i].b = CLAMP(light[i].b, 0, 1.0);
+			}
+		}
+
+		int vc = get_vertex_count();
+		add_indices(vc + 2);
+		add_indices(vc + 1);
+		add_indices(vc + 0);
+		add_indices(vc + 3);
+		add_indices(vc + 2);
+		add_indices(vc + 0);
+
+		Vector2 uvs[] = {
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 0), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(0, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale()),
+			surface->transform_uv_scaled(TerraSurface::TERRA_SIDE_TOP, Vector2(1, 1), x % get_texture_scale(), z % get_texture_scale(), get_texture_scale())
+		};
+
+		float vi0 = Math::lerp(isolevels[1], isolevels[0], x_interp);
+		float vi1 = Math::lerp(isolevels[1], isolevels[0], xp1_interp);
+
+		Vector3 verts[] = {
+			Vector3(x + 1, vi1 / 255.0 * world_height, z) * voxel_scale,
+			Vector3(x, vi0 / 255.0 * world_height, z) * voxel_scale,
+			Vector3(x, isolevels[2] / 255.0 * world_height, z + 1) * voxel_scale,
+			Vector3(x + 1, isolevels[3] / 255.0 * world_height, z + 1) * voxel_scale
+		};
+
+		Vector3 normals[] = {
+			(verts[0] - verts[1]).cross(verts[0] - verts[2]).normalized(),
+			(verts[0] - verts[1]).cross(verts[1] - verts[2]).normalized(),
+			(verts[1] - verts[2]).cross(verts[2] - verts[0]).normalized(),
+			(verts[2] - verts[3]).cross(verts[3] - verts[0]).normalized(),
+		};
+
+		for (int i = 0; i < 4; ++i) {
+			add_normal(normals[i]);
+
+			if (use_lighting || _always_add_colors)
+				add_color(light[i]);
+
+			add_uv(uvs[i]);
+			add_vertex(verts[i]);
+		}
+	}
+}
+
+void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
+}
+
+void TerraMesherBlocky::create_margin_xmax(Ref<TerraChunkDefault> chunk) {
 }
 
 TerraMesherBlocky::TerraMesherBlocky() {

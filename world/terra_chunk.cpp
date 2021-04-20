@@ -277,16 +277,6 @@ void TerraChunk::set_size(const int size_x, const int size_z, const int margin_s
 		return;
 	}
 
-	for (int i = 0; i < _channels.size(); ++i) {
-		uint8_t *ch = _channels[i];
-
-		if (ch != NULL) {
-			memdelete_arr(ch);
-		}
-	}
-
-	channel_setup();
-
 	_size_x = size_x;
 	_size_z = size_z;
 
@@ -295,6 +285,18 @@ void TerraChunk::set_size(const int size_x, const int size_z, const int margin_s
 
 	_margin_start = margin_start;
 	_margin_end = margin_end;
+
+	for (int i = 0; i < _channels.size(); ++i) {
+		uint8_t *ch = _channels[i];
+
+		if (ch != NULL) {
+			memdelete_arr(ch);
+		}
+	}
+
+	_channels.clear();
+
+	channel_setup();
 }
 
 bool TerraChunk::validate_data_position(const int x, const int z) const {
@@ -342,6 +344,8 @@ void TerraChunk::channel_set_count(const int count) {
 			if (ch != NULL) {
 				memdelete_arr(ch);
 			}
+
+			_channels.set(i, NULL);
 		}
 
 		_channels.resize(count);
