@@ -56,6 +56,8 @@ public:
 	void create_margin_zmax(Ref<TerraChunkDefault> chunk);
 	void create_margin_xmin(Ref<TerraChunkDefault> chunk);
 	void create_margin_xmax(Ref<TerraChunkDefault> chunk);
+	void create_margin_corners(Ref<TerraChunkDefault> chunk);
+	void create_face(Ref<TerraChunkDefault> chunk, int dataxmin, int dataxmax, int datazmin, int datazmax);
 
 	TerraMesherBlocky();
 	~TerraMesherBlocky();
