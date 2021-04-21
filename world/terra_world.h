@@ -85,6 +85,9 @@ public:
 	float get_world_height() const;
 	void set_world_height(const float value);
 
+	int get_max_concurrent_generations();
+	void set_max_concurrent_generations(const int value);
+
 	Ref<TerramanLibrary> get_library();
 	void set_library(const Ref<TerramanLibrary> &library);
 

@@ -92,6 +92,13 @@ void TerraWorld::set_world_height(const float value) {
 	_world_height = value;
 }
 
+int TerraWorld::get_max_concurrent_generations() {
+	return _max_concurrent_generations;
+}
+void TerraWorld::set_max_concurrent_generations(const int value) {
+	_max_concurrent_generations = value;
+}
+
 Ref<TerramanLibrary> TerraWorld::get_library() {
 	return _library;
 }
@@ -784,6 +791,7 @@ TerraWorld::TerraWorld() {
 	_editable = false;
 
 	_is_priority_generation = true;
+	_max_concurrent_generations = 3;
 
 	_chunk_size_x = 16;
 	_chunk_size_z = 16;
@@ -986,6 +994,10 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_world_height"), &TerraWorld::get_world_height);
 	ClassDB::bind_method(D_METHOD("set_world_height", "height"), &TerraWorld::set_world_height);
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "world_height"), "set_world_height", "get_world_height");
+
+	ClassDB::bind_method(D_METHOD("get_max_concurrent_generations"), &TerraWorld::get_max_concurrent_generations);
+	ClassDB::bind_method(D_METHOD("set_max_concurrent_generations", "height"), &TerraWorld::set_max_concurrent_generations);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_concurrent_generations"), "set_max_concurrent_generations", "get_max_concurrent_generations");
 
 	ClassDB::bind_method(D_METHOD("get_current_seed"), &TerraWorld::get_current_seed);
 	ClassDB::bind_method(D_METHOD("set_current_seed", "value"), &TerraWorld::set_current_seed);
