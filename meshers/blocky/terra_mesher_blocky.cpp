@@ -412,6 +412,8 @@ void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
 	int z = 1;
 	float oolod = 1.0 / static_cast<float>(lod_skip);
 
+	int lastz = lod_skip;
+
 	for (int x = margin_start + 1; x < x_size + margin_start - 1; ++x) {
 
 		int prev_main_x = x - (x % lod_skip);
@@ -423,8 +425,8 @@ void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
 			chunk->get_data_index(x, z), //x
 			//chunk->get_data_index(x + 1, z), //x + 1
 			//chunk->get_data_index(x, z), //x
-			chunk->get_data_index(prev_main_x, z + 1),
-			chunk->get_data_index(next_main_x, z + 1),
+			chunk->get_data_index(prev_main_x, lastz),
+			chunk->get_data_index(next_main_x, lastz),
 		};
 
 		uint8_t type = channel_type[indexes[0]];
@@ -497,8 +499,8 @@ void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
 		Vector3 verts[] = {
 			Vector3(x + 1, isolevels[0] / 255.0 * world_height, z) * voxel_scale,
 			Vector3(x, isolevels[1] / 255.0 * world_height, z) * voxel_scale,
-			Vector3(x, vi0 / 255.0 * world_height, z + 1) * voxel_scale,
-			Vector3(x + 1, vi1 / 255.0 * world_height, z + 1) * voxel_scale
+			Vector3(x, vi0 / 255.0 * world_height, lastz) * voxel_scale,
+			Vector3(x + 1, vi1 / 255.0 * world_height, lastz) * voxel_scale
 		};
 
 		Vector3 normals[] = {
@@ -736,6 +738,8 @@ void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
 	int x = 1;
 	float oolod = 1.0 / static_cast<float>(lod_skip);
 
+	int lastx = lod_skip;
+
 	for (int z = margin_start + 1; z < z_size + margin_start - 1; ++z) {
 
 		int prev_main_z = z - (z % lod_skip);
@@ -743,10 +747,10 @@ void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
 		next_main_z = CLAMP(next_main_z, 0, z_data_size);
 
 		int indexes[4] = {
-			chunk->get_data_index(x + 1, prev_main_z), //x + 1
+			chunk->get_data_index(lastx, prev_main_z), //x + 1
 			chunk->get_data_index(x, z), //x
 			chunk->get_data_index(x, z + 1),
-			chunk->get_data_index(x + 1, next_main_z),
+			chunk->get_data_index(lastx, next_main_z),
 		};
 
 		uint8_t type = channel_type[indexes[0]];
@@ -817,10 +821,10 @@ void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
 		float vi1 = Math::lerp(isolevels[0], isolevels[3], zp1_interp);
 
 		Vector3 verts[] = {
-			Vector3(x + 1, vi0 / 255.0 * world_height, z) * voxel_scale,
+			Vector3(lastx, vi0 / 255.0 * world_height, z) * voxel_scale,
 			Vector3(x, isolevels[1] / 255.0 * world_height, z) * voxel_scale,
 			Vector3(x, isolevels[2] / 255.0 * world_height, z + 1) * voxel_scale,
-			Vector3(x + 1, vi1 / 255.0 * world_height, z + 1) * voxel_scale
+			Vector3(lastx, vi1 / 255.0 * world_height, z + 1) * voxel_scale
 		};
 
 		Vector3 normals[] = {
