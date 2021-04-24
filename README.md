@@ -2,7 +2,9 @@
 
 experimental terrain and building engine for godot, based on voxelman. 
 
-# Terraman's readme: (will update later)
+# Voxelman's readme: (will update later) 
+
+- The word "Voxelman" got mass replaced to "Terraman".  -
 
 A voxel engine module for godot, focusing more on editor integration, gameplay-related features, and extendability (even from gdscript), without sacrificing too much speed.
 
@@ -24,7 +26,7 @@ check whether it works from time to time.
 ## Pre-built binaries
 
 You can grab a pre-built editor binary from the [Broken Seals](https://github.com/Relintai/broken_seals/releases) 
-repo, should you want to. It contains all my modules.
+repo. From 0.3.4 and onwards it contain this module instead of voxelman. 
 
 ## Usage
 
