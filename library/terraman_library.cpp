@@ -67,11 +67,11 @@ Ref<Material> TerramanLibrary::material_lod_get(const int index) {
 	return _materials[index];
 }
 
-Variant TerramanLibrary::material_cached_get_key(const Ref<TerraChunk> &chunk) {
+int TerramanLibrary::material_cached_get_key(const Ref<TerraChunk> &chunk) {
 	return call("_material_cached_get_key", chunk);
 }
 
-Variant TerramanLibrary::_material_cached_get_key(Ref<TerraChunk> chunk) {
+int TerramanLibrary::_material_cached_get_key(Ref<TerraChunk> chunk) {
 	return 0;
 }
 
@@ -142,11 +142,11 @@ Ref<Material> TerramanLibrary::liquid_material_lod_get(const int index) {
 	return _liquid_materials[index];
 }
 
-Variant TerramanLibrary::liquid_material_cached_get_key(const Ref<TerraChunk> &chunk) {
+int TerramanLibrary::liquid_material_cached_get_key(const Ref<TerraChunk> &chunk) {
 	return call("_liquid_material_cached_get_key", chunk);
 }
 
-Variant TerramanLibrary::_liquid_material_cached_get_key(Ref<TerraChunk> chunk) {
+int TerramanLibrary::_liquid_material_cached_get_key(Ref<TerraChunk> chunk) {
 	return 0;
 }
 
@@ -217,11 +217,11 @@ Ref<Material> TerramanLibrary::prop_material_lod_get(const int index) {
 	return _prop_materials[index];
 }
 
-Variant TerramanLibrary::prop_material_cached_get_key(const Ref<TerraChunk> &chunk) {
+int TerramanLibrary::prop_material_cached_get_key(const Ref<TerraChunk> &chunk) {
 	return call("_prop_material_cached_get_key", chunk);
 }
 
-Variant TerramanLibrary::_prop_material_cached_get_key(Ref<TerraChunk> chunk) {
+int TerramanLibrary::_prop_material_cached_get_key(Ref<TerraChunk> chunk) {
 	return 0;
 }
 
