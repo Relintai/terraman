@@ -64,7 +64,13 @@ public:
 	bool get_initialized() const;
 	void set_initialized(const bool value);
 
+	bool supports_caching();
+	virtual bool _supports_caching();
+
 	Ref<Material> material_get(const int index);
+	Ref<Material> material_lod_get(const int index);
+	Ref<Material> material_lod_cached_get(const int index, const PoolIntArray &surfaces);
+	virtual Ref<Material> _material_lod_cached_get(const int index, const PoolIntArray &surfaces);
 	void material_add(const Ref<Material> &value);
 	void material_set(const int index, const Ref<Material> &value);
 	void material_remove(const int index);
@@ -75,6 +81,9 @@ public:
 	void materials_set(const Vector<Variant> &materials);
 
 	Ref<Material> liquid_material_get(const int index);
+	Ref<Material> liquid_material_lod_get(const int index);
+	Ref<Material> liquid_material_lod_cached_get(const int index, const PoolIntArray &surfaces);
+	virtual Ref<Material> _liquid_material_lod_cached_get(const int index, const PoolIntArray &surfaces);
 	void liquid_material_add(const Ref<Material> &value);
 	void liquid_material_set(const int index, const Ref<Material> &value);
 	void liquid_material_remove(const int index);
@@ -85,6 +94,9 @@ public:
 	void liquid_materials_set(const Vector<Variant> &materials);
 
 	Ref<Material> prop_material_get(const int index);
+	Ref<Material> prop_material_lod_get(const int index);
+	Ref<Material> prop_material_lod_cached_get(const int index, const PoolIntArray &surfaces);
+	virtual Ref<Material> _prop_material_lod_cached_get(const int index, const PoolIntArray &surfaces);
 	void prop_material_add(const Ref<Material> &value);
 	void prop_material_set(const int index, const Ref<Material> &value);
 	void prop_material_remove(const int index);
