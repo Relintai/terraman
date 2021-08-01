@@ -35,12 +35,21 @@ SOFTWARE.
 
 #include "terraman_library_merger.h"
 
+class MaterialEntry { //registered + reference
+	//Vector<Ref<TerraSurface> > surfaces;
+	//Vector<Ref<Material> > materials;
+	//Ref<TextureMerger> merger;
+	//int material_users;
+};
+
 //pcm = per chunk material
-class TerramanLibraryMergerPCM : public TerramanLibraryMerger {
+class TerramanLibraryMergerPCM : public TerramanLibraryMerger { //inherit it from the normal library?
 	GDCLASS(TerramanLibraryMergerPCM, TerramanLibraryMerger)
 
 public:
 	bool _supports_caching();
+
+	//Ref<MaterialEntry> get_mat_entry_for_key(key)
 
 	TerramanLibraryMergerPCM();
 	~TerramanLibraryMergerPCM();
