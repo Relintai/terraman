@@ -104,7 +104,6 @@ protected:
 
 	static void _bind_methods();
 
-private:
 	Vector<Ref<TerraSurfaceMerger> > _voxel_surfaces;
 #ifdef PROPS_PRESENT
 	Vector<Ref<PropData> > _props;

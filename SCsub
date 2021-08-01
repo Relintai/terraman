@@ -71,6 +71,7 @@ sources = [
 
 if has_texture_packer:
     sources.append("library/terraman_library_merger.cpp")
+    sources.append("library/terraman_library_merger_pcm.cpp")
     sources.append("library/terra_surface_merger.cpp")
 
 if ARGUMENTS.get('custom_modules_shared', 'no') == 'yes':

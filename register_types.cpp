@@ -32,6 +32,7 @@ SOFTWARE.
 #ifdef TEXTURE_PACKER_PRESENT
 #include "library/terra_surface_merger.h"
 #include "library/terraman_library_merger.h"
+#include "library/terraman_library_merger_pcm.h"
 #endif
 
 #include "data/terra_light.h"
@@ -80,6 +81,7 @@ void register_terraman_types() {
 #ifdef TEXTURE_PACKER_PRESENT
 	ClassDB::register_class<TerraSurfaceMerger>();
 	ClassDB::register_class<TerramanLibraryMerger>();
+	ClassDB::register_class<TerramanLibraryMergerPCM>();
 #endif
 
 	ClassDB::register_class<TerraLight>();
