@@ -52,6 +52,7 @@ public:
 	int get_jobs_step_count() const;
 
 	void phase_setup();
+	void phase_library_setup();
 	void phase_terrarin_mesh_setup();
 	void phase_collider();
 	void phase_physics_proces();
@@ -86,6 +87,8 @@ protected:
 	PoolVector<Vector3> temp_arr_collider;
 	PoolVector<Vector3> temp_arr_collider_liquid;
 	Array temp_mesh_arr;
+
+	int _terrain_material_key;
 };
 
 #endif

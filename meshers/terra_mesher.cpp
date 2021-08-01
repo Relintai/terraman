@@ -30,7 +30,6 @@ SOFTWARE.
 #include "../world/terra_chunk.h"
 
 bool TerraMesher::Vertex::operator==(const Vertex &p_vertex) const {
-
 	if (vertex != p_vertex.vertex)
 		return false;
 
@@ -66,7 +65,6 @@ bool TerraMesher::Vertex::operator==(const Vertex &p_vertex) const {
 }
 
 uint32_t TerraMesher::VertexHasher::hash(const Vertex &p_vtx) {
-
 	uint32_t h = hash_djb2_buffer((const uint8_t *)&p_vtx.vertex, sizeof(real_t) * 3);
 	h = hash_djb2_buffer((const uint8_t *)&p_vtx.normal, sizeof(real_t) * 3, h);
 	h = hash_djb2_buffer((const uint8_t *)&p_vtx.binormal, sizeof(real_t) * 3, h);
@@ -126,6 +124,13 @@ Ref<Material> TerraMesher::get_material() {
 }
 void TerraMesher::set_material(const Ref<Material> &material) {
 	_material = material;
+}
+
+int TerraMesher::get_terrain_material_key() {
+	return _terrarin_material_key;
+}
+void TerraMesher::set_terrain_material_key(const int key) {
+	_terrarin_material_key = key;
 }
 
 float TerraMesher::get_ao_strength() const {
@@ -295,7 +300,6 @@ void TerraMesher::build_mesh_into(RID mesh) {
 }
 
 void TerraMesher::generate_normals(bool p_flip) {
-
 	_format = _format | VisualServer::ARRAY_FORMAT_NORMAL;
 
 	for (int i = 0; i < _indices.size(); i += 3) {
@@ -582,11 +586,9 @@ PoolVector<Vector3> TerraMesher::build_collider() const {
 		return face_points;
 
 	if (_indices.size() == 0) {
-
 		int len = (_vertices.size() / 4);
 
 		for (int i = 0; i < len; ++i) {
-
 			face_points.push_back(_vertices.get(i * 4).vertex);
 			face_points.push_back(_vertices.get((i * 4) + 2).vertex);
 			face_points.push_back(_vertices.get((i * 4) + 1).vertex);
@@ -607,7 +609,7 @@ PoolVector<Vector3> TerraMesher::build_collider() const {
 	return face_points;
 }
 
-void TerraMesher::bake_lights(MeshInstance *node, Vector<Ref<TerraLight> > &lights) {
+void TerraMesher::bake_lights(MeshInstance *node, Vector<Ref<TerraLight>> &lights) {
 	ERR_FAIL_COND(node == NULL);
 
 	Color darkColor(0, 0, 0, 1);
@@ -906,6 +908,7 @@ TerraMesher::TerraMesher(const Ref<TerramanLibrary> &library) {
 
 	_format = 0;
 	_texture_scale = 1;
+	_terrarin_material_key = 0;
 }
 
 TerraMesher::TerraMesher() {
@@ -918,6 +921,7 @@ TerraMesher::TerraMesher() {
 	_channel_index_type = 0;
 	_channel_index_isolevel = 0;
 	_texture_scale = 1;
+	_terrarin_material_key = 0;
 }
 
 TerraMesher::~TerraMesher() {
@@ -958,6 +962,10 @@ void TerraMesher::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_material"), &TerraMesher::get_material);
 	ClassDB::bind_method(D_METHOD("set_material", "value"), &TerraMesher::set_material);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_material", "get_material");
+
+	ClassDB::bind_method(D_METHOD("get_terrain_material_key"), &TerraMesher::get_terrain_material_key);
+	ClassDB::bind_method(D_METHOD("set_terrain_material_key", "key"), &TerraMesher::set_terrain_material_key);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "terrain_material_key"), "set_terrain_material_key", "get_terrain_material_key");
 
 	ClassDB::bind_method(D_METHOD("get_voxel_scale"), &TerraMesher::get_voxel_scale);
 	ClassDB::bind_method(D_METHOD("set_voxel_scale", "value"), &TerraMesher::set_voxel_scale);

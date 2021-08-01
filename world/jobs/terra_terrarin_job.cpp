@@ -85,6 +85,41 @@ void TerraTerrarinJob::phase_setup() {
 	next_phase();
 }
 
+void TerraTerrarinJob::phase_library_setup() {
+	if (should_return()) {
+		return;
+	}
+
+	Ref<TerramanLibrary> lib = _chunk->get_library();
+
+	if (!lib.is_valid()) {
+		next_phase();
+		return;
+	}
+
+	if (lib->supports_caching()) {
+		_terrain_material_key = lib->material_cached_get_key(_chunk);
+
+		if (_mesher.is_valid()) {
+			_mesher->set_terrain_material_key(_terrain_material_key);
+		}
+
+		//if (_liquid_mesher.is_valid()) {
+		//	_liquid_mesher->set_terrain_material_key(_terrarin_material_key);
+		//}
+	}
+
+	//if (lib->supports_caching()) {
+	//	_terrain_material_key = lib->material_cached_get_key(_chunk);
+
+	//if (_liquid_mesher.is_valid()) {
+	//	_liquid_mesher->set_terrain_material_key(_terrarin_material_key);
+	//}
+	//}
+
+	next_phase();
+}
+
 void TerraTerrarinJob::phase_terrarin_mesh_setup() {
 	if (should_return()) {
 		return;
@@ -222,7 +257,6 @@ void TerraTerrarinJob::phase_terrarin_mesh() {
 
 	//set up the meshes
 	if (should_do()) {
-
 		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, 0);
 
 		if (mesh_rid == RID()) {
@@ -380,14 +414,16 @@ void TerraTerrarinJob::_execute_phase() {
 	if (_phase == 0) {
 		phase_setup();
 	} else if (_phase == 1) {
-		phase_terrarin_mesh_setup();
+		phase_library_setup();
 	} else if (_phase == 2) {
+		phase_terrarin_mesh_setup();
+	} else if (_phase == 3) {
 		phase_collider();
-	} else if (_phase == 4) {
-		phase_terrarin_mesh();
 	} else if (_phase == 5) {
+		phase_terrarin_mesh();
+	} else if (_phase == 6) {
 		phase_finalize();
-	} else if (_phase > 5) {
+	} else if (_phase > 6) {
 		set_complete(true); //So threadpool knows it's done
 		next_job();
 		ERR_FAIL_MSG("TerraTerrarinJob: _phase is too high!");
@@ -426,7 +462,7 @@ void TerraTerrarinJob::_reset() {
 }
 
 void TerraTerrarinJob::_physics_process(float delta) {
-	if (_phase == 3)
+	if (_phase == 4)
 		phase_physics_process();
 }
 
@@ -483,7 +519,6 @@ void TerraTerrarinJob::step_type_normal_lod() {
 }
 
 void TerraTerrarinJob::step_type_drop_uv2() {
-
 	Ref<TerraChunkDefault> chunk = _chunk;
 
 	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
@@ -499,7 +534,6 @@ void TerraTerrarinJob::step_type_drop_uv2() {
 }
 
 void TerraTerrarinJob::step_type_merge_verts() {
-
 	Array temp_mesh_arr2 = merge_mesh_array(temp_mesh_arr);
 	temp_mesh_arr = temp_mesh_arr2;
 
@@ -543,7 +577,6 @@ void TerraTerrarinJob::step_type_bake_texture() {
 }
 
 void TerraTerrarinJob::step_type_simplify_mesh() {
-
 #ifdef MESH_UTILS_PRESENT
 
 	Ref<TerraChunkDefault> chunk = _chunk;
