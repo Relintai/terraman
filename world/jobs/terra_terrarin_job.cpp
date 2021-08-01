@@ -480,8 +480,17 @@ void TerraTerrarinJob::step_type_normal() {
 
 	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
-		VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
+	Ref<Material> lmat;
+
+	if (chunk->get_library()->supports_caching()) {
+		lmat = chunk->get_library()->material_lod_cached_get(_current_mesh, _terrain_material_key);
+	} else {
+		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
 
 	++_current_mesh;
 }
@@ -512,8 +521,17 @@ void TerraTerrarinJob::step_type_normal_lod() {
 
 	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
-		VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
+	Ref<Material> lmat;
+
+	if (chunk->get_library()->supports_caching()) {
+		lmat = chunk->get_library()->material_lod_cached_get(_current_mesh, _terrain_material_key);
+	} else {
+		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
 
 	++_current_mesh;
 }
@@ -527,8 +545,17 @@ void TerraTerrarinJob::step_type_drop_uv2() {
 
 	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
-		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
+	Ref<Material> lmat;
+
+	if (chunk->get_library()->supports_caching()) {
+		lmat = chunk->get_library()->material_lod_cached_get(_current_mesh, _terrain_material_key);
+	} else {
+		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
 
 	++_current_mesh;
 }
@@ -542,8 +569,17 @@ void TerraTerrarinJob::step_type_merge_verts() {
 
 	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
-		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
+	Ref<Material> lmat;
+
+	if (chunk->get_library()->supports_caching()) {
+		lmat = chunk->get_library()->material_lod_cached_get(_current_mesh, _terrain_material_key);
+	} else {
+		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
 
 	++_current_mesh;
 }
@@ -569,8 +605,17 @@ void TerraTerrarinJob::step_type_bake_texture() {
 
 		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-		if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
-			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
+		Ref<Material> lmat;
+
+		if (chunk->get_library()->supports_caching()) {
+			lmat = chunk->get_library()->material_lod_cached_get(_current_mesh, _terrain_material_key);
+		} else {
+			lmat = chunk->get_library()->material_lod_get(_current_mesh);
+		}
+
+		if (lmat.is_valid()) {
+			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+		}
 	}
 
 	++_current_mesh;
@@ -595,8 +640,17 @@ void TerraTerrarinJob::step_type_simplify_mesh() {
 
 		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-		if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
-			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
+		Ref<Material> lmat;
+
+		if (chunk->get_library()->supports_caching()) {
+			lmat = chunk->get_library()->material_lod_cached_get(_current_mesh, _terrain_material_key);
+		} else {
+			lmat = chunk->get_library()->material_lod_get(_current_mesh);
+		}
+
+		if (lmat.is_valid()) {
+			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+		}
 
 		++_current_mesh;
 	}
