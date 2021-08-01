@@ -75,11 +75,11 @@ Variant TerramanLibrary::_material_cached_get_key(Ref<TerraChunk> chunk) {
 	return 0;
 }
 
-Ref<Material> TerramanLibrary::material_lod_cached_get(const int index, const Variant &key) {
+Ref<Material> TerramanLibrary::material_lod_cached_get(const int index, const int key) {
 	return call("_material_lod_cached_get", index, key);
 }
 
-Ref<Material> TerramanLibrary::_material_lod_cached_get(const int index, const Variant &key) {
+Ref<Material> TerramanLibrary::_material_lod_cached_get(const int index, const int key) {
 	ERR_FAIL_V_MSG(material_lod_get(index), "This TerramanLibrary doesn't support cached materials!");
 }
 
@@ -150,11 +150,11 @@ Variant TerramanLibrary::_liquid_material_cached_get_key(Ref<TerraChunk> chunk) 
 	return 0;
 }
 
-Ref<Material> TerramanLibrary::liquid_material_lod_cached_get(const int index, const Variant &key) {
+Ref<Material> TerramanLibrary::liquid_material_lod_cached_get(const int index, const int key) {
 	return call("_liquid_material_lod_cached_get", index, key);
 }
 
-Ref<Material> TerramanLibrary::_liquid_material_lod_cached_get(const int index, const Variant &key) {
+Ref<Material> TerramanLibrary::_liquid_material_lod_cached_get(const int index, const int key) {
 	ERR_FAIL_V_MSG(liquid_material_lod_get(index), "This TerramanLibrary doesn't support cached liquid materials!");
 }
 
@@ -225,11 +225,11 @@ Variant TerramanLibrary::_prop_material_cached_get_key(Ref<TerraChunk> chunk) {
 	return 0;
 }
 
-Ref<Material> TerramanLibrary::prop_material_lod_cached_get(const int index, const Variant &key) {
+Ref<Material> TerramanLibrary::prop_material_lod_cached_get(const int index, const int key) {
 	return call("_prop_material_lod_cached_get", index, key);
 }
 
-Ref<Material> TerramanLibrary::_prop_material_lod_cached_get(const int index, const Variant &key) {
+Ref<Material> TerramanLibrary::_prop_material_lod_cached_get(const int index, const int key) {
 	ERR_FAIL_V_MSG(prop_material_lod_get(index), "This TerramanLibrary doesn't support cached prop materials!");
 }
 
@@ -347,8 +347,8 @@ void TerramanLibrary::_bind_methods() {
 
 	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::INT, "material_index"), PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
 
-	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::NIL, "ret"), "_material_cached_get_key"));
-	BIND_VMETHOD(MethodInfo("_material_lod_cached_get", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::NIL, "key")));
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::INT, "ret"), "_material_cached_get_key"));
+	BIND_VMETHOD(MethodInfo("_material_lod_cached_get", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::INT, "key")));
 
 	ClassDB::bind_method(D_METHOD("material_get", "index"), &TerramanLibrary::material_get);
 	ClassDB::bind_method(D_METHOD("material_lod_get", "index"), &TerramanLibrary::material_lod_get);
@@ -368,8 +368,8 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("materials_set"), &TerramanLibrary::materials_set);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "materials_set", "materials_get");
 
-	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::NIL, "ret"), "_liquid_material_cached_get_key"));
-	BIND_VMETHOD(MethodInfo("_liquid_material_lod_cached_get", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::NIL, "key")));
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::INT, "ret"), "_liquid_material_cached_get_key"));
+	BIND_VMETHOD(MethodInfo("_liquid_material_lod_cached_get", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::INT, "key")));
 
 	ClassDB::bind_method(D_METHOD("liquid_material_get", "index"), &TerramanLibrary::liquid_material_get);
 	ClassDB::bind_method(D_METHOD("liquid_material_lod_get", "index"), &TerramanLibrary::liquid_material_lod_get);
@@ -389,8 +389,8 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("liquid_materials_set"), &TerramanLibrary::liquid_materials_set);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "liquid_materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "liquid_materials_set", "liquid_materials_get");
 
-	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::NIL, "ret"), "_prop_material_cached_get_key"));
-	BIND_VMETHOD(MethodInfo("_prop_material_lod_cached_get", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::NIL, "key")));
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::INT, "ret"), "_prop_material_cached_get_key"));
+	BIND_VMETHOD(MethodInfo("_prop_material_lod_cached_get", PropertyInfo(Variant::INT, "index"), PropertyInfo(Variant::INT, "key")));
 
 	ClassDB::bind_method(D_METHOD("prop_material_get", "index"), &TerramanLibrary::prop_material_get);
 	ClassDB::bind_method(D_METHOD("prop_material_lod_get", "index"), &TerramanLibrary::prop_material_lod_get);

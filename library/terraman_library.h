@@ -73,8 +73,8 @@ public:
 
 	Variant material_cached_get_key(const Ref<TerraChunk> &chunk);
 	virtual Variant _material_cached_get_key(Ref<TerraChunk> chunk);
-	Ref<Material> material_lod_cached_get(const int index, const Variant &key);
-	virtual Ref<Material> _material_lod_cached_get(const int index, const Variant &key);
+	Ref<Material> material_lod_cached_get(const int index, const int key);
+	virtual Ref<Material> _material_lod_cached_get(const int index, const int key);
 
 	void material_add(const Ref<Material> &value);
 	void material_set(const int index, const Ref<Material> &value);
@@ -90,8 +90,8 @@ public:
 
 	Variant liquid_material_cached_get_key(const Ref<TerraChunk> &chunk);
 	virtual Variant _liquid_material_cached_get_key(Ref<TerraChunk> chunk);
-	Ref<Material> liquid_material_lod_cached_get(const int index, const Variant &key);
-	virtual Ref<Material> _liquid_material_lod_cached_get(const int index, const Variant &key);
+	Ref<Material> liquid_material_lod_cached_get(const int index, const int key);
+	virtual Ref<Material> _liquid_material_lod_cached_get(const int index, const int key);
 
 	void liquid_material_add(const Ref<Material> &value);
 	void liquid_material_set(const int index, const Ref<Material> &value);
@@ -107,8 +107,8 @@ public:
 
 	Variant prop_material_cached_get_key(const Ref<TerraChunk> &chunk);
 	virtual Variant _prop_material_cached_get_key(Ref<TerraChunk> chunk);
-	Ref<Material> prop_material_lod_cached_get(const int index, const Variant &key);
-	virtual Ref<Material> _prop_material_lod_cached_get(const int index, const Variant &key);
+	Ref<Material> prop_material_lod_cached_get(const int index, const int key);
+	virtual Ref<Material> _prop_material_lod_cached_get(const int index, const int key);
 
 	void prop_material_add(const Ref<Material> &value);
 	void prop_material_set(const int index, const Ref<Material> &value);
