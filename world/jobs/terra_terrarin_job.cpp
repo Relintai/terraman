@@ -351,8 +351,8 @@ void TerraTerrarinJob::phase_terrarin_mesh() {
 		//	if (should_do()) {
 		VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-		if (chunk->get_library()->liquid_material_get(0).is_valid())
-			VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->liquid_material_get(0)->get_rid());
+		if (chunk->get_library()->liquid_material_lod_get(0).is_valid())
+			VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->liquid_material_lod_get(0)->get_rid());
 
 		//	if (should_return()) {
 		//		return;
@@ -444,11 +444,8 @@ void TerraTerrarinJob::step_type_normal() {
 
 	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	int matnum = chunk->get_library()->material_get_num();
-	int mindex = matnum <= _current_mesh ? matnum - 1 : _current_mesh;
-
-	if (chunk->get_library()->material_get(mindex).is_valid())
-		VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_get(mindex)->get_rid());
+	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
+		VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
 
 	++_current_mesh;
 }
@@ -479,11 +476,8 @@ void TerraTerrarinJob::step_type_normal_lod() {
 
 	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	int matnum = chunk->get_library()->material_get_num();
-	int mindex = matnum <= _current_mesh ? matnum - 1 : _current_mesh;
-
-	if (chunk->get_library()->material_get(mindex).is_valid())
-		VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_get(mindex)->get_rid());
+	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
+		VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
 
 	++_current_mesh;
 }
@@ -498,11 +492,8 @@ void TerraTerrarinJob::step_type_drop_uv2() {
 
 	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	int matnum = chunk->get_library()->material_get_num();
-	int mindex = matnum <= _current_mesh ? matnum - 1 : _current_mesh;
-
-	if (chunk->get_library()->material_get(mindex).is_valid())
-		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_get(mindex)->get_rid());
+	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
 
 	++_current_mesh;
 }
@@ -517,11 +508,8 @@ void TerraTerrarinJob::step_type_merge_verts() {
 
 	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-	int matnum = chunk->get_library()->material_get_num();
-	int mindex = matnum <= _current_mesh ? matnum - 1 : _current_mesh;
-
-	if (chunk->get_library()->material_get(mindex).is_valid())
-		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_get(mindex)->get_rid());
+	if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
 
 	++_current_mesh;
 }
@@ -529,8 +517,8 @@ void TerraTerrarinJob::step_type_merge_verts() {
 void TerraTerrarinJob::step_type_bake_texture() {
 	Ref<TerraChunkDefault> chunk = _chunk;
 
-	Ref<ShaderMaterial> mat = chunk->get_library()->material_get(0);
-	Ref<SpatialMaterial> spmat = chunk->get_library()->material_get(0);
+	Ref<ShaderMaterial> mat = chunk->get_library()->material_lod_get(0);
+	Ref<SpatialMaterial> spmat = chunk->get_library()->material_lod_get(0);
 	Ref<Texture> tex;
 
 	if (mat.is_valid()) {
@@ -547,11 +535,8 @@ void TerraTerrarinJob::step_type_bake_texture() {
 
 		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-		int matnum = chunk->get_library()->material_get_num();
-		int mindex = matnum <= _current_mesh ? matnum - 1 : _current_mesh;
-
-		if (chunk->get_library()->material_get(mindex).is_valid())
-			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_get(mindex)->get_rid());
+		if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
+			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
 	}
 
 	++_current_mesh;
@@ -577,11 +562,8 @@ void TerraTerrarinJob::step_type_simplify_mesh() {
 
 		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-		int matnum = chunk->get_library()->material_get_num();
-		int mindex = matnum <= _current_mesh ? matnum - 1 : _current_mesh;
-
-		if (chunk->get_library()->material_get(mindex).is_valid())
-			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_get(mindex)->get_rid());
+		if (chunk->get_library()->material_lod_get(_current_mesh).is_valid())
+			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->material_lod_get(_current_mesh)->get_rid());
 
 		++_current_mesh;
 	}
