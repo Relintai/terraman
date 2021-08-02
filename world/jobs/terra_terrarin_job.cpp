@@ -22,9 +22,9 @@ SOFTWARE.
 
 #include "terra_terrarin_job.h"
 
+#include "../../library/terra_material_cache.h"
 #include "../../library/terra_surface.h"
 #include "../../library/terraman_library.h"
-#include "../../library/terra_material_cache.h"
 
 #include "../../meshers/blocky/terra_mesher_blocky.h"
 #include "../../meshers/default/terra_mesher_default.h"
@@ -99,7 +99,23 @@ void TerraTerrarinJob::phase_library_setup() {
 	}
 
 	if (lib->supports_caching()) {
-		lib->material_cache_get_key(_chunk);
+		if (!_chunk->material_cache_key_has()) {
+			lib->material_cache_get_key(_chunk);
+		} else {
+			Ref<TerraMaterialCache> cache = lib->material_cache_get(_chunk->material_cache_key_get());
+
+			if (!cache.is_valid()) {
+				next_phase();
+				return;
+			}
+
+			if (!cache->get_initialized()) {
+				//Means it's currently merging the atlases on a different thread.
+				//Let's just wait -> return.
+				//This method will get called again later.
+				return;
+			}
+		}
 	}
 
 	next_phase();
