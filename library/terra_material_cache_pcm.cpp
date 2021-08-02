@@ -50,14 +50,4 @@ TerraMaterialCachePCM::~TerraMaterialCachePCM() {
 }
 
 void TerraMaterialCachePCM::_bind_methods() {
-	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
-
-	ClassDB::bind_method(D_METHOD("voxel_surface_get", "index"), &TerraMaterialCachePCM::voxel_surface_get);
-	ClassDB::bind_method(D_METHOD("voxel_surface_add", "value"), &TerraMaterialCachePCM::voxel_surface_add);
-	ClassDB::bind_method(D_METHOD("voxel_surface_set", "index", "surface"), &TerraMaterialCachePCM::voxel_surface_set);
-	ClassDB::bind_method(D_METHOD("voxel_surface_remove", "index"), &TerraMaterialCachePCM::voxel_surface_remove);
-	ClassDB::bind_method(D_METHOD("voxel_surface_get_num"), &TerraMaterialCachePCM::voxel_surface_get_num);
-	ClassDB::bind_method(D_METHOD("voxel_surfaces_clear"), &TerraMaterialCachePCM::voxel_surfaces_clear);
-
-	ClassDB::bind_method(D_METHOD("refresh_rects"), &TerraMaterialCachePCM::refresh_rects);
 }
