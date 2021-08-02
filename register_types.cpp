@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "library/terraman_library.h"
 #include "library/terraman_library_simple.h"
+#include "library/terra_material_cache.h"
 
 #ifdef TEXTURE_PACKER_PRESENT
 #include "library/terra_surface_merger.h"
@@ -77,6 +78,8 @@ void register_terraman_types() {
 
 	ClassDB::register_class<TerramanLibrary>();
 	ClassDB::register_class<TerramanLibrarySimple>();
+
+	ClassDB::register_class<TerraMaterialCache>();
 
 #ifdef TEXTURE_PACKER_PRESENT
 	ClassDB::register_class<TerraSurfaceMerger>();

@@ -27,6 +27,7 @@ sources = [
 
     "library/terraman_library.cpp",
     "library/terraman_library_simple.cpp",
+    "library/terra_material_cache.cpp",
     
     "nodes/terraman_light.cpp",
 
