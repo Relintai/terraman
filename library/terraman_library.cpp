@@ -344,6 +344,10 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_initialized", "value"), &TerramanLibrary::set_initialized);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "initialized", PROPERTY_HINT_NONE, "", 0), "set_initialized", "get_initialized");
 
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::BOOL, "ret"), "_supports_caching"));
+	ClassDB::bind_method(D_METHOD("_supports_caching"), &TerramanLibrary::_supports_caching);
+	ClassDB::bind_method(D_METHOD("supports_caching"), &TerramanLibrary::supports_caching);
+
 	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::INT, "material_index"), PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
 
 	BIND_VMETHOD(MethodInfo("_material_cache_get_key", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
