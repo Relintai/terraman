@@ -22,9 +22,9 @@ SOFTWARE.
 
 #include "terraman_library_merger_pcm.h"
 
+#include "../../texture_packer/texture_packer.h"
 #include "scene/resources/packed_scene.h"
 #include "scene/resources/texture.h"
-#include "../../texture_packer/texture_packer.h"
 
 #ifdef PROPS_PRESENT
 #include "../../props/props/prop_data.h"
@@ -94,14 +94,18 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 	chunk->material_cache_key_set(hash);
 	chunk->material_cache_key_has_set(true);
 
+	_cache_mutex.lock();
+
 	if (_material_cache.has(hash)) {
+		_cache_mutex.unlock();
+		
 		return;
 	}
 
+	//print_error("New cache: " + hstr);
+
 	Ref<TerraMaterialCachePCM> cache;
 	cache.instance();
-	_material_cache[hash] = cache;
-	//print_error("New cache: " + hstr);
 
 	cache->set_texture_flags(get_texture_flags());
 	cache->set_max_atlas_size(get_max_atlas_size());
@@ -140,6 +144,12 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 		cache->material_add(nm);
 	}
 
+	_material_cache[hash] = cache;
+
+	//unlock here, so if a different thread need the cache it will be able to immediately access the materials and surfaces when it gets it.
+	_cache_mutex.unlock();
+
+	//this will generate the atlases
 	cache->refresh_rects();
 }
 

@@ -40,6 +40,8 @@ SOFTWARE.
 #include "../data/terra_light.h"
 #include "terra_surface_merger.h"
 
+#include "core/os/mutex.h"
+
 class TerraSurfaceSimple;
 class TerraMesher;
 class PackedScene;
@@ -121,6 +123,8 @@ protected:
 	//todo remove these
 	Ref<TexturePacker> _packer;
 	Ref<TexturePacker> _prop_packer;
+
+	Mutex _cache_mutex;
 };
 
 #endif
