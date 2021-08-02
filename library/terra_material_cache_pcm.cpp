@@ -66,6 +66,9 @@ void TerraMaterialCachePCM::set_margin(const int margin) {
 Ref<TerraSurface> TerraMaterialCachePCM::voxel_surface_get(const int index) {
 	return Ref<TerraSurface>();
 }
+Ref<TerraSurface> TerraMaterialCache::voxel_surface_id_get(const int id) {
+	return Ref<TerraSurface>();
+}
 void TerraMaterialCachePCM::voxel_surface_add(Ref<TerraSurface> value) {
 }
 void TerraMaterialCachePCM::voxel_surface_set(int index, Ref<TerraSurface> value) {

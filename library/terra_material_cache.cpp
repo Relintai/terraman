@@ -85,6 +85,9 @@ void TerraMaterialCache::materials_set(const Vector<Variant> &materials) {
 Ref<TerraSurface> TerraMaterialCache::voxel_surface_get(const int index) {
 	return Ref<TerraSurface>();
 }
+Ref<TerraSurface> TerraMaterialCache::voxel_surface_id_get(const int id) {
+	return Ref<TerraSurface>();
+}
 void TerraMaterialCache::voxel_surface_add(Ref<TerraSurface> value) {
 }
 void TerraMaterialCache::voxel_surface_set(int index, Ref<TerraSurface> value) {
@@ -130,6 +133,8 @@ void TerraMaterialCache::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "materials_set", "materials_get");
 
 	ClassDB::bind_method(D_METHOD("voxel_surface_get", "index"), &TerraMaterialCache::voxel_surface_get);
+	ClassDB::bind_method(D_METHOD("voxel_surface_id_get", "index"), &TerraMaterialCache::voxel_surface_id_get);
+
 	ClassDB::bind_method(D_METHOD("voxel_surface_add", "value"), &TerraMaterialCache::voxel_surface_add);
 	ClassDB::bind_method(D_METHOD("voxel_surface_set", "index", "surface"), &TerraMaterialCache::voxel_surface_set);
 	ClassDB::bind_method(D_METHOD("voxel_surface_remove", "index"), &TerraMaterialCache::voxel_surface_remove);

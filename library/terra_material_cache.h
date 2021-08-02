@@ -60,6 +60,7 @@ public:
 	void materials_set(const Vector<Variant> &materials);
 
 	virtual Ref<TerraSurface> voxel_surface_get(const int index);
+	virtual Ref<TerraSurface> voxel_surface_id_get(const int id);
 	virtual void voxel_surface_add(Ref<TerraSurface> value);
 	virtual void voxel_surface_set(const int index, Ref<TerraSurface> value);
 	virtual void voxel_surface_remove(const int index);
