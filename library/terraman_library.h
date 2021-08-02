@@ -43,6 +43,7 @@ SOFTWARE.
 #define Texture Texture2D
 #endif
 
+class TerraMaterialCache;
 class TerraSurface;
 class TerraMesher;
 class PackedScene;
@@ -71,10 +72,10 @@ public:
 	Ref<Material> material_get(const int index);
 	Ref<Material> material_lod_get(const int index);
 
-	int material_cached_get_key(const Ref<TerraChunk> &chunk);
-	virtual int _material_cached_get_key(Ref<TerraChunk> chunk);
-	Ref<Material> material_lod_cached_get(const int index, const int key);
-	virtual Ref<Material> _material_lod_cached_get(const int index, const int key);
+	int material_cache_get_key(const Ref<TerraChunk> &chunk);
+	virtual int _material_cache_get_key(Ref<TerraChunk> chunk);
+	Ref<TerraMaterialCache> material_cache_get(const int key);
+	virtual Ref<TerraMaterialCache> _material_cache_get(const int key);
 
 	void material_add(const Ref<Material> &value);
 	void material_set(const int index, const Ref<Material> &value);
@@ -88,10 +89,10 @@ public:
 	Ref<Material> liquid_material_get(const int index);
 	Ref<Material> liquid_material_lod_get(const int index);
 
-	int liquid_material_cached_get_key(const Ref<TerraChunk> &chunk);
-	virtual int _liquid_material_cached_get_key(Ref<TerraChunk> chunk);
-	Ref<Material> liquid_material_lod_cached_get(const int index, const int key);
-	virtual Ref<Material> _liquid_material_lod_cached_get(const int index, const int key);
+	int liquid_material_cache_get_key(const Ref<TerraChunk> &chunk);
+	virtual int _liquid_material_cache_get_key(Ref<TerraChunk> chunk);
+	Ref<TerraMaterialCache> liquid_material_cache_get(const int key);
+	virtual Ref<TerraMaterialCache> _liquid_material_cache_get(const int key);
 
 	void liquid_material_add(const Ref<Material> &value);
 	void liquid_material_set(const int index, const Ref<Material> &value);
@@ -105,10 +106,10 @@ public:
 	Ref<Material> prop_material_get(const int index);
 	Ref<Material> prop_material_lod_get(const int index);
 
-	int prop_material_cached_get_key(const Ref<TerraChunk> &chunk);
-	virtual int _prop_material_cached_get_key(Ref<TerraChunk> chunk);
-	Ref<Material> prop_material_lod_cached_get(const int index, const int key);
-	virtual Ref<Material> _prop_material_lod_cached_get(const int index, const int key);
+	int prop_material_cache_get_key(const Ref<TerraChunk> &chunk);
+	virtual int _prop_material_cache_get_key(Ref<TerraChunk> chunk);
+	Ref<TerraMaterialCache> prop_material_cache_get(const int key);
+	virtual Ref<TerraMaterialCache> _prop_material_cache_get(const int key);
 
 	void prop_material_add(const Ref<Material> &value);
 	void prop_material_set(const int index, const Ref<Material> &value);
