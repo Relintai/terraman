@@ -938,6 +938,12 @@ void TerraChunk::enter_tree() {
 void TerraChunk::exit_tree() {
 	_is_in_tree = false;
 
+	if (_library.is_valid() && _library->supports_caching()) {
+		if (material_cache_key_has()) {
+			_library->material_cache_unref(material_cache_key_get());
+		}
+	}
+
 	if (has_method("_exit_tree"))
 		call("_exit_tree");
 }

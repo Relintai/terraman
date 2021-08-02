@@ -76,6 +76,8 @@ public:
 	virtual void _material_cache_get_key(Ref<TerraChunk> chunk);
 	Ref<TerraMaterialCache> material_cache_get(const int key);
 	virtual Ref<TerraMaterialCache> _material_cache_get(const int key);
+	void material_cache_unref(const int key);
+	virtual void _material_cache_unref(const int key);
 
 	void material_add(const Ref<Material> &value);
 	void material_set(const int index, const Ref<Material> &value);
@@ -93,6 +95,8 @@ public:
 	virtual void _liquid_material_cache_get_key(Ref<TerraChunk> chunk);
 	Ref<TerraMaterialCache> liquid_material_cache_get(const int key);
 	virtual Ref<TerraMaterialCache> _liquid_material_cache_get(const int key);
+	void liquid_material_cache_unref(const int key);
+	virtual void _liquid_material_cache_unref(const int key);
 
 	void liquid_material_add(const Ref<Material> &value);
 	void liquid_material_set(const int index, const Ref<Material> &value);
@@ -110,6 +114,8 @@ public:
 	virtual void _prop_material_cache_get_key(Ref<TerraChunk> chunk);
 	Ref<TerraMaterialCache> prop_material_cache_get(const int key);
 	virtual Ref<TerraMaterialCache> _prop_material_cache_get(const int key);
+	void prop_material_cache_unref(const int key);
+	virtual void _prop_material_cache_unref(const int key);
 
 	void prop_material_add(const Ref<Material> &value);
 	void prop_material_set(const int index, const Ref<Material> &value);
@@ -157,9 +163,9 @@ protected:
 	static void _bind_methods();
 
 	bool _initialized;
-	Vector<Ref<Material> > _materials;
-	Vector<Ref<Material> > _liquid_materials;
-	Vector<Ref<Material> > _prop_materials;
+	Vector<Ref<Material>> _materials;
+	Vector<Ref<Material>> _liquid_materials;
+	Vector<Ref<Material>> _prop_materials;
 };
 
 #endif // TERRA_LIBRARY_H

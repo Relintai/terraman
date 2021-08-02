@@ -84,6 +84,12 @@ Ref<TerraMaterialCache> TerramanLibrary::_material_cache_get(const int key) {
 	ERR_FAIL_V_MSG(Ref<TerraMaterialCache>(), "This TerramanLibrary doesn't support cached materials!");
 }
 
+void TerramanLibrary::material_cache_unref(const int key) {
+	call("_material_cache_unref", key);
+}
+void TerramanLibrary::_material_cache_unref(const int key) {
+}
+
 void TerramanLibrary::material_add(const Ref<Material> &value) {
 	ERR_FAIL_COND(!value.is_valid());
 
@@ -158,6 +164,12 @@ Ref<TerraMaterialCache> TerramanLibrary::_liquid_material_cache_get(const int ke
 	ERR_FAIL_V_MSG(Ref<TerraMaterialCache>(), "This TerramanLibrary doesn't support cached liquid materials!");
 }
 
+void TerramanLibrary::liquid_material_cache_unref(const int key) {
+	call("_liquid_material_cache_unref", key);
+}
+void TerramanLibrary::_liquid_material_cache_unref(const int key) {
+}
+
 void TerramanLibrary::liquid_material_add(const Ref<Material> &value) {
 	ERR_FAIL_COND(!value.is_valid());
 
@@ -230,6 +242,12 @@ Ref<TerraMaterialCache> TerramanLibrary::prop_material_cache_get(const int key) 
 
 Ref<TerraMaterialCache> TerramanLibrary::_prop_material_cache_get(const int key) {
 	ERR_FAIL_V_MSG(Ref<TerraMaterialCache>(), "This TerramanLibrary doesn't support cached prop materials!");
+}
+
+void TerramanLibrary::prop_material_cache_unref(const int key) {
+	call("_prop_material_cache_unref", key);
+}
+void TerramanLibrary::_prop_material_cache_unref(const int key) {
 }
 
 void TerramanLibrary::prop_material_add(const Ref<Material> &value) {
@@ -351,7 +369,8 @@ void TerramanLibrary::_bind_methods() {
 	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::INT, "material_index"), PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
 
 	BIND_VMETHOD(MethodInfo("_material_cache_get_key", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
-	BIND_VMETHOD(MethodInfo("_material_cache_get", PropertyInfo(Variant::OBJECT, "key", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache")));
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache"), "_material_cache_get", PropertyInfo(Variant::INT, "key")));
+	BIND_VMETHOD(MethodInfo("_material_cache_unref", PropertyInfo(Variant::INT, "key")));
 
 	ClassDB::bind_method(D_METHOD("material_get", "index"), &TerramanLibrary::material_get);
 	ClassDB::bind_method(D_METHOD("material_lod_get", "index"), &TerramanLibrary::material_lod_get);
@@ -360,6 +379,8 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_material_cache_get_key", "chunk"), &TerramanLibrary::_material_cache_get_key);
 	ClassDB::bind_method(D_METHOD("material_cache_get", "key"), &TerramanLibrary::material_cache_get);
 	ClassDB::bind_method(D_METHOD("_material_cache_get", "key"), &TerramanLibrary::_material_cache_get);
+	ClassDB::bind_method(D_METHOD("material_cache_unref", "key"), &TerramanLibrary::material_cache_unref);
+	ClassDB::bind_method(D_METHOD("_material_cache_unref", "key"), &TerramanLibrary::_material_cache_unref);
 
 	ClassDB::bind_method(D_METHOD("material_add", "value"), &TerramanLibrary::material_add);
 	ClassDB::bind_method(D_METHOD("material_set", "index", "value"), &TerramanLibrary::material_set);
@@ -372,7 +393,8 @@ void TerramanLibrary::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "materials_set", "materials_get");
 
 	BIND_VMETHOD(MethodInfo("_liquid_material_cache_get_key", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
-	BIND_VMETHOD(MethodInfo("_liquid_material_cache_get", PropertyInfo(Variant::OBJECT, "key", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache")));
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache"), "_liquid_material_cache_get", PropertyInfo(Variant::INT, "key")));
+	BIND_VMETHOD(MethodInfo("_liquid_material_cache_unref", PropertyInfo(Variant::INT, "key")));
 
 	ClassDB::bind_method(D_METHOD("liquid_material_get", "index"), &TerramanLibrary::liquid_material_get);
 	ClassDB::bind_method(D_METHOD("liquid_material_lod_get", "index"), &TerramanLibrary::liquid_material_lod_get);
@@ -381,6 +403,8 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_liquid_material_cache_get_key", "chunk"), &TerramanLibrary::_liquid_material_cache_get_key);
 	ClassDB::bind_method(D_METHOD("liquid_material_cache_get", "key"), &TerramanLibrary::liquid_material_cache_get);
 	ClassDB::bind_method(D_METHOD("_liquid_material_cache_get", "key"), &TerramanLibrary::_liquid_material_cache_get);
+	ClassDB::bind_method(D_METHOD("liquid_material_cache_unref", "key"), &TerramanLibrary::liquid_material_cache_unref);
+	ClassDB::bind_method(D_METHOD("_liquid_material_cache_unref", "key"), &TerramanLibrary::_liquid_material_cache_unref);
 
 	ClassDB::bind_method(D_METHOD("liquid_material_add", "value"), &TerramanLibrary::liquid_material_add);
 	ClassDB::bind_method(D_METHOD("liquid_material_set", "index", "value"), &TerramanLibrary::liquid_material_set);
@@ -393,7 +417,8 @@ void TerramanLibrary::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "liquid_materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "liquid_materials_set", "liquid_materials_get");
 
 	BIND_VMETHOD(MethodInfo("_prop_material_cache_get_key", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
-	BIND_VMETHOD(MethodInfo("_prop_material_cache_get", PropertyInfo(Variant::OBJECT, "key", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache")));
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache"), "_prop_material_cache_get", PropertyInfo(Variant::INT, "key")));
+	BIND_VMETHOD(MethodInfo("_prop_material_cache_unref", PropertyInfo(Variant::INT, "key")));
 
 	ClassDB::bind_method(D_METHOD("prop_material_get", "index"), &TerramanLibrary::prop_material_get);
 	ClassDB::bind_method(D_METHOD("prop_material_lod_get", "index"), &TerramanLibrary::prop_material_lod_get);
@@ -402,6 +427,8 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_prop_material_cache_get_key", "chunk"), &TerramanLibrary::_prop_material_cache_get_key);
 	ClassDB::bind_method(D_METHOD("prop_material_cache_get", "key"), &TerramanLibrary::prop_material_cache_get);
 	ClassDB::bind_method(D_METHOD("_prop_material_cache_get", "key"), &TerramanLibrary::_prop_material_cache_get);
+	ClassDB::bind_method(D_METHOD("prop_material_cache_unref", "key"), &TerramanLibrary::prop_material_cache_unref);
+	ClassDB::bind_method(D_METHOD("_prop_material_cache_unref", "key"), &TerramanLibrary::_prop_material_cache_unref);
 
 	ClassDB::bind_method(D_METHOD("prop_material_add", "value"), &TerramanLibrary::prop_material_add);
 	ClassDB::bind_method(D_METHOD("prop_material_set", "index", "value"), &TerramanLibrary::prop_material_set);

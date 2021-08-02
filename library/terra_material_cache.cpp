@@ -29,6 +29,19 @@ void TerraMaterialCache::set_initialized(const bool value) {
 	_initialized = value;
 }
 
+int TerraMaterialCache::get_ref_count() {
+	return _ref_count;
+}
+void TerraMaterialCache::set_ref_count(const int value) {
+	_ref_count = value;
+}
+void TerraMaterialCache::inc_ref_count() {
+	_ref_count += 1;
+}
+void TerraMaterialCache::dec_ref_count() {
+	_ref_count -= 1;
+}
+
 //Materials
 Ref<Material> TerraMaterialCache::material_get(const int index) {
 	ERR_FAIL_INDEX_V(index, _materials.size(), Ref<Material>(NULL));
@@ -143,7 +156,7 @@ void TerraMaterialCache::setup_material_albedo(Ref<Texture> texture) {
 }
 
 TerraMaterialCache::TerraMaterialCache() {
-	material_users = 0;
+	_ref_count = 0;
 	_initialized = false;
 }
 
@@ -156,6 +169,12 @@ void TerraMaterialCache::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_initialized"), &TerraMaterialCache::get_initialized);
 	ClassDB::bind_method(D_METHOD("set_initialized", "value"), &TerraMaterialCache::set_initialized);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "initialized"), "set_initialized", "get_initialized");
+
+	ClassDB::bind_method(D_METHOD("get_ref_count"), &TerraMaterialCache::get_ref_count);
+	ClassDB::bind_method(D_METHOD("set_ref_count", "value"), &TerraMaterialCache::set_ref_count);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "mat_ref_count"), "set_ref_count", "get_ref_count");
+	ClassDB::bind_method(D_METHOD("inc_ref_count"), &TerraMaterialCache::inc_ref_count);
+	ClassDB::bind_method(D_METHOD("dec_ref_count"), &TerraMaterialCache::dec_ref_count);
 
 	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
 

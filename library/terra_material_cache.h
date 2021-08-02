@@ -51,6 +51,11 @@ public:
 	bool get_initialized();
 	void set_initialized(const bool value);
 
+	int get_ref_count();
+	void set_ref_count(const int value);
+	void inc_ref_count();
+	void dec_ref_count();
+
 	Ref<Material> material_get(const int index);
 	Ref<Material> material_lod_get(const int index);
 	void material_add(const Ref<Material> &value);
@@ -84,8 +89,8 @@ protected:
 
 	Vector<Ref<TerraSurface>> _surfaces;
 	Vector<Ref<Material>> _materials;
-	
-	int material_users;
+
+	int _ref_count;
 };
 
 #endif

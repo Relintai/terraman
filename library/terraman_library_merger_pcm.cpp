@@ -104,8 +104,14 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 	_cache_mutex.lock();
 
 	if (_material_cache.has(hash)) {
+		Ref<TerraMaterialCachePCM> cc = _material_cache[hash];
+
+		if (cc.is_valid()) {
+			cc->inc_ref_count();
+		}
+
 		_cache_mutex.unlock();
-		
+
 		return;
 	}
 
@@ -113,6 +119,7 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 
 	Ref<TerraMaterialCachePCM> cache;
 	cache.instance();
+	cache->inc_ref_count();
 
 	cache->set_texture_flags(get_texture_flags());
 	cache->set_max_atlas_size(get_max_atlas_size());
@@ -169,6 +176,28 @@ Ref<TerraMaterialCache> TerramanLibraryMergerPCM::_material_cache_get(const int 
 	ERR_FAIL_COND_V(!_material_cache.has(key), Ref<TerraMaterialCache>());
 
 	return _material_cache[key];
+}
+
+void TerramanLibraryMergerPCM::_material_cache_unref(const int key) {
+	_cache_mutex.lock();
+
+	if (!_material_cache.has(key)) {
+		return;
+	}
+
+	Ref<TerraMaterialCachePCM> cc = _material_cache[key];
+
+	if (!cc.is_valid()) {
+		return;
+	}
+
+	cc->dec_ref_count();
+
+	if (cc->get_ref_count() <= 0) {
+		_material_cache.erase(key);
+	}
+
+	_cache_mutex.unlock();
 }
 
 int TerramanLibraryMergerPCM::get_texture_flags() const {
