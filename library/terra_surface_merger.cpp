@@ -45,10 +45,6 @@ void TerraSurfaceMerger::set_texture(const TerraSurfaceSides side, const Ref<Tex
 }
 
 void TerraSurfaceMerger::refresh_rects() {
-	TerramanLibraryMerger *lib = Object::cast_to<TerramanLibraryMerger>(_library);
-
-	ERR_FAIL_COND(lib == NULL);
-
 	for (int i = 0; i < TERRA_SIDES_COUNT; ++i) {
 		if (!_regions[i].is_valid()) {
 			_rects[i] = Rect2();
