@@ -69,7 +69,7 @@ Ref<Material> TerramanLibrary::material_lod_get(const int index) {
 	return _materials[index];
 }
 
-void TerramanLibrary::material_cache_get_key(const Ref<TerraChunk> &chunk) {
+void TerramanLibrary::material_cache_get_key(Ref<TerraChunk> chunk) {
 	call("_material_cache_get_key", chunk);
 }
 
@@ -143,7 +143,7 @@ Ref<Material> TerramanLibrary::liquid_material_lod_get(const int index) {
 	return _liquid_materials[index];
 }
 
-void TerramanLibrary::liquid_material_cache_get_key(const Ref<TerraChunk> &chunk) {
+void TerramanLibrary::liquid_material_cache_get_key(Ref<TerraChunk> chunk) {
 	call("_liquid_material_cache_get_key", chunk);
 }
 
@@ -217,7 +217,7 @@ Ref<Material> TerramanLibrary::prop_material_lod_get(const int index) {
 	return _prop_materials[index];
 }
 
-void TerramanLibrary::prop_material_cache_get_key(const Ref<TerraChunk> &chunk) {
+void TerramanLibrary::prop_material_cache_get_key(Ref<TerraChunk> chunk) {
 	call("_prop_material_cache_get_key", chunk);
 }
 

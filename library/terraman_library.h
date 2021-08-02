@@ -72,7 +72,7 @@ public:
 	Ref<Material> material_get(const int index);
 	Ref<Material> material_lod_get(const int index);
 
-	void material_cache_get_key(const Ref<TerraChunk> &chunk);
+	void material_cache_get_key(Ref<TerraChunk> chunk);
 	virtual void _material_cache_get_key(Ref<TerraChunk> chunk);
 	Ref<TerraMaterialCache> material_cache_get(const int key);
 	virtual Ref<TerraMaterialCache> _material_cache_get(const int key);
@@ -89,7 +89,7 @@ public:
 	Ref<Material> liquid_material_get(const int index);
 	Ref<Material> liquid_material_lod_get(const int index);
 
-	void liquid_material_cache_get_key(const Ref<TerraChunk> &chunk);
+	void liquid_material_cache_get_key(Ref<TerraChunk> chunk);
 	virtual void _liquid_material_cache_get_key(Ref<TerraChunk> chunk);
 	Ref<TerraMaterialCache> liquid_material_cache_get(const int key);
 	virtual Ref<TerraMaterialCache> _liquid_material_cache_get(const int key);
@@ -106,7 +106,7 @@ public:
 	Ref<Material> prop_material_get(const int index);
 	Ref<Material> prop_material_lod_get(const int index);
 
-	void prop_material_cache_get_key(const Ref<TerraChunk> &chunk);
+	void prop_material_cache_get_key(Ref<TerraChunk> chunk);
 	virtual void _prop_material_cache_get_key(Ref<TerraChunk> chunk);
 	Ref<TerraMaterialCache> prop_material_cache_get(const int key);
 	virtual Ref<TerraMaterialCache> _prop_material_cache_get(const int key);
