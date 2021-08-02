@@ -59,13 +59,13 @@ public:
 	Vector<Variant> materials_get();
 	void materials_set(const Vector<Variant> &materials);
 
-	virtual Ref<TerraSurface> voxel_surface_get(const int index);
-	virtual Ref<TerraSurface> voxel_surface_id_get(const int id);
-	virtual void voxel_surface_add(Ref<TerraSurface> value);
-	virtual void voxel_surface_set(const int index, Ref<TerraSurface> value);
-	virtual void voxel_surface_remove(const int index);
-	virtual int voxel_surface_get_num() const;
-	virtual void voxel_surfaces_clear();
+	virtual Ref<TerraSurface> surface_get(const int index);
+	virtual Ref<TerraSurface> surface_id_get(const int id);
+	virtual void surface_add(Ref<TerraSurface> value);
+	virtual void surface_set(const int index, Ref<TerraSurface> value);
+	virtual void surface_remove(const int index);
+	virtual int surface_get_num() const;
+	virtual void surfaces_clear();
 
 	virtual void refresh_rects();
 

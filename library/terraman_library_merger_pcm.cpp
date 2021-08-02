@@ -137,7 +137,7 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 		nms->set_library(Ref<TerramanLibraryMergerPCM>(this));
 		nms->set_id(s);
 
-		cache->voxel_surface_add(nms);
+		cache->surface_add(nms);
 	}
 
 	for (int i = 0; i < _materials.size(); ++i) {

@@ -82,12 +82,12 @@ void TerraMaterialCache::materials_set(const Vector<Variant> &materials) {
 }
 
 //Surfaces
-Ref<TerraSurface> TerraMaterialCache::voxel_surface_get(const int index) {
+Ref<TerraSurface> TerraMaterialCache::surface_get(const int index) {
 	ERR_FAIL_INDEX_V(index, _surfaces.size(), Ref<TerraSurface>());
 
 	return _surfaces[index];
 }
-Ref<TerraSurface> TerraMaterialCache::voxel_surface_id_get(const int id) {
+Ref<TerraSurface> TerraMaterialCache::surface_id_get(const int id) {
 	Ref<TerraSurface> surface;
 
 	for (int i = 0; i < _surfaces.size(); ++i) {
@@ -102,12 +102,12 @@ Ref<TerraSurface> TerraMaterialCache::voxel_surface_id_get(const int id) {
 
 	return surface;
 }
-void TerraMaterialCache::voxel_surface_add(Ref<TerraSurface> value) {
+void TerraMaterialCache::surface_add(Ref<TerraSurface> value) {
 	ERR_FAIL_COND(!value.is_valid());
 
 	_surfaces.push_back(value);
 }
-void TerraMaterialCache::voxel_surface_set(int index, Ref<TerraSurface> value) {
+void TerraMaterialCache::surface_set(int index, Ref<TerraSurface> value) {
 	ERR_FAIL_COND(index < 0);
 
 	if (_surfaces.size() < index) {
@@ -116,13 +116,13 @@ void TerraMaterialCache::voxel_surface_set(int index, Ref<TerraSurface> value) {
 
 	_surfaces.set(index, value);
 }
-void TerraMaterialCache::voxel_surface_remove(const int index) {
+void TerraMaterialCache::surface_remove(const int index) {
 	_surfaces.remove(index);
 }
-int TerraMaterialCache::voxel_surface_get_num() const {
+int TerraMaterialCache::surface_get_num() const {
 	return _surfaces.size();
 }
-void TerraMaterialCache::voxel_surfaces_clear() {
+void TerraMaterialCache::surfaces_clear() {
 	_surfaces.clear();
 }
 
@@ -158,14 +158,14 @@ void TerraMaterialCache::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("materials_set"), &TerraMaterialCache::materials_set);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "materials_set", "materials_get");
 
-	ClassDB::bind_method(D_METHOD("voxel_surface_get", "index"), &TerraMaterialCache::voxel_surface_get);
-	ClassDB::bind_method(D_METHOD("voxel_surface_id_get", "index"), &TerraMaterialCache::voxel_surface_id_get);
+	ClassDB::bind_method(D_METHOD("surface_get", "index"), &TerraMaterialCache::surface_get);
+	ClassDB::bind_method(D_METHOD("surface_id_get", "index"), &TerraMaterialCache::surface_id_get);
 
-	ClassDB::bind_method(D_METHOD("voxel_surface_add", "value"), &TerraMaterialCache::voxel_surface_add);
-	ClassDB::bind_method(D_METHOD("voxel_surface_set", "index", "surface"), &TerraMaterialCache::voxel_surface_set);
-	ClassDB::bind_method(D_METHOD("voxel_surface_remove", "index"), &TerraMaterialCache::voxel_surface_remove);
-	ClassDB::bind_method(D_METHOD("voxel_surface_get_num"), &TerraMaterialCache::voxel_surface_get_num);
-	ClassDB::bind_method(D_METHOD("voxel_surfaces_clear"), &TerraMaterialCache::voxel_surfaces_clear);
+	ClassDB::bind_method(D_METHOD("surface_add", "value"), &TerraMaterialCache::surface_add);
+	ClassDB::bind_method(D_METHOD("surface_set", "index", "surface"), &TerraMaterialCache::surface_set);
+	ClassDB::bind_method(D_METHOD("surface_remove", "index"), &TerraMaterialCache::surface_remove);
+	ClassDB::bind_method(D_METHOD("surface_get_num"), &TerraMaterialCache::surface_get_num);
+	ClassDB::bind_method(D_METHOD("surfaces_clear"), &TerraMaterialCache::surfaces_clear);
 
 	ClassDB::bind_method(D_METHOD("refresh_rects"), &TerraMaterialCache::refresh_rects);
 
