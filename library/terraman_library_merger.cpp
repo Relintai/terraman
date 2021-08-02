@@ -144,7 +144,7 @@ void TerramanLibraryMerger::set_voxel_surfaces(const Vector<Variant> &surfaces) 
 		Ref<TerraSurfaceMerger> surface = Ref<TerraSurfaceMerger>(surfaces[i]);
 
 		if (surface.is_valid()) {
-			surface->set_library(this);
+			surface->set_library(Ref<TerramanLibraryMerger>(this));
 		}
 
 		_voxel_surfaces.push_back(surface);
