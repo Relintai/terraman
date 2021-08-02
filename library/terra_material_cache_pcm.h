@@ -43,11 +43,27 @@ SOFTWARE.
 #include "../defines.h"
 
 class TerraSurface;
+class TexturePacker;
 
 class TerraMaterialCachePCM : public TerraMaterialCache {
 	GDCLASS(TerraMaterialCachePCM, TerraMaterialCache);
 
 public:
+	int get_texture_flags() const;
+	void set_texture_flags(const int flags);
+
+	int get_max_atlas_size() const;
+	void set_max_atlas_size(const int size);
+
+	bool get_keep_original_atlases() const;
+	void set_keep_original_atlases(const bool value);
+
+	Color get_background_color() const;
+	void set_background_color(const Color &color);
+
+	int get_margin() const;
+	void set_margin(const int margin);
+
 	Ref<TerraSurface> voxel_surface_get(const int index);
 	void voxel_surface_add(Ref<TerraSurface> value);
 	void voxel_surface_set(const int index, Ref<TerraSurface> value);
@@ -57,13 +73,15 @@ public:
 
 	void refresh_rects();
 
+	void _setup_material_albedo(Ref<Texture> texture);
+
 	TerraMaterialCachePCM();
 	~TerraMaterialCachePCM();
 
 protected:
 	static void _bind_methods();
 
-	//Ref<TextureMerger> merger;
+	Ref<TexturePacker> _packer;
 };
 
 #endif
