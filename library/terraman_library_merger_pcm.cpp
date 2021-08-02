@@ -51,7 +51,7 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 
 	if (!ch) {
 		chunk->material_cache_key_set(0);
-		chunk->material_cache_key_has_set(true);
+		chunk->material_cache_key_has_set(false);
 
 		return;
 	}
@@ -79,6 +79,13 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 		if (!found) {
 			surfaces.push_back(v);
 		}
+	}
+
+	if (surfaces.size() == 0) {
+		chunk->material_cache_key_set(0);
+		chunk->material_cache_key_has_set(false);
+
+		return;
 	}
 
 	surfaces.sort();
