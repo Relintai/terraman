@@ -62,25 +62,6 @@ void TerraMaterialCachePCM::set_margin(const int margin) {
 	_packer->set_margin(margin);
 }
 
-//Surfaces
-Ref<TerraSurface> TerraMaterialCachePCM::voxel_surface_get(const int index) {
-	return Ref<TerraSurface>();
-}
-Ref<TerraSurface> TerraMaterialCachePCM::voxel_surface_id_get(const int id) {
-	return Ref<TerraSurface>();
-}
-void TerraMaterialCachePCM::voxel_surface_add(Ref<TerraSurface> value) {
-}
-void TerraMaterialCachePCM::voxel_surface_set(int index, Ref<TerraSurface> value) {
-}
-void TerraMaterialCachePCM::voxel_surface_remove(const int index) {
-}
-int TerraMaterialCachePCM::voxel_surface_get_num() const {
-	return 0;
-}
-void TerraMaterialCachePCM::voxel_surfaces_clear() {
-}
-
 void TerraMaterialCachePCM::refresh_rects() {
 	bool texture_added = false;
 	for (int i = 0; i < _surfaces.size(); i++) {

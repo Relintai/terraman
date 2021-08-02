@@ -64,14 +64,6 @@ public:
 	int get_margin() const;
 	void set_margin(const int margin);
 
-	Ref<TerraSurface> voxel_surface_get(const int index);
-	Ref<TerraSurface> voxel_surface_id_get(const int id);
-	void voxel_surface_add(Ref<TerraSurface> value);
-	void voxel_surface_set(const int index, Ref<TerraSurface> value);
-	void voxel_surface_remove(const int index);
-	int voxel_surface_get_num() const;
-	void voxel_surfaces_clear();
-
 	void refresh_rects();
 
 	void _setup_material_albedo(Ref<Texture> texture);
