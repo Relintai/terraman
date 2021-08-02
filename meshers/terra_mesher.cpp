@@ -126,13 +126,6 @@ void TerraMesher::set_material(const Ref<Material> &material) {
 	_material = material;
 }
 
-int TerraMesher::get_terrain_material_key() {
-	return _terrarin_material_key;
-}
-void TerraMesher::set_terrain_material_key(const int key) {
-	_terrarin_material_key = key;
-}
-
 float TerraMesher::get_ao_strength() const {
 	return _ao_strength;
 }
@@ -908,7 +901,6 @@ TerraMesher::TerraMesher(const Ref<TerramanLibrary> &library) {
 
 	_format = 0;
 	_texture_scale = 1;
-	_terrarin_material_key = 0;
 }
 
 TerraMesher::TerraMesher() {
@@ -921,7 +913,6 @@ TerraMesher::TerraMesher() {
 	_channel_index_type = 0;
 	_channel_index_isolevel = 0;
 	_texture_scale = 1;
-	_terrarin_material_key = 0;
 }
 
 TerraMesher::~TerraMesher() {
@@ -962,10 +953,6 @@ void TerraMesher::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_material"), &TerraMesher::get_material);
 	ClassDB::bind_method(D_METHOD("set_material", "value"), &TerraMesher::set_material);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_material", "get_material");
-
-	ClassDB::bind_method(D_METHOD("get_terrain_material_key"), &TerraMesher::get_terrain_material_key);
-	ClassDB::bind_method(D_METHOD("set_terrain_material_key", "key"), &TerraMesher::set_terrain_material_key);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "terrain_material_key"), "set_terrain_material_key", "get_terrain_material_key");
 
 	ClassDB::bind_method(D_METHOD("get_voxel_scale"), &TerraMesher::get_voxel_scale);
 	ClassDB::bind_method(D_METHOD("set_voxel_scale", "value"), &TerraMesher::set_voxel_scale);

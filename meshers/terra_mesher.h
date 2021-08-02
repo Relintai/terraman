@@ -116,9 +116,6 @@ public:
 	Ref<Material> get_material();
 	void set_material(const Ref<Material> &material);
 
-	int get_terrain_material_key();
-	void set_terrain_material_key(const int key);
-
 	float get_ao_strength() const;
 	void set_ao_strength(const float value);
 
@@ -207,8 +204,6 @@ protected:
 	int _format;
 
 	int _texture_scale;
-
-	int _terrarin_material_key;
 
 	PoolVector<Vertex> _vertices;
 	PoolVector<int> _indices;

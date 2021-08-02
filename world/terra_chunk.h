@@ -26,15 +26,15 @@ SOFTWARE.
 #include "core/version.h"
 
 #if VERSION_MAJOR > 3
+#include "core/config/engine.h"
 #include "core/io/resource.h"
 #include "core/string/ustring.h"
-#include "core/config/engine.h"
 #include "core/variant/array.h"
 #else
+#include "core/array.h"
+#include "core/engine.h"
 #include "core/resource.h"
 #include "core/ustring.h"
-#include "core/engine.h"
-#include "core/array.h"
 #endif
 
 #include "../defines.h"
@@ -134,6 +134,12 @@ public:
 	int get_margin_end() const;
 	void set_margin_start(const int value);
 	void set_margin_end(const int value);
+
+	int material_cache_key_get() const;
+	void material_cache_key_set(const int value);
+
+	bool material_cache_key_has() const;
+	void material_cache_key_has_set(const bool value);
 
 	Ref<TerramanLibrary> get_library();
 	void set_library(const Ref<TerramanLibrary> &value);
@@ -356,6 +362,9 @@ protected:
 	int _margin_start;
 	int _margin_end;
 
+	int _material_cache_key;
+	bool _material_cache_key_has;
+
 	float _world_height;
 
 	Vector<uint8_t *> _channels;
@@ -363,11 +372,11 @@ protected:
 	float _voxel_scale;
 
 	int _current_job;
-	Vector<Ref<TerraJob> > _jobs;
+	Vector<Ref<TerraJob>> _jobs;
 
 	Ref<TerramanLibrary> _library;
 
-	Vector<Ref<TerraStructure> > _voxel_structures;
+	Vector<Ref<TerraStructure>> _voxel_structures;
 
 #if PROPS_PRESENT
 	Vector<PropDataStore> _props;

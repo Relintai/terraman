@@ -31,17 +31,41 @@ SOFTWARE.
 #include "../../props/props/prop_data_prop.h"
 #endif
 
+#include "terra_material_cache_pcm.h"
+
 #if MESH_DATA_RESOURCE_PRESENT
 #include "../../mesh_data_resource/props/prop_data_mesh_data.h"
 #endif
 
 #include "../defines.h"
 
+#include "../world/default/terra_chunk_default.h"
 
 bool TerramanLibraryMergerPCM::_supports_caching() {
 	return true;
 }
 
+void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
+
+	uint8_t *data = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_TYPE);
+
+	if (!data) {
+		chunk->material_cache_key_set(0);
+		chunk->material_cache_key_has_set(true);
+
+		return;
+	}
+
+	PoolIntArray surfaces;
+
+
+
+	return;
+}
+
+Ref<TerraMaterialCache> TerramanLibraryMergerPCM::_material_cache_get(const int key) {
+	return Ref<TerraMaterialCache>();
+}
 
 int TerramanLibraryMergerPCM::get_texture_flags() const {
 	return _packer->get_texture_flags();
@@ -319,7 +343,6 @@ void TerramanLibraryMergerPCM::_setup_material_albedo(const int material_index, 
 	}
 
 	for (int i = 0; i < count; ++i) {
-
 		switch (material_index) {
 			case MATERIAL_INDEX_TERRAS:
 				mat = material_get(i);

@@ -171,6 +171,20 @@ _FORCE_INLINE_ void TerraChunk::set_margin_end(const int value) {
 	_margin_end = value;
 }
 
+int TerraChunk::material_cache_key_get() const {
+	return _material_cache_key;
+}
+void TerraChunk::material_cache_key_set(const int value) {
+	_material_cache_key = value;
+}
+
+bool TerraChunk::material_cache_key_has() const {
+	return _material_cache_key_has;
+}
+void TerraChunk::material_cache_key_has_set(const bool value) {
+	_material_cache_key_has = value;
+}
+
 Ref<TerramanLibrary> TerraChunk::get_library() {
 	return _library;
 }
@@ -965,19 +979,16 @@ void TerraChunk::set_transform(const Transform &transform) {
 }
 
 Transform TerraChunk::get_global_transform() const {
-
 	ERR_FAIL_COND_V(!get_voxel_world(), Transform());
 
 	return get_voxel_world()->get_global_transform() * _transform;
 }
 
 Vector3 TerraChunk::to_local(Vector3 p_global) const {
-
 	return get_global_transform().affine_inverse().xform(p_global);
 }
 
 Vector3 TerraChunk::to_global(Vector3 p_local) const {
-
 	return get_global_transform().xform(p_local);
 }
 
@@ -1007,6 +1018,9 @@ TerraChunk::TerraChunk() {
 
 	_margin_start = 0;
 	_margin_end = 0;
+
+	_material_cache_key = 0;
+	_material_cache_key_has = false;
 
 	_current_job = -1;
 
@@ -1286,6 +1300,14 @@ void TerraChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_margin_end"), &TerraChunk::get_margin_end);
 	ClassDB::bind_method(D_METHOD("set_margin_end"), &TerraChunk::set_margin_end);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "margin_end"), "set_margin_end", "get_margin_end");
+
+	ClassDB::bind_method(D_METHOD("material_cache_key_get"), &TerraChunk::material_cache_key_get);
+	ClassDB::bind_method(D_METHOD("material_cache_key_set"), &TerraChunk::material_cache_key_set);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "material_cache_key"), "material_cache_key_set", "material_cache_key_get");
+
+	ClassDB::bind_method(D_METHOD("material_cache_key_has"), &TerraChunk::material_cache_key_has);
+	ClassDB::bind_method(D_METHOD("material_cache_key_has_set"), &TerraChunk::material_cache_key_has_set);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "material_cache_key_has"), "material_cache_key_has_set", "material_cache_key_has");
 
 	ClassDB::bind_method(D_METHOD("get_library"), &TerraChunk::get_library);
 	ClassDB::bind_method(D_METHOD("set_library", "value"), &TerraChunk::set_library);

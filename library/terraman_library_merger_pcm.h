@@ -43,6 +43,7 @@ SOFTWARE.
 class TerraSurfaceSimple;
 class TerraMesher;
 class PackedScene;
+class TerraMaterialCachePCM;
 
 //pcm = per chunk material
 class TerramanLibraryMergerPCM : public TerramanLibrary {
@@ -50,6 +51,8 @@ class TerramanLibraryMergerPCM : public TerramanLibrary {
 
 public:
 	bool _supports_caching();
+	void _material_cache_get_key(Ref<TerraChunk> chunk);
+	Ref<TerraMaterialCache> _material_cache_get(const int key);
 
 	int get_texture_flags() const;
 	void set_texture_flags(const int flags);
@@ -106,6 +109,8 @@ protected:
 #endif
 
 	static void _bind_methods();
+
+	Map<int, Ref<TerraMaterialCachePCM> > _material_cache;
 
 	Vector<Ref<TerraSurfaceMerger> > _voxel_surfaces;
 #ifdef PROPS_PRESENT

@@ -99,11 +99,7 @@ void TerraTerrarinJob::phase_library_setup() {
 	}
 
 	if (lib->supports_caching()) {
-		_terrain_material_key = lib->material_cache_get_key(_chunk);
-
-		if (_mesher.is_valid()) {
-			_mesher->set_terrain_material_key(_terrain_material_key);
-		}
+		lib->material_cache_get_key(_chunk);
 
 		//if (_liquid_mesher.is_valid()) {
 		//	_liquid_mesher->set_terrain_material_key(_terrarin_material_key);
@@ -484,7 +480,7 @@ void TerraTerrarinJob::step_type_normal() {
 	Ref<Material> lmat;
 
 	if (chunk->get_library()->supports_caching()) {
-		lmat = chunk->get_library()->material_cache_get(_terrain_material_key)->material_lod_get(_current_mesh);
+		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
 		lmat = chunk->get_library()->material_lod_get(_current_mesh);
 	}
@@ -525,7 +521,7 @@ void TerraTerrarinJob::step_type_normal_lod() {
 	Ref<Material> lmat;
 
 	if (chunk->get_library()->supports_caching()) {
-		lmat = chunk->get_library()->material_cache_get(_terrain_material_key)->material_lod_get(_current_mesh);
+		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
 		lmat = chunk->get_library()->material_lod_get(_current_mesh);
 	}
@@ -549,7 +545,7 @@ void TerraTerrarinJob::step_type_drop_uv2() {
 	Ref<Material> lmat;
 
 	if (chunk->get_library()->supports_caching()) {
-		lmat = chunk->get_library()->material_cache_get(_terrain_material_key)->material_lod_get(_current_mesh);
+		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
 		lmat = chunk->get_library()->material_lod_get(_current_mesh);
 	}
@@ -573,7 +569,7 @@ void TerraTerrarinJob::step_type_merge_verts() {
 	Ref<Material> lmat;
 
 	if (chunk->get_library()->supports_caching()) {
-		lmat = chunk->get_library()->material_cache_get(_terrain_material_key)->material_lod_get(_current_mesh);
+		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
 		lmat = chunk->get_library()->material_lod_get(_current_mesh);
 	}
@@ -609,7 +605,7 @@ void TerraTerrarinJob::step_type_bake_texture() {
 		Ref<Material> lmat;
 
 		if (chunk->get_library()->supports_caching()) {
-			lmat = chunk->get_library()->material_cache_get(_terrain_material_key)->material_lod_get(_current_mesh);
+			lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
 		} else {
 			lmat = chunk->get_library()->material_lod_get(_current_mesh);
 		}
@@ -644,7 +640,7 @@ void TerraTerrarinJob::step_type_simplify_mesh() {
 		Ref<Material> lmat;
 
 		if (chunk->get_library()->supports_caching()) {
-			lmat = chunk->get_library()->material_cache_get(_terrain_material_key)->material_lod_get(_current_mesh);
+			lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
 		} else {
 			lmat = chunk->get_library()->material_lod_get(_current_mesh);
 		}

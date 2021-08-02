@@ -87,8 +87,6 @@ protected:
 	PoolVector<Vector3> temp_arr_collider;
 	PoolVector<Vector3> temp_arr_collider_liquid;
 	Array temp_mesh_arr;
-
-	int _terrain_material_key;
 };
 
 #endif
