@@ -44,6 +44,7 @@ class TerraSurfaceSimple;
 class TerraMesher;
 class PackedScene;
 class TerraMaterialCachePCM;
+class TexturePacker;
 
 //pcm = per chunk material
 class TerramanLibraryMergerPCM : public TerramanLibrary {
@@ -117,6 +118,7 @@ protected:
 	Vector<Ref<PropData> > _props;
 #endif
 
+	//todo remove these
 	Ref<TexturePacker> _packer;
 	Ref<TexturePacker> _prop_packer;
 };

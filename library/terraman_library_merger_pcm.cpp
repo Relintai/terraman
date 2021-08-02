@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include "scene/resources/packed_scene.h"
 #include "scene/resources/texture.h"
+#include "../../texture_packer/texture_packer.h"
 
 #ifdef PROPS_PRESENT
 #include "../../props/props/prop_data.h"
@@ -46,25 +47,112 @@ bool TerramanLibraryMergerPCM::_supports_caching() {
 }
 
 void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
+	uint8_t *ch = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_TYPE);
 
-	uint8_t *data = chunk->channel_get(TerraChunkDefault::DEFAULT_CHANNEL_TYPE);
-
-	if (!data) {
+	if (!ch) {
 		chunk->material_cache_key_set(0);
 		chunk->material_cache_key_has_set(true);
 
 		return;
 	}
 
-	PoolIntArray surfaces;
+	Vector<uint8_t> surfaces;
 
+	uint32_t size = chunk->get_data_size();
 
+	for (uint32_t i = 0; i < size; ++i) {
+		uint8_t v = ch[i];
 
-	return;
+		if (v == 0) {
+			continue;
+		}
+
+		int ssize = surfaces.size();
+		bool found = false;
+		for (uint8_t j = 0; j < ssize; ++j) {
+			if (surfaces[j] == v) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			surfaces.push_back(v);
+		}
+	}
+
+	surfaces.sort();
+
+	String hstr;
+
+	for (int i = 0; i < surfaces.size(); ++i) {
+		hstr += String::num(surfaces[i]) + "|";
+	}
+
+	print_error("New cache: " + hstr);
+
+	int hash = static_cast<int>(hstr.hash());
+
+	chunk->material_cache_key_set(hash);
+	chunk->material_cache_key_has_set(true);
+
+	if (_material_cache.has(hash)) {
+		return;
+	}
+
+	Ref<TerraMaterialCachePCM> cache;
+	cache.instance();
+
+	cache->set_texture_flags(get_texture_flags());
+	cache->set_max_atlas_size(get_max_atlas_size());
+	cache->set_keep_original_atlases(get_keep_original_atlases());
+	cache->set_background_color(get_background_color());
+	cache->set_margin(get_margin());
+
+	for (int i = 0; i < surfaces.size(); ++i) {
+		int s = surfaces[i] - 1;
+
+		if (_voxel_surfaces.size() <= s) {
+			continue;
+		}
+
+		Ref<TerraSurfaceMerger> ms = _voxel_surfaces[s];
+
+		if (!ms.is_valid()) {
+			continue;
+		}
+
+		Ref<TerraSurfaceMerger> nms = ms->duplicate();
+		nms->set_library(Ref<TerramanLibraryMergerPCM>(this));
+
+		cache->voxel_surface_add(nms);
+	}
+
+	for (int i = 0; i < _materials.size(); ++i) {
+		Ref<Material> m = _materials[i];
+
+		if (!m.is_valid()) {
+			continue;
+		}
+
+		Ref<Material> nm = m->duplicate();
+
+		cache->material_add(nm);
+	}
+
+	cache->refresh_rects();
+
+	_material_cache[hash] = cache;
 }
 
 Ref<TerraMaterialCache> TerramanLibraryMergerPCM::_material_cache_get(const int key) {
-	return Ref<TerraMaterialCache>();
+	//	if (!_material_cache.has(key)) {
+	//		return Ref<TerraMaterialCache>();
+	//	}
+
+	ERR_FAIL_COND_V(!_material_cache.has(key), Ref<TerraMaterialCache>());
+
+	return _material_cache[key];
 }
 
 int TerramanLibraryMergerPCM::get_texture_flags() const {
@@ -174,7 +262,7 @@ void TerramanLibraryMergerPCM::set_voxel_surfaces(const Vector<Variant> &surface
 		Ref<TerraSurfaceMerger> surface = Ref<TerraSurfaceMerger>(surfaces[i]);
 
 		if (surface.is_valid()) {
-			surface->set_library(this);
+			surface->set_library(Ref<TerramanLibraryMergerPCM>(this));
 		}
 
 		_voxel_surfaces.push_back(surface);
