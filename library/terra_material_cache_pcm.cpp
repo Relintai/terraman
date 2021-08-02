@@ -101,6 +101,8 @@ void TerraMaterialCachePCM::refresh_rects() {
 			surface->refresh_rects();
 		}
 	}
+
+	_initialized = true;
 }
 
 void TerraMaterialCachePCM::_setup_material_albedo(Ref<Texture> texture) {

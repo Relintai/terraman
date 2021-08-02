@@ -22,6 +22,13 @@ SOFTWARE.
 
 #include "terra_material_cache.h"
 
+bool TerraMaterialCache::get_initialized() {
+	return _initialized;
+}
+void TerraMaterialCache::set_initialized(const bool value) {
+	_initialized = value;
+}
+
 //Materials
 Ref<Material> TerraMaterialCache::material_get(const int index) {
 	ERR_FAIL_INDEX_V(index, _materials.size(), Ref<Material>(NULL));
@@ -127,6 +134,7 @@ void TerraMaterialCache::surfaces_clear() {
 }
 
 void TerraMaterialCache::refresh_rects() {
+	_initialized = true;
 }
 
 void TerraMaterialCache::setup_material_albedo(Ref<Texture> texture) {
@@ -136,6 +144,7 @@ void TerraMaterialCache::setup_material_albedo(Ref<Texture> texture) {
 
 TerraMaterialCache::TerraMaterialCache() {
 	material_users = 0;
+	_initialized = false;
 }
 
 TerraMaterialCache::~TerraMaterialCache() {
@@ -144,6 +153,10 @@ TerraMaterialCache::~TerraMaterialCache() {
 }
 
 void TerraMaterialCache::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_initialized"), &TerraMaterialCache::get_initialized);
+	ClassDB::bind_method(D_METHOD("set_initialized", "value"), &TerraMaterialCache::set_initialized);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "initialized"), "set_initialized", "get_initialized");
+
 	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
 
 	ClassDB::bind_method(D_METHOD("material_get", "index"), &TerraMaterialCache::material_get);

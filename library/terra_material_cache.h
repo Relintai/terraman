@@ -48,6 +48,9 @@ class TerraMaterialCache : public Resource {
 	GDCLASS(TerraMaterialCache, Resource)
 
 public:
+	bool get_initialized();
+	void set_initialized(const bool value);
+
 	Ref<Material> material_get(const int index);
 	Ref<Material> material_lod_get(const int index);
 	void material_add(const Ref<Material> &value);
@@ -77,9 +80,11 @@ public:
 protected:
 	static void _bind_methods();
 
+	bool _initialized;
+
 	Vector<Ref<TerraSurface>> _surfaces;
 	Vector<Ref<Material>> _materials;
-	//Ref<TextureMerger> merger; inherited
+	
 	int material_users;
 };
 
