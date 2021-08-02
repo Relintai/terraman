@@ -173,4 +173,6 @@ void TerraMaterialCachePCM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_margin"), &TerraMaterialCachePCM::get_margin);
 	ClassDB::bind_method(D_METHOD("set_margin", "size"), &TerraMaterialCachePCM::set_margin);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "margin"), "set_margin", "get_margin");
+
+	ClassDB::bind_method(D_METHOD("_setup_material_albedo", "texture"), &TerraMaterialCachePCM::_setup_material_albedo);
 }
