@@ -89,8 +89,6 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 		hstr += String::num(surfaces[i]) + "|";
 	}
 
-	print_error("New cache: " + hstr);
-
 	int hash = static_cast<int>(hstr.hash());
 
 	chunk->material_cache_key_set(hash);
@@ -102,6 +100,8 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 
 	Ref<TerraMaterialCachePCM> cache;
 	cache.instance();
+	_material_cache[hash] = cache;
+	//print_error("New cache: " + hstr);
 
 	cache->set_texture_flags(get_texture_flags());
 	cache->set_max_atlas_size(get_max_atlas_size());
@@ -141,8 +141,6 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 	}
 
 	cache->refresh_rects();
-
-	_material_cache[hash] = cache;
 }
 
 Ref<TerraMaterialCache> TerramanLibraryMergerPCM::_material_cache_get(const int key) {
