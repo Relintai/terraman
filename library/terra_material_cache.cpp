@@ -83,21 +83,47 @@ void TerraMaterialCache::materials_set(const Vector<Variant> &materials) {
 
 //Surfaces
 Ref<TerraSurface> TerraMaterialCache::voxel_surface_get(const int index) {
-	return Ref<TerraSurface>();
+	ERR_FAIL_INDEX_V(index, _surfaces.size(), Ref<TerraSurface>());
+
+	return _surfaces[index];
 }
 Ref<TerraSurface> TerraMaterialCache::voxel_surface_id_get(const int id) {
-	return Ref<TerraSurface>();
+	Ref<TerraSurface> surface;
+
+	for (int i = 0; i < _surfaces.size(); ++i) {
+		surface = _surfaces[i];
+
+		if (surface.is_valid()) {
+			if (surface->get_id() == id) {
+				break;
+			}
+		}
+	}
+
+	return surface;
 }
 void TerraMaterialCache::voxel_surface_add(Ref<TerraSurface> value) {
+	ERR_FAIL_COND(!value.is_valid());
+
+	_surfaces.push_back(value);
 }
 void TerraMaterialCache::voxel_surface_set(int index, Ref<TerraSurface> value) {
+	ERR_FAIL_COND(index < 0);
+
+	if (_surfaces.size() < index) {
+		_surfaces.resize(index + 1);
+	}
+
+	_surfaces.set(index, value);
 }
 void TerraMaterialCache::voxel_surface_remove(const int index) {
+	_surfaces.remove(index);
 }
 int TerraMaterialCache::voxel_surface_get_num() const {
-	return 0;
+	return _surfaces.size();
 }
 void TerraMaterialCache::voxel_surfaces_clear() {
+	_surfaces.clear();
 }
 
 void TerraMaterialCache::refresh_rects() {
