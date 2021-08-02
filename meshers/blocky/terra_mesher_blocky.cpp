@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "core/math/math_funcs.h"
 
+#include "../../library/terra_material_cache.h"
+
 bool TerraMesherBlocky::get_always_add_colors() const {
 	return _always_add_colors;
 }
@@ -55,7 +57,6 @@ void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 }
 
 void TerraMesherBlocky::add_chunk_normal(Ref<TerraChunkDefault> chunk) {
-
 	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
 	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
 	//		chunk->generate_ao();
@@ -101,11 +102,16 @@ void TerraMesherBlocky::add_chunk_normal(Ref<TerraChunkDefault> chunk) {
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
+	Ref<TerraMaterialCache> mcache;
+
+	if (chunk->material_cache_key_has()) {
+		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	}
+
 	int margin_start = chunk->get_margin_start();
 	//z_size + margin_start is fine, x, and z are in data space.
 	for (int z = margin_start; z < z_size + margin_start; ++z) {
 		for (int x = margin_start; x < x_size + margin_start; ++x) {
-
 			int indexes[4] = {
 				chunk->get_data_index(x + 1, z),
 				chunk->get_data_index(x, z),
@@ -118,7 +124,13 @@ void TerraMesherBlocky::add_chunk_normal(Ref<TerraChunkDefault> chunk) {
 			if (type == 0)
 				continue;
 
-			Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+			Ref<TerraSurface> surface;
+
+			if (!mcache.is_valid()) {
+				surface = _library->voxel_surface_get(type - 1);
+			} else {
+				surface = mcache->surface_id_get(type - 1);
+			}
 
 			if (!surface.is_valid())
 				continue;
@@ -202,7 +214,6 @@ void TerraMesherBlocky::add_chunk_normal(Ref<TerraChunkDefault> chunk) {
 }
 
 void TerraMesherBlocky::add_chunk_lod(Ref<TerraChunkDefault> chunk) {
-
 	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
 	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
 	//		chunk->generate_ao();
@@ -254,6 +265,12 @@ void TerraMesherBlocky::add_chunk_lod(Ref<TerraChunkDefault> chunk) {
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
+	Ref<TerraMaterialCache> mcache;
+
+	if (chunk->material_cache_key_has()) {
+		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	}
+
 	//todo this should be calculated from size's factors
 	int lod_skip = _lod_index * 2;
 	//int margin_start = chunk->get_margin_start() ;
@@ -262,7 +279,6 @@ void TerraMesherBlocky::add_chunk_lod(Ref<TerraChunkDefault> chunk) {
 	//z_size + margin_start is fine, x, and z are in data space.
 	for (int z = lod_skip; z < z_size + margin_start - lod_skip; z += lod_skip) {
 		for (int x = lod_skip; x < x_size + margin_start - lod_skip; x += lod_skip) {
-
 			int indexes[4] = {
 				chunk->get_data_index(x + lod_skip, z),
 				chunk->get_data_index(x, z),
@@ -275,7 +291,13 @@ void TerraMesherBlocky::add_chunk_lod(Ref<TerraChunkDefault> chunk) {
 			if (type == 0)
 				continue;
 
-			Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+			Ref<TerraSurface> surface;
+
+			if (!mcache.is_valid()) {
+				surface = _library->voxel_surface_get(type - 1);
+			} else {
+				surface = mcache->surface_id_get(type - 1);
+			}
 
 			if (!surface.is_valid())
 				continue;
@@ -359,7 +381,6 @@ void TerraMesherBlocky::add_chunk_lod(Ref<TerraChunkDefault> chunk) {
 }
 
 void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
-
 	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
 	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
 	//		chunk->generate_ao();
@@ -405,6 +426,12 @@ void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
+	Ref<TerraMaterialCache> mcache;
+
+	if (chunk->material_cache_key_has()) {
+		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	}
+
 	int margin_start = chunk->get_margin_start();
 
 	int lod_skip = _lod_index * 2;
@@ -415,7 +442,6 @@ void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
 	int lastz = lod_skip;
 
 	for (int x = margin_start + 1; x < x_size + margin_start - 1; ++x) {
-
 		int prev_main_x = x - (x % lod_skip);
 		int next_main_x = prev_main_x + lod_skip;
 		next_main_x = CLAMP(next_main_x, 0, x_data_size);
@@ -434,7 +460,13 @@ void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
 		if (type == 0)
 			continue;
 
-		Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+		Ref<TerraSurface> surface;
+
+		if (!mcache.is_valid()) {
+			surface = _library->voxel_surface_get(type - 1);
+		} else {
+			surface = mcache->surface_id_get(type - 1);
+		}
 
 		if (!surface.is_valid())
 			continue;
@@ -523,7 +555,6 @@ void TerraMesherBlocky::create_margin_zmin(Ref<TerraChunkDefault> chunk) {
 }
 
 void TerraMesherBlocky::create_margin_zmax(Ref<TerraChunkDefault> chunk) {
-
 	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
 	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
 	//		chunk->generate_ao();
@@ -569,6 +600,12 @@ void TerraMesherBlocky::create_margin_zmax(Ref<TerraChunkDefault> chunk) {
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
+	Ref<TerraMaterialCache> mcache;
+
+	if (chunk->material_cache_key_has()) {
+		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	}
+
 	int margin_start = chunk->get_margin_start();
 
 	int lod_skip = _lod_index * 2;
@@ -577,7 +614,6 @@ void TerraMesherBlocky::create_margin_zmax(Ref<TerraChunkDefault> chunk) {
 	float oolod = 1.0 / static_cast<float>(lod_skip);
 
 	for (int x = margin_start + 1; x < x_size + margin_start - 1; ++x) {
-
 		int prev_main_x = x - (x % lod_skip);
 		int next_main_x = prev_main_x + lod_skip;
 		next_main_x = CLAMP(next_main_x, 0, x_data_size);
@@ -596,7 +632,13 @@ void TerraMesherBlocky::create_margin_zmax(Ref<TerraChunkDefault> chunk) {
 		if (type == 0)
 			continue;
 
-		Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+		Ref<TerraSurface> surface;
+
+		if (!mcache.is_valid()) {
+			surface = _library->voxel_surface_get(type - 1);
+		} else {
+			surface = mcache->surface_id_get(type - 1);
+		}
 
 		if (!surface.is_valid())
 			continue;
@@ -685,7 +727,6 @@ void TerraMesherBlocky::create_margin_zmax(Ref<TerraChunkDefault> chunk) {
 }
 
 void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
-
 	//if ((get_build_flags() & TerraChunkDefault::BUILD_FLAG_GENERATE_AO) != 0)
 	//	if (!chunk->get_channel(TerraChunkDefault::DEFAULT_CHANNEL_AO))
 	//		chunk->generate_ao();
@@ -731,6 +772,12 @@ void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
+	Ref<TerraMaterialCache> mcache;
+
+	if (chunk->material_cache_key_has()) {
+		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	}
+
 	int margin_start = chunk->get_margin_start();
 
 	int lod_skip = _lod_index * 2;
@@ -741,7 +788,6 @@ void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
 	int lastx = lod_skip;
 
 	for (int z = margin_start + 1; z < z_size + margin_start - 1; ++z) {
-
 		int prev_main_z = z - (z % lod_skip);
 		int next_main_z = prev_main_z + lod_skip;
 		next_main_z = CLAMP(next_main_z, 0, z_data_size);
@@ -758,7 +804,13 @@ void TerraMesherBlocky::create_margin_xmin(Ref<TerraChunkDefault> chunk) {
 		if (type == 0)
 			continue;
 
-		Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+		Ref<TerraSurface> surface;
+
+		if (!mcache.is_valid()) {
+			surface = _library->voxel_surface_get(type - 1);
+		} else {
+			surface = mcache->surface_id_get(type - 1);
+		}
 
 		if (!surface.is_valid())
 			continue;
@@ -892,6 +944,12 @@ void TerraMesherBlocky::create_margin_xmax(Ref<TerraChunkDefault> chunk) {
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
+	Ref<TerraMaterialCache> mcache;
+
+	if (chunk->material_cache_key_has()) {
+		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	}
+
 	int margin_start = chunk->get_margin_start();
 
 	int lod_skip = _lod_index * 2;
@@ -900,7 +958,6 @@ void TerraMesherBlocky::create_margin_xmax(Ref<TerraChunkDefault> chunk) {
 	float oolod = 1.0 / static_cast<float>(lod_skip);
 
 	for (int z = margin_start + 1; z < z_size + margin_start - 1; ++z) {
-
 		int prev_main_z = z - (z % lod_skip);
 		int next_main_z = prev_main_z + lod_skip;
 		next_main_z = CLAMP(next_main_z, 0, z_data_size);
@@ -917,7 +974,13 @@ void TerraMesherBlocky::create_margin_xmax(Ref<TerraChunkDefault> chunk) {
 		if (type == 0)
 			continue;
 
-		Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+		Ref<TerraSurface> surface;
+
+		if (!mcache.is_valid()) {
+			surface = _library->voxel_surface_get(type - 1);
+		} else {
+			surface = mcache->surface_id_get(type - 1);
+		}
 
 		if (!surface.is_valid())
 			continue;
@@ -1056,6 +1119,12 @@ void TerraMesherBlocky::create_face(Ref<TerraChunkDefault> chunk, int dataxmin, 
 			channel_rao = chunk->channel_get_valid(TerraChunkDefault::DEFAULT_CHANNEL_RANDOM_AO);
 	}
 
+	Ref<TerraMaterialCache> mcache;
+
+	if (chunk->material_cache_key_has()) {
+		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	}
+
 	int indexes[4] = {
 		chunk->get_data_index(dataxmax, datazmin), //x + 1
 		chunk->get_data_index(dataxmin, datazmin), //x
@@ -1068,7 +1137,13 @@ void TerraMesherBlocky::create_face(Ref<TerraChunkDefault> chunk, int dataxmin, 
 	if (type == 0)
 		return;
 
-	Ref<TerraSurface> surface = _library->voxel_surface_get(type - 1);
+	Ref<TerraSurface> surface;
+
+	if (!mcache.is_valid()) {
+		surface = _library->voxel_surface_get(type - 1);
+	} else {
+		surface = mcache->surface_id_get(type - 1);
+	}
 
 	if (!surface.is_valid())
 		return;
