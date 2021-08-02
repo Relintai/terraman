@@ -20,36 +20,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TERRAMAN_LIBRARY_MERGER_PCM_H
-#define TERRAMAN_LIBRARY_MERGER_PCM_H
+#ifndef TERRA_MATERIAL_CACHE_PCM_H
+#define TERRA_MATERIAL_CACHE_PCM_H
+
+#include "terra_material_cache.h"
 
 #include "core/version.h"
 
 #if VERSION_MAJOR > 3
 #include "core/io/resource.h"
-#include "core/templates/map.h"
+#include "core/math/color.h"
+#include "core/templates/vector.h"
 #else
+#include "core/color.h"
 #include "core/resource.h"
-#include "core/map.h"
+#include "core/vector.h"
 #endif
 
-#include "terraman_library_merger.h"
+#include "core/math/rect2.h"
+#include "scene/resources/material.h"
 
+#include "../defines.h"
 
-//pcm = per chunk material
-class TerramanLibraryMergerPCM : public TerramanLibraryMerger { //inherit it from the normal library?
-	GDCLASS(TerramanLibraryMergerPCM, TerramanLibraryMerger);
+class TerraSurface;
+
+class TerraMaterialCachePCM : public TerraMaterialCache {
+	GDCLASS(TerraMaterialCachePCM, TerraMaterialCache);
 
 public:
-	bool _supports_caching();
+	Ref<TerraSurface> voxel_surface_get(const int index);
+	void voxel_surface_add(Ref<TerraSurface> value);
+	void voxel_surface_set(const int index, Ref<TerraSurface> value);
+	void voxel_surface_remove(const int index);
+	int voxel_surface_get_num() const;
+	void voxel_surfaces_clear();
 
-	//Ref<MaterialEntry> get_mat_entry_for_key(key)
+	void refresh_rects();
 
-	TerramanLibraryMergerPCM();
-	~TerramanLibraryMergerPCM();
+	TerraMaterialCachePCM();
+	~TerraMaterialCachePCM();
 
 protected:
 	static void _bind_methods();
+
+	//Ref<TextureMerger> merger;
 };
 
 #endif

@@ -27,6 +27,7 @@ def get_doc_classes():
         "TerramanLibraryMergerPCM",
 
         "TerraMaterialCache",
+        "TerraMaterialCachePCM",
 
         "TerraCubePoints",
         "TerraMesherCubic",

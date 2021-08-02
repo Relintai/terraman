@@ -22,26 +22,26 @@ SOFTWARE.
 
 #include "register_types.h"
 
-
 #include "library/terra_surface.h"
 #include "library/terra_surface_simple.h"
 
+#include "library/terra_material_cache.h"
 #include "library/terraman_library.h"
 #include "library/terraman_library_simple.h"
-#include "library/terra_material_cache.h"
 
 #ifdef TEXTURE_PACKER_PRESENT
 #include "library/terra_surface_merger.h"
 #include "library/terraman_library_merger.h"
 #include "library/terraman_library_merger_pcm.h"
+#include "library/terra_material_cache_pcm.h"
 #endif
 
 #include "data/terra_light.h"
 #include "meshers/terra_mesher.h"
 
 #include "world/block_terra_structure.h"
-#include "world/terra_environment_data.h"
 #include "world/terra_chunk.h"
+#include "world/terra_environment_data.h"
 #include "world/terra_structure.h"
 #include "world/terra_world.h"
 
@@ -65,9 +65,9 @@ SOFTWARE.
 
 #include "world/jobs/terra_job.h"
 #include "world/jobs/terra_light_job.h"
+#include "world/jobs/terra_mesher_job_step.h"
 #include "world/jobs/terra_prop_job.h"
 #include "world/jobs/terra_terrarin_job.h"
-#include "world/jobs/terra_mesher_job_step.h"
 
 void register_terraman_types() {
 	ClassDB::register_class<TerraMesher>();
@@ -85,6 +85,7 @@ void register_terraman_types() {
 	ClassDB::register_class<TerraSurfaceMerger>();
 	ClassDB::register_class<TerramanLibraryMerger>();
 	ClassDB::register_class<TerramanLibraryMergerPCM>();
+	ClassDB::register_class<TerraMaterialCachePCM>();
 #endif
 
 	ClassDB::register_class<TerraLight>();
