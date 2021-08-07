@@ -39,6 +39,10 @@ class TerraMesherJobStep : public Reference {
 	GDCLASS(TerraMesherJobStep, Reference);
 
 public:
+	//todo add:
+	//type generate lighting,
+	//type skip (this would leave the mesh empty)
+	//type previous mesh (this would set the previous mesh's rid to the current lod level)
 	enum TerraMesherJobStepType {
 		TYPE_NORMAL = 0,
 		TYPE_NORMAL_LOD,
