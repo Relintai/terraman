@@ -153,14 +153,6 @@ void TerraPropJob::phase_prop() {
 			}
 		}
 
-		if (get_prop_mesher()->get_vertex_count() == 0) {
-			reset_stages();
-
-			set_complete(true); //So threadpool knows it's done
-			next_job();
-			return;
-		}
-
 		if (should_return()) {
 			return;
 		}
@@ -208,6 +200,14 @@ void TerraPropJob::phase_prop() {
 				}
 			}
 		}
+	}
+
+	if (get_prop_mesher()->get_vertex_count() == 0) {
+		reset_stages();
+
+		set_complete(true); //So threadpool knows it's done
+		next_job();
+		return;
 	}
 
 #endif
