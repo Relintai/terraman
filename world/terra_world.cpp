@@ -599,7 +599,7 @@ void TerraWorld::prop_add(Transform tarnsform, const Ref<PropData> &prop, const 
 			if (!mdr.is_valid())
 				continue;
 
-			chunk->mesh_data_resource_add(t, mdr, mesh_data->get_texture());
+			chunk->mesh_data_resource_add(t, mdr, mesh_data->get_texture(), Color(1, 1, 1, 1), false);
 
 			continue;
 		}
