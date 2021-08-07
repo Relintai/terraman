@@ -141,6 +141,18 @@ public:
 	bool material_cache_key_has() const;
 	void material_cache_key_has_set(const bool value);
 
+	int liquid_material_cache_key_get() const;
+	void liquid_material_cache_key_set(const int value);
+
+	bool liquid_material_cache_key_has() const;
+	void liquid_material_cache_key_has_set(const bool value);
+
+	int prop_material_cache_key_get() const;
+	void prop_material_cache_key_set(const int value);
+
+	bool prop_material_cache_key_has() const;
+	void prop_material_cache_key_has_set(const bool value);
+
 	Ref<TerramanLibrary> get_library();
 	void set_library(const Ref<TerramanLibrary> &value);
 
@@ -364,6 +376,12 @@ protected:
 
 	int _material_cache_key;
 	bool _material_cache_key_has;
+
+	int _liquid_material_cache_key;
+	bool _liquid_material_cache_key_has;
+
+	int _prop_material_cache_key;
+	bool _prop_material_cache_key_has;
 
 	float _world_height;
 

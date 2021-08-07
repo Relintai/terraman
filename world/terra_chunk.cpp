@@ -185,6 +185,34 @@ void TerraChunk::material_cache_key_has_set(const bool value) {
 	_material_cache_key_has = value;
 }
 
+int TerraChunk::liquid_material_cache_key_get() const {
+	return _liquid_material_cache_key;
+}
+void TerraChunk::liquid_material_cache_key_set(const int value) {
+	_liquid_material_cache_key = value;
+}
+
+bool TerraChunk::liquid_material_cache_key_has() const {
+	return _liquid_material_cache_key_has;
+}
+void TerraChunk::liquid_material_cache_key_has_set(const bool value) {
+	_liquid_material_cache_key_has = value;
+}
+
+int TerraChunk::prop_material_cache_key_get() const {
+	return _prop_material_cache_key;
+}
+void TerraChunk::prop_material_cache_key_set(const int value) {
+	_prop_material_cache_key = value;
+}
+
+bool TerraChunk::prop_material_cache_key_has() const {
+	return _prop_material_cache_key_has;
+}
+void TerraChunk::prop_material_cache_key_has_set(const bool value) {
+	_prop_material_cache_key_has = value;
+}
+
 Ref<TerramanLibrary> TerraChunk::get_library() {
 	return _library;
 }
@@ -1028,6 +1056,12 @@ TerraChunk::TerraChunk() {
 	_material_cache_key = 0;
 	_material_cache_key_has = false;
 
+	_liquid_material_cache_key = 0;
+	_liquid_material_cache_key_has = false;
+
+	_prop_material_cache_key = 0;
+	_prop_material_cache_key_has = false;
+
 	_current_job = -1;
 
 	_world_height = 256;
@@ -1314,6 +1348,22 @@ void TerraChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("material_cache_key_has"), &TerraChunk::material_cache_key_has);
 	ClassDB::bind_method(D_METHOD("material_cache_key_has_set"), &TerraChunk::material_cache_key_has_set);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "material_cache_key_has"), "material_cache_key_has_set", "material_cache_key_has");
+
+	ClassDB::bind_method(D_METHOD("liquid_material_cache_key_get"), &TerraChunk::liquid_material_cache_key_get);
+	ClassDB::bind_method(D_METHOD("liquid_material_cache_key_set"), &TerraChunk::liquid_material_cache_key_set);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "liquid_material_cache_key"), "liquid_material_cache_key_set", "liquid_material_cache_key_get");
+
+	ClassDB::bind_method(D_METHOD("liquid_material_cache_key_has"), &TerraChunk::liquid_material_cache_key_has);
+	ClassDB::bind_method(D_METHOD("liquid_material_cache_key_has_set"), &TerraChunk::liquid_material_cache_key_has_set);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "liquid_material_cache_key_has"), "liquid_material_cache_key_has_set", "liquid_material_cache_key_has");
+
+	ClassDB::bind_method(D_METHOD("prop_material_cache_key_get"), &TerraChunk::prop_material_cache_key_get);
+	ClassDB::bind_method(D_METHOD("prop_material_cache_key_set"), &TerraChunk::prop_material_cache_key_set);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "prop_material_cache_key"), "prop_material_cache_key_set", "prop_material_cache_key_get");
+
+	ClassDB::bind_method(D_METHOD("prop_material_cache_key_has"), &TerraChunk::prop_material_cache_key_has);
+	ClassDB::bind_method(D_METHOD("prop_material_cache_key_has_set"), &TerraChunk::prop_material_cache_key_has_set);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "prop_material_cache_key_has"), "prop_material_cache_key_has_set", "prop_material_cache_key_has");
 
 	ClassDB::bind_method(D_METHOD("get_library"), &TerraChunk::get_library);
 	ClassDB::bind_method(D_METHOD("set_library", "value"), &TerraChunk::set_library);
