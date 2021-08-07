@@ -516,18 +516,18 @@ int TerraWorld::generation_get_size() const {
 }
 
 #if PROPS_PRESENT
-void TerraWorld::prop_add(Transform tarnsform, const Ref<PropData> &prop, const bool apply_voxel_scael) {
+void TerraWorld::prop_add(Transform transform, const Ref<PropData> &prop, const bool apply_voxel_scale) {
 	ERR_FAIL_COND(!prop.is_valid());
 
-	if (apply_voxel_scael) {
-		tarnsform = tarnsform.scaled(Vector3(get_voxel_scale(), get_voxel_scale(), get_voxel_scale()));
+	if (apply_voxel_scale) {
+		transform = transform.scaled(Vector3(get_voxel_scale(), get_voxel_scale(), get_voxel_scale()));
 	}
 
 	Vector3 wp;
-	wp = tarnsform.xform(wp);
+	wp = transform.xform(wp);
 	Ref<TerraChunk> chunk = get_or_create_chunk_at_world_position(wp);
 
-	chunk->prop_add(tarnsform, prop);
+	chunk->prop_add(transform, prop);
 
 	int count = prop->get_prop_count();
 	for (int i = 0; i < count; ++i) {
@@ -536,7 +536,7 @@ void TerraWorld::prop_add(Transform tarnsform, const Ref<PropData> &prop, const 
 		if (!entry.is_valid())
 			continue;
 
-		Transform t = tarnsform * entry->get_transform();
+		Transform t = transform * entry->get_transform();
 
 		wp = t.xform(Vector3());
 		chunk = get_or_create_chunk_at_world_position(wp);
@@ -1091,7 +1091,7 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("on_chunk_mesh_generation_finished", "chunk"), &TerraWorld::on_chunk_mesh_generation_finished);
 
 #if PROPS_PRESENT
-	ClassDB::bind_method(D_METHOD("prop_add", "transform", "prop", "apply_voxel_scael"), &TerraWorld::prop_add, DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("prop_add", "transform", "prop", "apply_voxel_scale"), &TerraWorld::prop_add, DEFVAL(true));
 #endif
 
 	//Lights

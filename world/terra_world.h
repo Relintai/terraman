@@ -163,7 +163,7 @@ public:
 	int generation_get_size() const;
 
 #if PROPS_PRESENT
-	void prop_add(Transform tarnsform, const Ref<PropData> &prop, const bool apply_voxel_scael = true);
+	void prop_add(Transform transform, const Ref<PropData> &prop, const bool apply_voxel_scale = true);
 #endif
 
 	//Lights
