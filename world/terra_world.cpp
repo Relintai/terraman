@@ -599,7 +599,11 @@ void TerraWorld::prop_add(Transform transform, const Ref<PropData> &prop, const 
 			if (!mdr.is_valid())
 				continue;
 
-			chunk->mesh_data_resource_add(t, mdr, mesh_data->get_texture(), Color(1, 1, 1, 1), false);
+			Transform chunk_local_tform = t;
+
+			chunk_local_tform.origin = chunk->to_local(chunk_local_tform.origin);
+
+			chunk->mesh_data_resource_add(chunk_local_tform, mdr, mesh_data->get_texture(), Color(1, 1, 1, 1), false);
 
 			continue;
 		}
