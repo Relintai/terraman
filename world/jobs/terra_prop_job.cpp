@@ -141,6 +141,7 @@ void TerraPropJob::phase_prop() {
 
 	if (should_do()) {
 		if (chunk->mesh_data_resource_get_count() == 0) {
+			reset_stages();
 			set_complete(true); //So threadpool knows it's done
 			next_job();
 			return;
@@ -153,7 +154,7 @@ void TerraPropJob::phase_prop() {
 		}
 
 		if (get_prop_mesher()->get_vertex_count() == 0) {
-			//reset_stages();
+			reset_stages();
 
 			set_complete(true); //So threadpool knows it's done
 			next_job();
@@ -207,14 +208,11 @@ void TerraPropJob::phase_prop() {
 				}
 			}
 		}
-
-		if (should_return()) {
-			return;
-		}
 	}
 
 #endif
 
+	reset_stages();
 	next_phase();
 }
 
@@ -281,7 +279,9 @@ void TerraPropJob::phase_steps() {
 
 	if (_prop_mesher->get_vertex_count() == 0) {
 		reset_stages();
-		next_phase();
+		//next_phase();
+		set_complete(true); //So threadpool knows it's done
+		next_job();
 
 		return;
 	}
@@ -412,7 +412,6 @@ void TerraPropJob::step_type_normal() {
 	if (lmat.is_valid()) {
 		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
 	}
-	
 
 	++_current_mesh;
 }
