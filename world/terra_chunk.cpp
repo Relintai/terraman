@@ -836,7 +836,7 @@ bool TerraChunk::mesh_data_resource_get_is_inside(const int index) {
 
 	return _mesh_data_resources[index].is_inside;
 }
-void TerraChunk::mesh_data_resource_set_is_inside(const int index, const bool &inside) {
+void TerraChunk::mesh_data_resource_set_is_inside(const int index, const bool inside) {
 	ERR_FAIL_INDEX(index, _mesh_data_resources.size());
 
 	_mesh_data_resources.write[index].is_inside = inside;

@@ -247,7 +247,7 @@ public:
 	void mesh_data_resource_set_transform(const int index, const Transform &transform);
 
 	bool mesh_data_resource_get_is_inside(const int index);
-	void mesh_data_resource_set_is_inside(const int index, const bool &inside);
+	void mesh_data_resource_set_is_inside(const int index, const bool inside);
 
 	int mesh_data_resource_get_count() const;
 	void mesh_data_resource_remove(const int index);
