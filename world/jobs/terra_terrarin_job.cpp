@@ -26,7 +26,6 @@ SOFTWARE.
 #include "../../library/terra_surface.h"
 #include "../../library/terraman_library.h"
 
-#include "../../meshers/blocky/terra_mesher_blocky.h"
 #include "../../meshers/default/terra_mesher_default.h"
 #include "../../meshers/terra_mesher.h"
 
@@ -497,17 +496,13 @@ void TerraTerrarinJob::step_type_normal() {
 }
 
 void TerraTerrarinJob::step_type_normal_lod() {
-	Ref<TerraMesherBlocky> mesher = _mesher;
-
-	ERR_FAIL_COND(!_mesher.is_valid());
-
 	Ref<TerraMesherJobStep> step = _job_steps[_current_job_step];
 
 	ERR_FAIL_COND(!step.is_valid());
 
 	Ref<TerraChunkDefault> chunk = _chunk;
 
-	mesher->set_lod_index(step->get_lod_index());
+	_mesher->set_lod_index(step->get_lod_index());
 	_mesher->reset();
 	_mesher->add_chunk(_chunk);
 
