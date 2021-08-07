@@ -326,12 +326,12 @@ void TerraPropJob::phase_prop() {
 						temp_mesh_arr = fqms->get_arrays();
 
 						VisualServer::get_singleton()->mesh_add_surface_from_arrays(
-								chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, i),
+								chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, i),
 								VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 						if (chunk->get_library()->prop_material_lod_get(i).is_valid())
 							VisualServer::get_singleton()->mesh_surface_set_material(
-									chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, i), 0,
+									chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, i), 0,
 									chunk->get_library()->prop_material_lod_get(i)->get_rid());
 					}
 				}
@@ -410,14 +410,14 @@ void TerraPropJob::step_type_normal() {
 
 	temp_mesh_arr = _prop_mesher->build_mesh();
 
-	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
 	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 	Ref<Material> lmat;
 
-	if (chunk->material_cache_key_has()) {
-		lmat = chunk->get_library()->prop_material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	if (chunk->prop_material_cache_key_has()) {
+		lmat = chunk->get_library()->prop_material_cache_get(_chunk->prop_material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
 		lmat = chunk->get_library()->prop_material_lod_get(_current_mesh);
 	}
@@ -447,16 +447,16 @@ void TerraPropJob::step_type_normal_lod() {
 
 	temp_mesh_arr = _prop_mesher->build_mesh();
 
-	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
 	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 	Ref<Material> lmat;
 
-	if (chunk->material_cache_key_has()) {
-		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	if (chunk->prop_material_cache_key_has()) {
+		lmat = chunk->get_library()->prop_material_cache_get(_chunk->prop_material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
-		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+		lmat = chunk->get_library()->prop_material_lod_get(_current_mesh);
 	}
 
 	if (lmat.is_valid()) {
@@ -469,7 +469,7 @@ void TerraPropJob::step_type_normal_lod() {
 void TerraPropJob::step_type_drop_uv2() {
 	Ref<TerraChunkDefault> chunk = _chunk;
 
-	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
 	temp_mesh_arr[VisualServer::ARRAY_TEX_UV2] = Variant();
 
@@ -477,10 +477,10 @@ void TerraPropJob::step_type_drop_uv2() {
 
 	Ref<Material> lmat;
 
-	if (chunk->material_cache_key_has()) {
-		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	if (chunk->prop_material_cache_key_has()) {
+		lmat = chunk->get_library()->prop_material_cache_get(_chunk->prop_material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
-		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+		lmat = chunk->get_library()->prop_material_lod_get(_current_mesh);
 	}
 
 	if (lmat.is_valid()) {
@@ -495,16 +495,16 @@ void TerraPropJob::step_type_merge_verts() {
 	temp_mesh_arr = temp_mesh_arr2;
 
 	Ref<TerraChunkDefault> chunk = _chunk;
-	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
 	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 	Ref<Material> lmat;
 
-	if (chunk->material_cache_key_has()) {
-		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	if (chunk->prop_material_cache_key_has()) {
+		lmat = chunk->get_library()->prop_material_cache_get(_chunk->prop_material_cache_key_get())->material_lod_get(_current_mesh);
 	} else {
-		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+		lmat = chunk->get_library()->prop_material_lod_get(_current_mesh);
 	}
 
 	if (lmat.is_valid()) {
@@ -531,16 +531,16 @@ void TerraPropJob::step_type_bake_texture() {
 		temp_mesh_arr = bake_mesh_array_uv(temp_mesh_arr, tex);
 		temp_mesh_arr[VisualServer::ARRAY_TEX_UV] = Variant();
 
-		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
 		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 		Ref<Material> lmat;
 
-		if (chunk->material_cache_key_has()) {
-			lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+		if (chunk->prop_material_cache_key_has()) {
+			lmat = chunk->get_library()->prop_material_cache_get(_chunk->prop_material_cache_key_get())->material_lod_get(_current_mesh);
 		} else {
-			lmat = chunk->get_library()->material_lod_get(_current_mesh);
+			lmat = chunk->get_library()->prop_material_lod_get(_current_mesh);
 		}
 
 		if (lmat.is_valid()) {
@@ -566,16 +566,16 @@ void TerraPropJob::step_type_simplify_mesh() {
 		fqms->simplify_mesh(temp_mesh_arr.size() * step->get_simplification_step_ratio(), step->get_simplification_agressiveness());
 		temp_mesh_arr = fqms->get_arrays();
 
-		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_PROP, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
 
 		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 		Ref<Material> lmat;
 
-		if (chunk->material_cache_key_has()) {
-			lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+		if (chunk->prop_material_cache_key_has()) {
+			lmat = chunk->get_library()->prop_material_cache_get(_chunk->prop_material_cache_key_get())->material_lod_get(_current_mesh);
 		} else {
-			lmat = chunk->get_library()->material_lod_get(_current_mesh);
+			lmat = chunk->get_library()->prop_material_lod_get(_current_mesh);
 		}
 
 		if (lmat.is_valid()) {
