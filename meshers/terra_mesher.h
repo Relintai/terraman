@@ -66,7 +66,6 @@ public:
 	const double PI = 3.141592653589793238463;
 
 	struct Vertex {
-
 		Vector3 vertex;
 		Color color;
 		Vector3 normal; // normal, binormal, tangent
@@ -110,6 +109,9 @@ public:
 	int get_texture_scale() const;
 	void set_texture_scale(const int value);
 
+	int get_lod_index() const;
+	void set_lod_index(const int value);
+
 	Ref<TerramanLibrary> get_library();
 	void set_library(const Ref<TerramanLibrary> &library);
 
@@ -146,7 +148,7 @@ public:
 
 	PoolVector<Vector3> build_collider() const;
 
-	void bake_lights(MeshInstance *node, Vector<Ref<TerraLight> > &lights);
+	void bake_lights(MeshInstance *node, Vector<Ref<TerraLight>> &lights);
 
 	Array build_mesh();
 	void build_mesh_into(RID mesh);
@@ -204,6 +206,8 @@ protected:
 	int _format;
 
 	int _texture_scale;
+
+	int _lod_index;
 
 	PoolVector<Vertex> _vertices;
 	PoolVector<int> _indices;

@@ -112,6 +112,13 @@ void TerraMesher::set_texture_scale(const int value) {
 	_texture_scale = value;
 }
 
+int TerraMesher::get_lod_index() const {
+	return _lod_index;
+}
+void TerraMesher::set_lod_index(const int value) {
+	_lod_index = value;
+}
+
 Ref<TerramanLibrary> TerraMesher::get_library() {
 	return _library;
 }
@@ -913,6 +920,7 @@ TerraMesher::TerraMesher() {
 	_channel_index_type = 0;
 	_channel_index_isolevel = 0;
 	_texture_scale = 1;
+	_lod_index = 0;
 }
 
 TerraMesher::~TerraMesher() {
@@ -945,6 +953,10 @@ void TerraMesher::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_texture_scale"), &TerraMesher::get_texture_scale);
 	ClassDB::bind_method(D_METHOD("set_texture_scale", "value"), &TerraMesher::set_texture_scale);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_scale"), "set_texture_scale", "get_texture_scale");
+
+	ClassDB::bind_method(D_METHOD("get_lod_index"), &TerraMesher::get_lod_index);
+	ClassDB::bind_method(D_METHOD("set_lod_index", "value"), &TerraMesher::set_lod_index);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "lod_index"), "set_lod_index", "get_lod_index");
 
 	ClassDB::bind_method(D_METHOD("get_library"), &TerraMesher::get_library);
 	ClassDB::bind_method(D_METHOD("set_library", "value"), &TerraMesher::set_library);

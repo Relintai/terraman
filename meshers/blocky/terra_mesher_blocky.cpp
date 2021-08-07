@@ -33,13 +33,6 @@ void TerraMesherBlocky::set_always_add_colors(const bool value) {
 	_always_add_colors = value;
 }
 
-int TerraMesherBlocky::get_lod_index() const {
-	return _lod_index;
-}
-void TerraMesherBlocky::set_lod_index(const int value) {
-	_lod_index = value;
-}
-
 void TerraMesherBlocky::_add_chunk(Ref<TerraChunk> p_chunk) {
 	Ref<TerraChunkDefault> chunk = p_chunk;
 
@@ -1226,7 +1219,6 @@ void TerraMesherBlocky::create_face(Ref<TerraChunkDefault> chunk, int dataxmin, 
 
 TerraMesherBlocky::TerraMesherBlocky() {
 	_always_add_colors = false;
-	_lod_index = 0;
 }
 
 TerraMesherBlocky::~TerraMesherBlocky() {
@@ -1238,8 +1230,4 @@ void TerraMesherBlocky::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_always_add_colors"), &TerraMesherBlocky::get_always_add_colors);
 	ClassDB::bind_method(D_METHOD("set_always_add_colors", "value"), &TerraMesherBlocky::set_always_add_colors);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "always_add_colors"), "set_always_add_colors", "get_always_add_colors");
-
-	ClassDB::bind_method(D_METHOD("get_lod_index"), &TerraMesherBlocky::get_lod_index);
-	ClassDB::bind_method(D_METHOD("set_lod_index", "value"), &TerraMesherBlocky::set_lod_index);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "lod_index"), "set_lod_index", "get_lod_index");
 }
