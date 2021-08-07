@@ -26,9 +26,12 @@ SOFTWARE.
 
 #include "../../library/terra_surface.h"
 #include "../../library/terraman_library.h"
+#include "../../library/terra_material_cache.h"
 
 #include "../../meshers/terra_mesher.h"
+#include "../../meshers/default/terra_mesher_default.h"
 #include "../default/terra_chunk_default.h"
+
 
 #ifdef MESH_DATA_RESOURCE_PRESENT
 #include "../../../mesh_data_resource/mesh_data_resource.h"
@@ -45,6 +48,28 @@ Ref<TerraMesher> TerraPropJob::get_prop_mesher() const {
 }
 void TerraPropJob::set_prop_mesher(const Ref<TerraMesher> &mesher) {
 	_prop_mesher = mesher;
+}
+
+Ref<TerraMesherJobStep> TerraPropJob::get_jobs_step(int index) const {
+	ERR_FAIL_INDEX_V(index, _job_steps.size(), Ref<TerraMesherJobStep>());
+
+	return _job_steps.get(index);
+}
+void TerraPropJob::set_jobs_step(int index, const Ref<TerraMesherJobStep> &step) {
+	ERR_FAIL_INDEX(index, _job_steps.size());
+
+	_job_steps.set(index, step);
+}
+void TerraPropJob::remove_jobs_step(const int index) {
+	ERR_FAIL_INDEX(index, _job_steps.size());
+
+	_job_steps.remove(index);
+}
+void TerraPropJob::add_jobs_step(const Ref<TerraMesherJobStep> &step) {
+	_job_steps.push_back(step);
+}
+int TerraPropJob::get_jobs_step_count() const {
+	return _job_steps.size();
 }
 
 void TerraPropJob::phase_physics_process() {
@@ -223,7 +248,6 @@ void TerraPropJob::phase_prop() {
 		}
 
 		if (should_do()) {
-
 			VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
 			if (chunk->get_library()->prop_material_lod_get(0).is_valid())
@@ -236,7 +260,6 @@ void TerraPropJob::phase_prop() {
 
 		if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_CREATE_LODS) != 0) {
 			if (should_do()) {
-
 				if (chunk->get_lod_num() >= 1) {
 					//for lod 1 just remove uv2
 					temp_mesh_arr[VisualServer::ARRAY_TEX_UV2] = Variant();
@@ -366,6 +389,9 @@ void TerraPropJob::_reset() {
 	_build_done = false;
 	_phase = 0;
 
+	_current_job_step = 0;
+	_current_mesh = 0;
+
 	if (get_prop_mesher().is_valid()) {
 		get_prop_mesher()->reset();
 		get_prop_mesher()->set_library(_chunk->get_library());
@@ -374,8 +400,200 @@ void TerraPropJob::_reset() {
 	set_build_phase_type(BUILD_PHASE_TYPE_PHYSICS_PROCESS);
 }
 
+void TerraPropJob::step_type_normal() {
+	Ref<TerraChunkDefault> chunk = _chunk;
+
+	//TODO make this automatic in build_mesh
+	if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
+		_prop_mesher->bake_colors(_chunk);
+	}
+
+	temp_mesh_arr = _prop_mesher->build_mesh();
+
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+
+	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+
+	Ref<Material> lmat;
+
+	if (chunk->material_cache_key_has()) {
+		lmat = chunk->get_library()->prop_material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	} else {
+		lmat = chunk->get_library()->prop_material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
+
+	++_current_mesh;
+}
+
+void TerraPropJob::step_type_normal_lod() {
+	Ref<TerraMesherJobStep> step = _job_steps[_current_job_step];
+
+	ERR_FAIL_COND(!step.is_valid());
+
+	Ref<TerraChunkDefault> chunk = _chunk;
+
+	_prop_mesher->set_lod_index(step->get_lod_index());
+	_prop_mesher->reset();
+	_prop_mesher->add_chunk(_chunk);
+
+	//TODO make this automatic in build_mesh
+	if ((chunk->get_build_flags() & TerraChunkDefault::BUILD_FLAG_USE_LIGHTING) != 0) {
+		_prop_mesher->bake_colors(_chunk);
+	}
+
+	temp_mesh_arr = _prop_mesher->build_mesh();
+
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+
+	VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+
+	Ref<Material> lmat;
+
+	if (chunk->material_cache_key_has()) {
+		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	} else {
+		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
+
+	++_current_mesh;
+}
+
+void TerraPropJob::step_type_drop_uv2() {
+	Ref<TerraChunkDefault> chunk = _chunk;
+
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+
+	temp_mesh_arr[VisualServer::ARRAY_TEX_UV2] = Variant();
+
+	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+
+	Ref<Material> lmat;
+
+	if (chunk->material_cache_key_has()) {
+		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	} else {
+		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
+
+	++_current_mesh;
+}
+
+void TerraPropJob::step_type_merge_verts() {
+	Array temp_mesh_arr2 = merge_mesh_array(temp_mesh_arr);
+	temp_mesh_arr = temp_mesh_arr2;
+
+	Ref<TerraChunkDefault> chunk = _chunk;
+	RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+
+	VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+
+	Ref<Material> lmat;
+
+	if (chunk->material_cache_key_has()) {
+		lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+	} else {
+		lmat = chunk->get_library()->material_lod_get(_current_mesh);
+	}
+
+	if (lmat.is_valid()) {
+		VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+	}
+
+	++_current_mesh;
+}
+
+void TerraPropJob::step_type_bake_texture() {
+	Ref<TerraChunkDefault> chunk = _chunk;
+
+	Ref<ShaderMaterial> mat = chunk->get_library()->material_lod_get(0);
+	Ref<SpatialMaterial> spmat = chunk->get_library()->material_lod_get(0);
+	Ref<Texture> tex;
+
+	if (mat.is_valid()) {
+		tex = mat->get_shader_param("texture_albedo");
+	} else if (spmat.is_valid()) {
+		tex = spmat->get_texture(SpatialMaterial::TEXTURE_ALBEDO);
+	}
+
+	if (tex.is_valid()) {
+		temp_mesh_arr = bake_mesh_array_uv(temp_mesh_arr, tex);
+		temp_mesh_arr[VisualServer::ARRAY_TEX_UV] = Variant();
+
+		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+
+		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+
+		Ref<Material> lmat;
+
+		if (chunk->material_cache_key_has()) {
+			lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+		} else {
+			lmat = chunk->get_library()->material_lod_get(_current_mesh);
+		}
+
+		if (lmat.is_valid()) {
+			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+		}
+	}
+
+	++_current_mesh;
+}
+
+void TerraPropJob::step_type_simplify_mesh() {
+#ifdef MESH_UTILS_PRESENT
+
+	Ref<TerraChunkDefault> chunk = _chunk;
+	Ref<TerraMesherJobStep> step = _job_steps[_current_job_step];
+	ERR_FAIL_COND(!step.is_valid());
+	Ref<FastQuadraticMeshSimplifier> fqms = step->get_fqms();
+	ERR_FAIL_COND(!fqms.is_valid());
+
+	fqms->initialize(temp_mesh_arr);
+
+	for (int i = 0; i < step->get_simplification_steps(); ++i) {
+		fqms->simplify_mesh(temp_mesh_arr.size() * step->get_simplification_step_ratio(), step->get_simplification_agressiveness());
+		temp_mesh_arr = fqms->get_arrays();
+
+		RID mesh_rid = chunk->mesh_rid_get_index(TerraChunkDefault::MESH_INDEX_TERRARIN, TerraChunkDefault::MESH_TYPE_INDEX_MESH, _current_mesh);
+
+		VisualServer::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
+
+		Ref<Material> lmat;
+
+		if (chunk->material_cache_key_has()) {
+			lmat = chunk->get_library()->material_cache_get(_chunk->material_cache_key_get())->material_lod_get(_current_mesh);
+		} else {
+			lmat = chunk->get_library()->material_lod_get(_current_mesh);
+		}
+
+		if (lmat.is_valid()) {
+			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+		}
+
+		++_current_mesh;
+	}
+
+#endif
+}
+
+
 TerraPropJob::TerraPropJob() {
 	set_build_phase_type(BUILD_PHASE_TYPE_PHYSICS_PROCESS);
+
+	_current_job_step = 0;
+	_current_mesh = 0;
 }
 
 TerraPropJob::~TerraPropJob() {
@@ -385,6 +603,12 @@ void TerraPropJob::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_prop_mesher"), &TerraPropJob::get_prop_mesher);
 	ClassDB::bind_method(D_METHOD("set_prop_mesher", "mesher"), &TerraPropJob::set_prop_mesher);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "prop_mesher", PROPERTY_HINT_RESOURCE_TYPE, "TerraMesher", 0), "set_prop_mesher", "get_prop_mesher");
+
+	ClassDB::bind_method(D_METHOD("get_jobs_step", "index"), &TerraPropJob::get_jobs_step);
+	ClassDB::bind_method(D_METHOD("set_jobs_step", "index", "mesher"), &TerraPropJob::set_jobs_step);
+	ClassDB::bind_method(D_METHOD("remove_jobs_step", "index"), &TerraPropJob::remove_jobs_step);
+	ClassDB::bind_method(D_METHOD("add_jobs_step", "mesher"), &TerraPropJob::add_jobs_step);
+	ClassDB::bind_method(D_METHOD("get_jobs_step_count"), &TerraPropJob::get_jobs_step_count);
 
 	ClassDB::bind_method(D_METHOD("_physics_process", "delta"), &TerraPropJob::_physics_process);
 }
