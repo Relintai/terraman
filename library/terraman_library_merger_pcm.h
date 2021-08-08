@@ -54,6 +54,7 @@ class TerramanLibraryMergerPCM : public TerramanLibrary {
 
 public:
 	bool _supports_caching();
+
 	void _material_cache_get_key(Ref<TerraChunk> chunk);
 	Ref<TerraMaterialCache> _material_cache_get(const int key);
 	void _material_cache_unref(const int key);
@@ -125,7 +126,8 @@ protected:
 	Ref<TexturePacker> _packer;
 	Ref<TexturePacker> _prop_packer;
 
-	Mutex _cache_mutex;
+	Mutex _material_cache_mutex;
+	Mutex _prop_material_cache_mutex;
 };
 
 #endif

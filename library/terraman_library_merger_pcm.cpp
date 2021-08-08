@@ -101,7 +101,7 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 	chunk->material_cache_key_set(hash);
 	chunk->material_cache_key_has_set(true);
 
-	_cache_mutex.lock();
+	_material_cache_mutex.lock();
 
 	if (_material_cache.has(hash)) {
 		Ref<TerraMaterialCachePCM> cc = _material_cache[hash];
@@ -110,7 +110,7 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 			cc->inc_ref_count();
 		}
 
-		_cache_mutex.unlock();
+		_material_cache_mutex.unlock();
 
 		return;
 	}
@@ -162,7 +162,7 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 	_material_cache[hash] = cache;
 
 	//unlock here, so if a different thread need the cache it will be able to immediately access the materials and surfaces when it gets it.
-	_cache_mutex.unlock();
+	_material_cache_mutex.unlock();
 
 	//this will generate the atlases
 	cache->refresh_rects();
@@ -179,7 +179,7 @@ Ref<TerraMaterialCache> TerramanLibraryMergerPCM::_material_cache_get(const int 
 }
 
 void TerramanLibraryMergerPCM::_material_cache_unref(const int key) {
-	_cache_mutex.lock();
+	_material_cache_mutex.lock();
 
 	if (!_material_cache.has(key)) {
 		return;
@@ -197,7 +197,7 @@ void TerramanLibraryMergerPCM::_material_cache_unref(const int key) {
 		_material_cache.erase(key);
 	}
 
-	_cache_mutex.unlock();
+	_material_cache_mutex.unlock();
 }
 
 int TerramanLibraryMergerPCM::get_texture_flags() const {
