@@ -62,6 +62,47 @@ void TerraMaterialCachePCM::set_margin(const int margin) {
 	_packer->set_margin(margin);
 }
 
+Ref<AtlasTexture> TerraMaterialCachePCM::additional_texture_get_atlas_tex(const Ref<Texture> &texture) {
+	if (!_packer->contains_texture(texture)) {
+		return Ref<AtlasTexture>();
+	}
+
+	return _packer->get_texture(texture);
+}
+Rect2 TerraMaterialCachePCM::additional_texture_get_uv_rect(const Ref<Texture> &texture) {
+	if (!texture.is_valid()) {
+		return Rect2(0, 0, 1, 1);
+	}
+
+	Ref<AtlasTexture> at = _packer->get_texture(texture);
+
+	if (!at.is_valid()) {
+		return Rect2(0, 0, 1, 1);
+	}
+
+	Rect2 region = at->get_region();
+
+	Ref<Texture> tex = at->get_atlas();
+
+	if (!tex.is_valid()) {
+		return Rect2(0, 0, 1, 1);
+	}
+
+	Ref<Image> image = tex->get_data();
+
+	if (!image.is_valid()) {
+		return Rect2(0, 0, 1, 1);
+	}
+
+	float w = image->get_width();
+	float h = image->get_height();
+
+	region.position = Size2(region.position.x / w, region.position.y / h);
+	region.size = Size2(region.size.x / w, region.size.y / h);
+
+	return region;
+}
+
 void TerraMaterialCachePCM::refresh_rects() {
 	bool texture_added = false;
 	for (int i = 0; i < _surfaces.size(); i++) {
@@ -81,6 +122,17 @@ void TerraMaterialCachePCM::refresh_rects() {
 					surface->set_region(static_cast<TerraSurface::TerraSurfaceSides>(j), _packer->get_texture(tex));
 				}
 			}
+		}
+	}
+
+	for (int i = 0; i < _additional_textures.size(); i++) {
+		Ref<Texture> tex = _additional_textures.get(i);
+
+		ERR_CONTINUE(!tex.is_valid());
+
+		if (!_packer->contains_texture(tex)) {
+			_packer->add_texture(tex);
+			texture_added = true;
 		}
 	}
 

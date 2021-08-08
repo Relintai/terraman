@@ -44,6 +44,7 @@ SOFTWARE.
 
 class TerraSurface;
 class TexturePacker;
+class PropData;
 
 class TerraMaterialCachePCM : public TerraMaterialCache {
 	GDCLASS(TerraMaterialCachePCM, TerraMaterialCache);
@@ -63,6 +64,9 @@ public:
 
 	int get_margin() const;
 	void set_margin(const int margin);
+
+	Ref<AtlasTexture> additional_texture_get_atlas_tex(const Ref<Texture> &texture);
+	Rect2 additional_texture_get_uv_rect(const Ref<Texture> &texture);
 
 	void refresh_rects();
 
