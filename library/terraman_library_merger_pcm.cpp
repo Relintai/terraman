@@ -207,6 +207,7 @@ void TerramanLibraryMergerPCM::_material_cache_unref(const int key) {
 void TerramanLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerraChunk> chunk) {
 	Vector<uint64_t> props;
 
+/*
 #ifdef PROPS_PRESENT
 	for (int i = 0; i < chunk->prop_get_count(); ++i) {
 		Ref<PropData> prop = chunk->prop_get(i);
@@ -215,6 +216,32 @@ void TerramanLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerraChunk> chun
 
 		//get pointer's value as uint64
 		uint64_t v = make_uint64_t<PropData *>(*prop);
+
+		int psize = props.size();
+		bool found = false;
+		for (int j = 0; j < psize; ++j) {
+			if (props[j] == v) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			props.push_back(v);
+		}
+	}
+#endif
+*/
+
+#if MESH_DATA_RESOURCE_PRESENT
+	for (int i = 0; i < chunk->mesh_data_resource_get_count(); ++i) {
+		Ref<Texture> tex = chunk->mesh_data_resource_get_texture(i);
+
+		if (!tex.is_valid())
+			continue;
+
+		//get pointer's value as uint64
+		uint64_t v = make_uint64_t<Texture *>(*tex);
 
 		int psize = props.size();
 		bool found = false;
@@ -289,6 +316,7 @@ void TerramanLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerraChunk> chun
 		cache->material_add(nm);
 	}
 
+/*
 #ifdef PROPS_PRESENT
 	for (int i = 0; i < chunk->prop_get_count(); ++i) {
 		Ref<PropData> prop = chunk->prop_get(i);
@@ -296,6 +324,18 @@ void TerramanLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerraChunk> chun
 		ERR_CONTINUE(!prop.is_valid());
 
 		cache->prop_add_textures(prop);
+	}
+#endif
+*/
+
+#if MESH_DATA_RESOURCE_PRESENT
+	for (int i = 0; i < chunk->mesh_data_resource_get_count(); ++i) {
+		Ref<Texture> tex = chunk->mesh_data_resource_get_texture(i);
+
+		if (!tex.is_valid())
+			continue;
+
+		cache->additional_texture_add(tex);
 	}
 #endif
 
