@@ -108,6 +108,7 @@ void TerraTerrarinJob::phase_library_setup() {
 				return;
 			}
 
+			//Note: without threadpool and threading none of this can happen, as cache will get initialized the first time a thread requests it!
 			while (!cache->get_initialized()) {
 				//Means it's currently merging the atlases on a different thread.
 				//Let's just wait
