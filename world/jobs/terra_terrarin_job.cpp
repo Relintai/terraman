@@ -108,16 +108,19 @@ void TerraTerrarinJob::phase_library_setup() {
 				return;
 			}
 
-			if (!cache->get_initialized()) {
+			while (!cache->get_initialized()) {
 				//Means it's currently merging the atlases on a different thread.
-				//Let's just wait -> return.
-				//This method will get called again later.
-				return;
+				//Let's just wait
+				OS::get_singleton()->delay_usec(100);
 			}
 		}
 	}
 
 	next_phase();
+
+	if (should_return()) {
+		return;
+	}
 }
 
 void TerraTerrarinJob::phase_terrarin_mesh_setup() {
