@@ -289,6 +289,16 @@ void TerramanLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerraChunk> chun
 		cache->material_add(nm);
 	}
 
+#ifdef PROPS_PRESENT
+	for (int i = 0; i < chunk->prop_get_count(); ++i) {
+		Ref<PropData> prop = chunk->prop_get(i);
+
+		ERR_CONTINUE(!prop.is_valid());
+
+		cache->prop_add_textures(prop);
+	}
+#endif
+
 	_prop_material_cache[hash] = cache;
 
 	//unlock here, so if a different thread need the cache it will be able to immediately access the materials and surfaces when it gets it.
