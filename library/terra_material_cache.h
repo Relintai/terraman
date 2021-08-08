@@ -75,14 +75,20 @@ public:
 	virtual int surface_get_num() const;
 	virtual void surfaces_clear();
 
-	virtual void additional_texture_add(const Ref<Texture> &tex);
-	virtual void additional_texture_remove(const Ref<Texture> &tex);
+	virtual void additional_texture_add(const Ref<Texture> &texture);
+	virtual void additional_texture_remove(const Ref<Texture> &texture);
 	virtual void additional_texture_remove_index(const int index);
 	virtual void additional_textures_clear();
 	virtual int additional_texture_count();
 	virtual Ref<Texture> additional_texture_get(const int index);
 	virtual Ref<AtlasTexture> additional_texture_get_atlas(const int index);
-	virtual Rect2 additional_texture_get_uv_rect(const Ref<Texture> &tex);
+	virtual Ref<AtlasTexture> additional_texture_get_atlas_tex(const Ref<Texture> &texture);
+	virtual Rect2 additional_texture_get_uv_rect(const Ref<Texture> &texture);
+
+#ifdef PROPS_PRESENT
+	void prop_add_textures(const Ref<PropData> &prop);
+	void prop_remove_textures(const Ref<PropData> &prop);
+#endif
 
 	virtual void refresh_rects();
 

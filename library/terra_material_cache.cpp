@@ -22,6 +22,15 @@ SOFTWARE.
 
 #include "terra_material_cache.h"
 
+#ifdef PROPS_PRESENT
+#include "../../props/props/prop_data.h"
+#include "../../props/props/prop_data_prop.h"
+
+#if MESH_DATA_RESOURCE_PRESENT
+#include "../../mesh_data_resource/props/prop_data_mesh_data.h"
+#endif
+#endif
+
 bool TerraMaterialCache::get_initialized() {
 	return _initialized;
 }
@@ -146,12 +155,12 @@ void TerraMaterialCache::surfaces_clear() {
 	_surfaces.clear();
 }
 
-void TerraMaterialCache::additional_texture_add(const Ref<Texture> &tex) {
-	_additional_textures.push_back(tex);
+void TerraMaterialCache::additional_texture_add(const Ref<Texture> &texture) {
+	_additional_textures.push_back(texture);
 }
-void TerraMaterialCache::additional_texture_remove(const Ref<Texture> &tex) {
+void TerraMaterialCache::additional_texture_remove(const Ref<Texture> &texture) {
 	for (int i = 0; i < _additional_textures.size(); ++i) {
-		if (_additional_textures[i] == tex) {
+		if (_additional_textures[i] == texture) {
 			_additional_textures.remove(i);
 			return;
 		}
@@ -176,11 +185,69 @@ Ref<Texture> TerraMaterialCache::additional_texture_get(const int index) {
 Ref<AtlasTexture> TerraMaterialCache::additional_texture_get_atlas(const int index) {
 	ERR_FAIL_INDEX_V(index, _additional_textures.size(), Ref<AtlasTexture>());
 
+	return additional_texture_get_atlas_tex(_additional_textures[index]);
+}
+Ref<AtlasTexture> TerraMaterialCache::additional_texture_get_atlas_tex(const Ref<Texture> &texture) {
 	return Ref<AtlasTexture>();
 }
-Rect2 TerraMaterialCache::additional_texture_get_uv_rect(const Ref<Texture> &tex) {
+Rect2 TerraMaterialCache::additional_texture_get_uv_rect(const Ref<Texture> &texture) {
 	return Rect2(0, 0, 1, 1);
 }
+
+#ifdef PROPS_PRESENT
+void TerraMaterialCache::prop_add_textures(const Ref<PropData> &prop) {
+	if (!prop.is_valid()) {
+		return;
+	}
+
+	for (int i = 0; i < prop->get_prop_count(); ++i) {
+#if MESH_DATA_RESOURCE_PRESENT
+		Ref<PropDataMeshData> pdm = prop->get_prop(i);
+
+		if (pdm.is_valid()) {
+			Ref<Texture> tex = pdm->get_texture();
+
+			if (!tex.is_valid())
+				continue;
+
+			additional_texture_add(tex);
+		}
+#endif
+
+		Ref<PropDataProp> pdp = prop->get_prop(i);
+
+		if (pdp.is_valid()) {
+			prop_add_textures(pdp);
+		}
+	}
+}
+void TerraMaterialCache::prop_remove_textures(const Ref<PropData> &prop) {
+	if (!prop.is_valid()) {
+		return;
+	}
+
+	for (int i = 0; i < prop->get_prop_count(); ++i) {
+#if MESH_DATA_RESOURCE_PRESENT
+		Ref<PropDataMeshData> pdm = prop->get_prop(i);
+
+		if (pdm.is_valid()) {
+			Ref<Texture> tex = pdm->get_texture();
+
+			if (!tex.is_valid())
+				continue;
+
+			additional_texture_remove(tex);
+		}
+#endif
+
+		Ref<PropDataProp> pdp = prop->get_prop(i);
+
+		if (pdp.is_valid()) {
+			prop_remove_textures(pdp);
+		}
+	}
+}
+#endif
 
 void TerraMaterialCache::refresh_rects() {
 	_initialized = true;
@@ -235,14 +302,20 @@ void TerraMaterialCache::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("surface_get_num"), &TerraMaterialCache::surface_get_num);
 	ClassDB::bind_method(D_METHOD("surfaces_clear"), &TerraMaterialCache::surfaces_clear);
 
-	ClassDB::bind_method(D_METHOD("additional_texture_add", "tex"), &TerraMaterialCache::additional_texture_add);
-	ClassDB::bind_method(D_METHOD("additional_texture_remove", "tex"), &TerraMaterialCache::additional_texture_remove);
+	ClassDB::bind_method(D_METHOD("additional_texture_add", "texture"), &TerraMaterialCache::additional_texture_add);
+	ClassDB::bind_method(D_METHOD("additional_texture_remove", "texture"), &TerraMaterialCache::additional_texture_remove);
 	ClassDB::bind_method(D_METHOD("additional_texture_remove_index", "index"), &TerraMaterialCache::additional_texture_remove_index);
 	ClassDB::bind_method(D_METHOD("additional_textures_clear"), &TerraMaterialCache::additional_textures_clear);
 	ClassDB::bind_method(D_METHOD("additional_texture_count"), &TerraMaterialCache::additional_texture_count);
 	ClassDB::bind_method(D_METHOD("additional_texture_get", "index"), &TerraMaterialCache::additional_texture_get);
 	ClassDB::bind_method(D_METHOD("additional_texture_get_atlas", "index"), &TerraMaterialCache::additional_texture_get_atlas);
-	ClassDB::bind_method(D_METHOD("additional_texture_get_uv_rect", "tex"), &TerraMaterialCache::additional_texture_get_uv_rect);
+	ClassDB::bind_method(D_METHOD("additional_texture_get_atlas_tex", "index"), &TerraMaterialCache::additional_texture_get_atlas_tex);
+	ClassDB::bind_method(D_METHOD("additional_texture_get_uv_rect", "texture"), &TerraMaterialCache::additional_texture_get_uv_rect);
+
+#ifdef PROPS_PRESENT
+	ClassDB::bind_method(D_METHOD("prop_add_textures", "prop"), &TerraMaterialCache::prop_add_textures);
+	ClassDB::bind_method(D_METHOD("prop_remove_textures", "prop"), &TerraMaterialCache::prop_remove_textures);
+#endif
 
 	ClassDB::bind_method(D_METHOD("refresh_rects"), &TerraMaterialCache::refresh_rects);
 
