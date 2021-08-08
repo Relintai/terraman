@@ -313,7 +313,6 @@ void TerramanLibraryMerger::_setup_material_albedo(const int material_index, con
 	}
 
 	for (int i = 0; i < count; ++i) {
-
 		switch (material_index) {
 			case MATERIAL_INDEX_TERRAS:
 				mat = material_get(i);
@@ -406,6 +405,7 @@ bool TerramanLibraryMerger::process_prop_textures(Ref<PropData> prop) {
 	bool texture_added = false;
 
 	for (int i = 0; i < prop->get_prop_count(); ++i) {
+#if MESH_DATA_RESOURCE_PRESENT
 		Ref<PropDataMeshData> pdm = prop->get_prop(i);
 
 		if (pdm.is_valid()) {
@@ -419,6 +419,7 @@ bool TerramanLibraryMerger::process_prop_textures(Ref<PropData> prop) {
 				texture_added = true;
 			}
 		}
+#endif
 
 		Ref<PropDataProp> pdp = prop->get_prop(i);
 
