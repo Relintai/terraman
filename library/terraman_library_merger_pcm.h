@@ -59,6 +59,10 @@ public:
 	Ref<TerraMaterialCache> _material_cache_get(const int key);
 	void _material_cache_unref(const int key);
 
+	void _prop_material_cache_get_key(Ref<TerraChunk> chunk);
+	Ref<TerraMaterialCache> _prop_material_cache_get(const int key);
+	void _prop_material_cache_unref(const int key);
+
 	int get_texture_flags() const;
 	void set_texture_flags(const int flags);
 
@@ -116,6 +120,7 @@ protected:
 	static void _bind_methods();
 
 	Map<int, Ref<TerraMaterialCachePCM> > _material_cache;
+	Map<int, Ref<TerraMaterialCachePCM> > _prop_material_cache;
 
 	Vector<Ref<TerraSurfaceMerger> > _voxel_surfaces;
 #ifdef PROPS_PRESENT

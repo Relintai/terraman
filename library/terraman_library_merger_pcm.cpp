@@ -30,17 +30,19 @@ SOFTWARE.
 #include "../../props/props/prop_data.h"
 
 #include "../../props/props/prop_data_prop.h"
-#endif
-
-#include "terra_material_cache_pcm.h"
 
 #if MESH_DATA_RESOURCE_PRESENT
 #include "../../mesh_data_resource/props/prop_data_mesh_data.h"
 #endif
+#endif
+
+#include "terra_material_cache_pcm.h"
 
 #include "../defines.h"
 
 #include "../world/default/terra_chunk_default.h"
+
+#include "core/hashfuncs.h"
 
 bool TerramanLibraryMergerPCM::_supports_caching() {
 	return true;
@@ -169,13 +171,15 @@ void TerramanLibraryMergerPCM::_material_cache_get_key(Ref<TerraChunk> chunk) {
 }
 
 Ref<TerraMaterialCache> TerramanLibraryMergerPCM::_material_cache_get(const int key) {
-	//	if (!_material_cache.has(key)) {
-	//		return Ref<TerraMaterialCache>();
-	//	}
+	_material_cache_mutex.lock();
 
 	ERR_FAIL_COND_V(!_material_cache.has(key), Ref<TerraMaterialCache>());
 
-	return _material_cache[key];
+	Ref<TerraMaterialCache> c = _material_cache[key];
+
+	_material_cache_mutex.unlock();
+
+	return c;
 }
 
 void TerramanLibraryMergerPCM::_material_cache_unref(const int key) {
@@ -198,6 +202,132 @@ void TerramanLibraryMergerPCM::_material_cache_unref(const int key) {
 	}
 
 	_material_cache_mutex.unlock();
+}
+
+void TerramanLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerraChunk> chunk) {
+	Vector<uint64_t> props;
+
+#ifdef PROPS_PRESENT
+	for (int i = 0; i < chunk->prop_get_count(); ++i) {
+		Ref<PropData> prop = chunk->prop_get(i);
+
+		ERR_CONTINUE(!prop.is_valid());
+
+		//get pointer's value as uint64
+		uint64_t v = make_uint64_t<PropData *>(*prop);
+
+		int psize = props.size();
+		bool found = false;
+		for (int j = 0; j < psize; ++j) {
+			if (props[j] == v) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			props.push_back(v);
+		}
+	}
+#endif
+
+	if (props.size() == 0) {
+		chunk->prop_material_cache_key_set(0);
+		chunk->prop_material_cache_key_has_set(false);
+
+		return;
+	}
+
+	props.sort();
+
+	String hstr;
+
+	for (int i = 0; i < props.size(); ++i) {
+		hstr += String::num_uint64(props[i]) + "|";
+	}
+
+	int hash = static_cast<int>(hstr.hash());
+
+	chunk->prop_material_cache_key_set(hash);
+	chunk->prop_material_cache_key_has_set(true);
+
+	_prop_material_cache_mutex.lock();
+
+	if (_prop_material_cache.has(hash)) {
+		Ref<TerraMaterialCachePCM> cc = _prop_material_cache[hash];
+
+		if (cc.is_valid()) {
+			cc->inc_ref_count();
+		}
+
+		_prop_material_cache_mutex.unlock();
+
+		return;
+	}
+
+	//print_error("New prop cache: " + hstr);
+
+	Ref<TerraMaterialCachePCM> cache;
+	cache.instance();
+	cache->inc_ref_count();
+
+	cache->set_texture_flags(get_texture_flags());
+	cache->set_max_atlas_size(get_max_atlas_size());
+	cache->set_keep_original_atlases(get_keep_original_atlases());
+	cache->set_background_color(get_background_color());
+	cache->set_margin(get_margin());
+
+	for (int i = 0; i < _prop_materials.size(); ++i) {
+		Ref<Material> m = _prop_materials[i];
+
+		if (!m.is_valid()) {
+			continue;
+		}
+
+		Ref<Material> nm = m->duplicate();
+
+		cache->material_add(nm);
+	}
+
+	_prop_material_cache[hash] = cache;
+
+	//unlock here, so if a different thread need the cache it will be able to immediately access the materials and surfaces when it gets it.
+	_prop_material_cache_mutex.unlock();
+
+	//this will generate the atlases
+	cache->refresh_rects();
+}
+Ref<TerraMaterialCache> TerramanLibraryMergerPCM::_prop_material_cache_get(const int key) {
+	_prop_material_cache_mutex.lock();
+
+	ERR_FAIL_COND_V(!_prop_material_cache.has(key), Ref<TerraMaterialCache>());
+
+	Ref<TerraMaterialCache> c = _prop_material_cache[key];
+
+	_prop_material_cache_mutex.unlock();
+
+	return c;
+}
+void TerramanLibraryMergerPCM::_prop_material_cache_unref(const int key) {
+	_prop_material_cache_mutex.lock();
+
+	if (!_prop_material_cache.has(key)) {
+		return;
+	}
+
+	Ref<TerraMaterialCachePCM> cc = _prop_material_cache[key];
+
+	if (!cc.is_valid()) {
+		return;
+	}
+
+	cc->dec_ref_count();
+
+	if (cc->get_ref_count() <= 0) {
+		_prop_material_cache.erase(key);
+	}
+
+	_prop_material_cache_mutex.unlock();
 }
 
 int TerramanLibraryMergerPCM::get_texture_flags() const {
