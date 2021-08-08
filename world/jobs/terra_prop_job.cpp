@@ -241,10 +241,12 @@ void TerraPropJob::_execute_phase() {
 	}
 
 	if (_phase == 1) {
-		phase_prop();
+		phase_setup();
 	} else if (_phase == 2) {
+		phase_prop();
+	} else if (_phase == 3) {
 		phase_steps();
-	} else if (_phase > 2) {
+	} else if (_phase > 3) {
 		set_complete(true); //So threadpool knows it's done
 		next_job();
 		ERR_FAIL_MSG("TerraPropJob: _phase is too high!");
@@ -266,6 +268,42 @@ void TerraPropJob::_reset() {
 	}
 
 	set_build_phase_type(BUILD_PHASE_TYPE_PHYSICS_PROCESS);
+}
+
+void TerraPropJob::phase_setup() {
+	Ref<TerramanLibrary> library = _chunk->get_library();
+
+	if (!library->supports_caching()) {
+		next_phase();
+		return;
+	}
+
+	if (library->supports_caching()) {
+		if (!_chunk->prop_material_cache_key_has()) {
+			library->prop_material_cache_get_key(_chunk);
+
+			if (!_chunk->prop_material_cache_key_has()) {
+				//chunk does not need a key
+				next_phase();
+				return;
+			}
+		}
+
+		Ref<TerraMaterialCache> cache = library->prop_material_cache_get(_chunk->prop_material_cache_key_get());
+
+		//Note: without threadpool and threading none of this can happen, as cache will get initialized the first time a thread requests it!
+		while (!cache->get_initialized()) {
+			//Means it's currently merging the atlases on a different thread.
+			//Let's just wait
+			OS::get_singleton()->delay_usec(100);
+		}
+	}
+
+	next_phase();
+
+	if (should_return()) {
+		return;
+	}
 }
 
 void TerraPropJob::phase_steps() {

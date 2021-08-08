@@ -49,6 +49,8 @@ public:
 	void _execute_phase();
 	void _reset();
 
+	void phase_setup();
+
 	void phase_steps();
 
 	void step_type_normal();
