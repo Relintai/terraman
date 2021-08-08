@@ -297,6 +297,19 @@ void TerraPropJob::phase_setup() {
 			//Let's just wait
 			OS::get_singleton()->delay_usec(100);
 		}
+
+#if MESH_DATA_RESOURCE_PRESENT
+		for (int i = 0; i < _chunk->mesh_data_resource_get_count(); ++i) {
+			Ref<Texture> tex  = _chunk->mesh_data_resource_get_texture(i);
+
+			if (!tex.is_valid())
+				continue;
+
+			Rect2 r = cache->additional_texture_get_uv_rect(tex);
+
+			_chunk->mesh_data_resource_set_uv_rect(i, r);
+		}
+#endif
 	}
 
 	next_phase();
