@@ -178,7 +178,11 @@ Array TerraMesher::build_mesh() {
 #endif
 
 		for (int i = 0; i < _vertices.size(); ++i) {
+#if !GODOT4
+			w[i] = _vertices[i].vertex;
+#else
 			array.set(i, _vertices[i].vertex);
+#endif
 		}
 
 #if !GODOT4
@@ -200,7 +204,11 @@ Array TerraMesher::build_mesh() {
 #endif
 
 		for (int i = 0; i < _vertices.size(); ++i) {
+#if !GODOT4
+			w[i] = _vertices[i].normal;
+#else
 			array.set(i, _vertices[i].normal);
+#endif
 		}
 
 #if !GODOT4
@@ -217,7 +225,11 @@ Array TerraMesher::build_mesh() {
 #endif
 
 		for (int i = 0; i < _vertices.size(); ++i) {
+#if !GODOT4
+			w[i] = _vertices[i].color;
+#else
 			array.set(i, _vertices[i].color);
+#endif
 		}
 
 #if !GODOT4
@@ -234,7 +246,11 @@ Array TerraMesher::build_mesh() {
 #endif
 
 		for (int i = 0; i < _vertices.size(); ++i) {
+#if !GODOT4
+			w[i] = _vertices[i].uv;
+#else
 			array.set(i, _vertices[i].uv);
+#endif
 		}
 
 #if !GODOT4
@@ -252,7 +268,11 @@ Array TerraMesher::build_mesh() {
 #endif
 
 		for (int i = 0; i < _vertices.size(); ++i) {
+#if !GODOT4
+			w[i] = _vertices[i].uv2;
+#else
 			array.set(i, _vertices[i].uv2);
+#endif
 		}
 
 #if !GODOT4
@@ -269,7 +289,11 @@ Array TerraMesher::build_mesh() {
 #endif
 
 		for (int i = 0; i < _indices.size(); ++i) {
+#if !GODOT4
+			w[i] = _indices[i];
+#else
 			array.set(i, _indices[i]);
+#endif
 		}
 
 #if !GODOT4
