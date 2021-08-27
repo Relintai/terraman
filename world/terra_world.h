@@ -26,11 +26,11 @@ SOFTWARE.
 #include "core/version.h"
 
 #if VERSION_MAJOR > 3
-#include "core/templates/hash_map.h"
 #include "core/config/engine.h"
+#include "core/templates/hash_map.h"
 #else
-#include "core/hash_map.h"
 #include "core/engine.h"
+#include "core/hash_map.h"
 #endif
 
 #include "../defines.h"
@@ -61,9 +61,16 @@ public:
 		CHANNEL_TYPE_INFO_LIQUID_FLOW,
 	};
 
+	enum {
+		NOTIFICATION_ACTIVE_STATE_CHANGED = 9000,
+	};
+
 	static const String BINDING_STRING_CHANNEL_TYPE_INFO;
 
 public:
+	bool get_active() const;
+	void set_active(const bool value);
+
 	bool get_editable() const;
 	void set_editable(const bool value);
 
@@ -228,6 +235,7 @@ public:
 	};
 
 private:
+	bool _active;
 	bool _editable;
 
 	bool _is_priority_generation;
@@ -245,22 +253,22 @@ private:
 	int _chunk_spawn_range;
 
 	HashMap<IntPos, Ref<TerraChunk>, IntPosHasher> _chunks;
-	Vector<Ref<TerraChunk> > _chunks_vector;
+	Vector<Ref<TerraChunk>> _chunks_vector;
 
-	Vector<Ref<TerraWorldArea> > _world_areas;
+	Vector<Ref<TerraWorldArea>> _world_areas;
 
-	Vector<Ref<TerraStructure> > _voxel_structures;
+	Vector<Ref<TerraStructure>> _voxel_structures;
 
 	NodePath _player_path;
 	Spatial *_player;
 
 	int _max_concurrent_generations;
-	Vector<Ref<TerraChunk> > _generation_queue;
-	Vector<Ref<TerraChunk> > _generating;
+	Vector<Ref<TerraChunk>> _generation_queue;
+	Vector<Ref<TerraChunk>> _generating;
 	int _max_frame_chunk_build_steps;
 	int _num_frame_chunk_build_steps;
 
-	Vector<Ref<TerraLight> > _lights;
+	Vector<Ref<TerraLight>> _lights;
 };
 
 _FORCE_INLINE_ bool operator==(const TerraWorld::IntPos &a, const TerraWorld::IntPos &b) {

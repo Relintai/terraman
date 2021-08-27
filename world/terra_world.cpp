@@ -43,6 +43,15 @@ SOFTWARE.
 
 const String TerraWorld::BINDING_STRING_CHANNEL_TYPE_INFO = "Type,Isolevel,Liquid,Liquid Level";
 
+bool TerraWorld::get_active() const {
+	return _active;
+}
+void TerraWorld::set_active(const bool value) {
+	_active = value;
+
+	notification(NOTIFICATION_ACTIVE_STATE_CHANGED);
+}
+
 bool TerraWorld::get_editable() const {
 	return _editable;
 }
@@ -370,6 +379,10 @@ Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int z, Ref<TerraChu
 	chunk->set_voxel_scale(_voxel_scale);
 	chunk->set_size(_chunk_size_x, _chunk_size_z, _data_margin_start, _data_margin_end);
 	//chunk->set_translation(Vector3(x * _chunk_size_x * _voxel_scale, y * _chunk_size_y * _voxel_scale, z * _chunk_size_z * _voxel_scale));
+
+	if (!get_active()) {
+		chunk->set_visible(false);
+	}
 
 	chunk_add(chunk, x, z);
 
@@ -792,6 +805,7 @@ int TerraWorld::get_channel_index_info(const TerraWorld::ChannelTypeInfo channel
 }
 
 TerraWorld::TerraWorld() {
+	_active = true;
 	_editable = false;
 
 	_is_priority_generation = true;
@@ -871,7 +885,8 @@ void TerraWorld::_notification(int p_what) {
 					chunk->build();
 				}
 			}
-		} break;
+			break;
+		}
 		case NOTIFICATION_INTERNAL_PROCESS: {
 			_num_frame_chunk_build_steps = 0;
 
@@ -929,7 +944,8 @@ void TerraWorld::_notification(int p_what) {
 
 				chunk_generate(chunk);
 			}
-		} break;
+			break;
+		}
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
 			for (int i = 0; i < _chunks_vector.size(); ++i) {
 				Ref<TerraChunk> chunk = _chunks_vector[i];
@@ -944,8 +960,8 @@ void TerraWorld::_notification(int p_what) {
 					chunk->generation_physics_process(get_physics_process_delta_time());
 				}
 			}
-
-		} break;
+			break;
+		}
 		case NOTIFICATION_EXIT_TREE: {
 			for (int i = 0; i < _chunks_vector.size(); ++i) {
 				Ref<TerraChunk> chunk = _chunks_vector[i];
@@ -957,8 +973,8 @@ void TerraWorld::_notification(int p_what) {
 					}
 				}
 			}
-
-		} break;
+			break;
+		}
 		case NOTIFICATION_TRANSFORM_CHANGED: {
 			for (int i = 0; i < _chunks_vector.size(); ++i) {
 				Ref<TerraChunk> chunk = _chunks_vector[i];
@@ -967,13 +983,17 @@ void TerraWorld::_notification(int p_what) {
 					chunk->world_transform_changed();
 				}
 			}
-
-		} break;
+			break;
+		}
 	}
 }
 
 void TerraWorld::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("chunk_mesh_generation_finished", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+
+	ClassDB::bind_method(D_METHOD("get_active"), &TerraWorld::get_active);
+	ClassDB::bind_method(D_METHOD("set_active", "value"), &TerraWorld::set_active);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 
 	ClassDB::bind_method(D_METHOD("get_editable"), &TerraWorld::get_editable);
 	ClassDB::bind_method(D_METHOD("set_editable", "value"), &TerraWorld::set_editable);
@@ -1131,4 +1151,6 @@ void TerraWorld::_bind_methods() {
 	BIND_ENUM_CONSTANT(CHANNEL_TYPE_INFO_TYPE);
 	BIND_ENUM_CONSTANT(CHANNEL_TYPE_INFO_ISOLEVEL);
 	BIND_ENUM_CONSTANT(CHANNEL_TYPE_INFO_LIQUID_FLOW);
+
+	BIND_CONSTANT(NOTIFICATION_ACTIVE_STATE_CHANGED);
 }

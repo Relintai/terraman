@@ -52,6 +52,7 @@ public:
 	~TerraWorldDefault();
 
 protected:
+	void _notification(int p_what);
 	void _update_lods();
 	Ref<TerraChunk> _create_chunk(int x, int z, Ref<TerraChunk> p_chunk);
 	virtual void _chunk_added(Ref<TerraChunk> chunk);

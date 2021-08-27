@@ -62,6 +62,10 @@ void TerraWorldDefault::set_num_lods(const int value) {
 }
 
 void TerraWorldDefault::update_lods() {
+	if (!get_active()) {
+		return;
+	}
+
 	call("_update_lods");
 }
 
@@ -191,7 +195,7 @@ Ref<TerraChunk> TerraWorldDefault::_create_chunk(int x, int z, Ref<TerraChunk> c
 		s.instance();
 		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL);
 		tj->add_jobs_step(s);
-		
+
 		s.instance();
 		s->set_job_type(TerraMesherJobStep::TYPE_NORMAL_LOD);
 		s->set_lod_index(1);
@@ -259,6 +263,34 @@ TerraWorldDefault::TerraWorldDefault() {
 }
 
 TerraWorldDefault ::~TerraWorldDefault() {
+}
+
+void TerraWorldDefault::_notification(int p_what) {
+	TerraWorld::_notification(p_what);
+
+	switch (p_what) {
+		case NOTIFICATION_ACTIVE_STATE_CHANGED: {
+			if (!is_inside_tree()) {
+				return;
+			}
+
+			bool active = get_active();
+
+			for (int i = 0; i < chunk_get_count(); ++i) {
+				Ref<TerraChunk> chunk = chunk_get_index(i);
+
+				if (chunk.is_valid()) {
+					chunk->set_visible(active);
+				}
+			}
+
+			if (active) {
+				update_lods();
+			}
+
+			break;
+		}
+	}
 }
 
 /*
