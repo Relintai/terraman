@@ -268,6 +268,8 @@ void TerraWorld::chunk_add(Ref<TerraChunk> chunk, const int x, const int z) {
 
 	if (has_method("_chunk_added"))
 		call("_chunk_added", chunk);
+
+	emit_signal("chunk_added", chunk);
 }
 bool TerraWorld::chunk_has(const int x, const int z) const {
 	return _chunks.has(IntPos(x, z));
@@ -297,9 +299,9 @@ Ref<TerraChunk> TerraWorld::chunk_remove(const int x, const int z) {
 
 	chunk->exit_tree();
 
-	ERR_FAIL_COND_V(!_chunks.erase(pos), NULL);
+	_chunks.erase(pos);
 
-	//_chunks.erase(pos);
+	emit_signal("chunk_removed", chunk);
 
 	return chunk;
 }
@@ -310,6 +312,8 @@ Ref<TerraChunk> TerraWorld::chunk_remove_index(const int index) {
 	_chunks_vector.remove(index);
 	_chunks.erase(IntPos(chunk->get_position_x(), chunk->get_position_z()));
 	chunk->exit_tree();
+
+	emit_signal("chunk_removed", chunk);
 
 	return chunk;
 }
@@ -325,7 +329,11 @@ int TerraWorld::chunk_get_count() const {
 
 void TerraWorld::chunks_clear() {
 	for (int i = 0; i < _chunks_vector.size(); ++i) {
-		_chunks_vector.get(i)->exit_tree();
+		Ref<TerraChunk> chunk = _chunks_vector.get(i);
+		
+		chunk->exit_tree();
+
+		emit_signal("chunk_removed", chunk);
 	}
 
 	_chunks_vector.clear();
@@ -990,6 +998,8 @@ void TerraWorld::_notification(int p_what) {
 
 void TerraWorld::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("chunk_mesh_generation_finished", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+	ADD_SIGNAL(MethodInfo("chunk_added", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+	ADD_SIGNAL(MethodInfo("chunk_removed", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 
 	ClassDB::bind_method(D_METHOD("get_active"), &TerraWorld::get_active);
 	ClassDB::bind_method(D_METHOD("set_active", "value"), &TerraWorld::set_active);
