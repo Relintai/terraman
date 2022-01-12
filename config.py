@@ -64,6 +64,10 @@ def get_doc_classes():
         "TerraTerrarinJob",
         "TerraLightJob",
         "TerraPropJob",
+
+        "TerraEnvironmentData",
+        "TerraMesherJobStep",
+        
     ]
 
 
