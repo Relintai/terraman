@@ -670,6 +670,18 @@ void TerrainLibraryMergerPCM::_setup_material_albedo(const int material_index, c
 
 		Ref<SpatialMaterial> spmat;
 
+		switch (material_index) {
+			case MATERIAL_INDEX_TERRAIN:
+				spmat = material_get(i);
+				break;
+			case MATERIAL_INDEX_LIQUID:
+				spmat = liquid_material_get(i);
+				break;
+			case MATERIAL_INDEX_PROP:
+				spmat = prop_material_get(i);
+				break;
+		}
+
 		if (spmat.is_valid()) {
 			spmat->set_texture(SpatialMaterial::TEXTURE_ALBEDO, texture);
 			return;
