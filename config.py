@@ -13,7 +13,7 @@ def get_doc_classes():
         "TerrainWorldArea",
 
         "TerrainLight",
-        "TerrainLight",
+        "TerrainLightNode",
 
         "TerrainLevelGenerator",
         "TerrainLevelGeneratorFlat",
