@@ -77,7 +77,7 @@ void TerramanLibrarySimple::voxel_surface_set(const int index, Ref<TerraSurface>
 }
 
 void TerramanLibrarySimple::voxel_surface_remove(const int index) {
-	_voxel_surfaces.remove(index);
+	_voxel_surfaces.VREMOVE(index);
 }
 
 int TerramanLibrarySimple::voxel_surface_get_num() const {

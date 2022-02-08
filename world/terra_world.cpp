@@ -183,7 +183,7 @@ void TerraWorld::world_area_add(const Ref<TerraWorldArea> &area) {
 void TerraWorld::world_area_remove(const int index) {
 	ERR_FAIL_INDEX(index, _world_areas.size());
 
-	_world_areas.remove(index);
+	_world_areas.VREMOVE(index);
 }
 void TerraWorld::world_areas_clear() {
 	_world_areas.clear();
@@ -209,12 +209,12 @@ void TerraWorld::voxel_structure_remove(const Ref<TerraStructure> &structure) {
 	int index = _voxel_structures.find(structure);
 
 	if (index != -1)
-		_voxel_structures.remove(index);
+		_voxel_structures.VREMOVE(index);
 }
 void TerraWorld::voxel_structure_remove_index(const int index) {
 	ERR_FAIL_INDEX(index, _voxel_structures.size());
 
-	_voxel_structures.remove(index);
+	_voxel_structures.VREMOVE(index);
 }
 void TerraWorld::voxel_structures_clear() {
 	_voxel_structures.clear();
@@ -266,8 +266,9 @@ void TerraWorld::chunk_add(Ref<TerraChunk> chunk, const int x, const int z) {
 	if (is_inside_tree())
 		chunk->enter_tree();
 
-	if (has_method("_chunk_added"))
-		call("_chunk_added", chunk);
+	if (has_method("_chunk_added")) {
+		CALL(_chunk_added, chunk);
+	}
 
 	emit_signal("chunk_added", chunk);
 }
@@ -292,7 +293,7 @@ Ref<TerraChunk> TerraWorld::chunk_remove(const int x, const int z) {
 
 	for (int i = 0; i < _chunks_vector.size(); ++i) {
 		if (_chunks_vector.get(i) == chunk) {
-			_chunks_vector.remove(i);
+			_chunks_vector.VREMOVE(i);
 			break;
 		}
 	}
@@ -309,7 +310,7 @@ Ref<TerraChunk> TerraWorld::chunk_remove_index(const int index) {
 	ERR_FAIL_INDEX_V(index, _chunks_vector.size(), NULL);
 
 	Ref<TerraChunk> chunk = _chunks_vector.get(index);
-	_chunks_vector.remove(index);
+	_chunks_vector.VREMOVE(index);
 	_chunks.erase(IntPos(chunk->get_position_x(), chunk->get_position_z()));
 	chunk->exit_tree();
 
@@ -330,7 +331,7 @@ int TerraWorld::chunk_get_count() const {
 void TerraWorld::chunks_clear() {
 	for (int i = 0; i < _chunks_vector.size(); ++i) {
 		Ref<TerraChunk> chunk = _chunks_vector.get(i);
-		
+
 		chunk->exit_tree();
 
 		emit_signal("chunk_removed", chunk);
@@ -355,7 +356,8 @@ Ref<TerraChunk> TerraWorld::chunk_get_or_create(int x, int z) {
 }
 
 Ref<TerraChunk> TerraWorld::chunk_create(const int x, const int z) {
-	Ref<TerraChunk> c = call("_create_chunk", x, z, Ref<TerraChunk>());
+	Ref<TerraChunk> c;
+	GET_CALLP(Ref<TerraChunk>, c, _create_chunk, x, z, Ref<TerraChunk>());
 
 	generation_queue_add_to(c);
 
@@ -365,12 +367,17 @@ Ref<TerraChunk> TerraWorld::chunk_create(const int x, const int z) {
 void TerraWorld::chunk_setup(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
+#if VERSION_MAJOR < 4
 	call("_create_chunk", chunk->get_position_x(), chunk->get_position_z(), chunk);
+#else
+	Ref<TerraChunk> c;
+	GDVIRTUAL_CALL(_create_chunk, chunk->get_position_x(), chunk->get_position_z(), chunk, c);
+#endif
 }
 
 Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int z, Ref<TerraChunk> chunk) {
 	if (!chunk.is_valid()) {
-		chunk.instance();
+		chunk.INSTANCE();
 	}
 
 	//no meshers here
@@ -400,10 +407,11 @@ Ref<TerraChunk> TerraWorld::_create_chunk(const int x, const int z, Ref<TerraChu
 void TerraWorld::chunk_generate(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	if (has_method("_prepare_chunk_for_generation"))
-		call("_prepare_chunk_for_generation", chunk);
+	if (has_method("_prepare_chunk_for_generation")) {
+		CALL(_prepare_chunk_for_generation, chunk);
+	}
 
-	call("_generate_chunk", chunk);
+	CALL(_generate_chunk, chunk);
 
 	chunk->build();
 }
@@ -511,7 +519,7 @@ Ref<TerraChunk> TerraWorld::generation_queue_get_index(int index) {
 void TerraWorld::generation_queue_remove_index(int index) {
 	ERR_FAIL_INDEX(index, _generation_queue.size());
 
-	_generation_queue.remove(index);
+	_generation_queue.VREMOVE(index);
 }
 int TerraWorld::generation_queue_get_size() const {
 	return _generation_queue.size();
@@ -530,7 +538,7 @@ Ref<TerraChunk> TerraWorld::generation_get_index(const int index) {
 void TerraWorld::generation_remove_index(const int index) {
 	ERR_FAIL_INDEX(index, _generating.size());
 
-	_generating.remove(index);
+	_generating.VREMOVE(index);
 }
 int TerraWorld::generation_get_size() const {
 	return _generating.size();
@@ -583,7 +591,7 @@ void TerraWorld::prop_add(Transform transform, const Ref<PropData> &prop, const 
 			if (!sc.is_valid())
 				continue;
 
-			Node *n = sc->instance();
+			Node *n = sc->INSTANCE();
 			add_child(n);
 			n->set_owner(this);
 
@@ -600,7 +608,7 @@ void TerraWorld::prop_add(Transform transform, const Ref<PropData> &prop, const 
 
 		if (light_data.is_valid()) {
 			Ref<TerraLight> light;
-			light.instance();
+			light.INSTANCE();
 
 			light->set_world_position(wp.x / get_voxel_scale(), wp.y / get_voxel_scale(), wp.z / get_voxel_scale());
 			light->set_color(light_data->get_light_color());
@@ -805,11 +813,11 @@ Ref<TerraChunk> TerraWorld::get_or_create_chunk_at_world_position(const Vector3 
 }
 
 void TerraWorld::set_voxel_with_tool(const bool mode_add, const Vector3 hit_position, const Vector3 hit_normal, const int selected_voxel, const int isolevel) {
-	call("_set_voxel_with_tool", mode_add, hit_position, hit_normal, selected_voxel, isolevel);
+	CALL(_set_voxel_with_tool, mode_add, hit_position, hit_normal, selected_voxel, isolevel);
 }
 
 int TerraWorld::get_channel_index_info(const TerraWorld::ChannelTypeInfo channel_type) {
-	return call("_get_channel_index_info", channel_type);
+	RETURN_CALLP(int, _get_channel_index_info, channel_type);
 }
 
 TerraWorld::TerraWorld() {
@@ -919,7 +927,7 @@ void TerraWorld::_notification(int p_what) {
 #endif
 				_is_priority_generation = false;
 
-				call("_generation_finished");
+				CALL(_generation_finished);
 
 				emit_signal("generation_finished");
 
@@ -930,7 +938,7 @@ void TerraWorld::_notification(int p_what) {
 				Ref<TerraChunk> chunk = _generating.get(i);
 
 				if (!chunk.is_valid() || !chunk->get_is_generating()) {
-					_generating.remove(i);
+					_generating.VREMOVE(i);
 					--i;
 					continue;
 				}
@@ -944,7 +952,7 @@ void TerraWorld::_notification(int p_what) {
 
 			while (_generating.size() < _max_concurrent_generations && _generation_queue.size() != 0) {
 				Ref<TerraChunk> chunk = _generation_queue.get(0);
-				_generation_queue.remove(0);
+				_generation_queue.VREMOVE(0);
 
 				ERR_FAIL_COND(!chunk.is_valid());
 
@@ -1079,7 +1087,11 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("voxel_structures_set"), &TerraWorld::voxel_structures_set);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "voxel_structures", PROPERTY_HINT_NONE, "17/17:TerraStructure", PROPERTY_USAGE_DEFAULT, "TerraStructure"), "voxel_structures_set", "voxel_structures_get");
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_chunk_added", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+#else
+	GDVIRTUAL_BIND(_chunk_added, "chunk");
+#endif
 
 	ClassDB::bind_method(D_METHOD("chunk_add", "chunk", "x", "z"), &TerraWorld::chunk_add);
 	ClassDB::bind_method(D_METHOD("chunk_has", "x", "z"), &TerraWorld::chunk_has);
@@ -1107,11 +1119,19 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("generation_get_size"), &TerraWorld::generation_get_size);
 
 	ADD_SIGNAL(MethodInfo("generation_finished"));
+
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_generation_finished"));
 
-	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk"), "_create_chunk", PropertyInfo(Variant::INT, "x"), PropertyInfo(Variant::INT, "y"), PropertyInfo(Variant::INT, "z"), PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk"), "_create_chunk", PropertyInfo(Variant::INT, "x"), PropertyInfo(Variant::INT, "z"), PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo("_prepare_chunk_for_generation", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo("_generate_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+#else
+	GDVIRTUAL_BIND(_generation_finished);
+	GDVIRTUAL_BIND(_create_chunk, "chunk", "x", "z", "chunk", "ret");
+	GDVIRTUAL_BIND(_prepare_chunk_for_generation, "chunk");
+	GDVIRTUAL_BIND(_generate_chunk, "chunk");
+#endif
 
 	ClassDB::bind_method(D_METHOD("chunk_get_or_create", "x", "z"), &TerraWorld::chunk_get_or_create);
 	ClassDB::bind_method(D_METHOD("chunk_create", "x", "z"), &TerraWorld::chunk_create);
@@ -1143,17 +1163,25 @@ void TerraWorld::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_chunk_at_world_position", "world_position"), &TerraWorld::get_chunk_at_world_position);
 	ClassDB::bind_method(D_METHOD("get_or_create_chunk_at_world_position", "world_position"), &TerraWorld::get_or_create_chunk_at_world_position);
 
-	BIND_VMETHOD(MethodInfo("_get_channel_index_info", PropertyInfo(Variant::INT, "channel_type", PROPERTY_HINT_ENUM, BINDING_STRING_CHANNEL_TYPE_INFO)));
+#if VERSION_MAJOR < 4
+	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::INT, "ret"), "_get_channel_index_info", PropertyInfo(Variant::INT, "channel_type", PROPERTY_HINT_ENUM, BINDING_STRING_CHANNEL_TYPE_INFO)));
+#else
+	GDVIRTUAL_BIND(_get_channel_index_info, "channel_type", "ret");
+#endif
 
 	ClassDB::bind_method(D_METHOD("get_channel_index_info", "channel_type"), &TerraWorld::get_channel_index_info);
 	ClassDB::bind_method(D_METHOD("_get_channel_index_info", "channel_type"), &TerraWorld::_get_channel_index_info);
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_set_voxel_with_tool",
 			PropertyInfo(Variant::BOOL, "mode_add"),
 			PropertyInfo(Variant::VECTOR3, "hit_position"),
 			PropertyInfo(Variant::VECTOR3, "hit_normal"),
 			PropertyInfo(Variant::INT, "selected_voxel"),
 			PropertyInfo(Variant::INT, "isolevel")));
+#else
+	GDVIRTUAL_BIND(_set_voxel_with_tool, "mode_add", "hit_position", "hit_normal", "selected_voxel", "isolevel");
+#endif
 
 	ClassDB::bind_method(D_METHOD("set_voxel_with_tool", "mode_add", "hit_position", "hit_normal", "selected_voxel", "isolevel"), &TerraWorld::set_voxel_with_tool);
 	ClassDB::bind_method(D_METHOD("_set_voxel_with_tool", "mode_add", "hit_position", "hit_normal", "selected_voxel", "isolevel"), &TerraWorld::_set_voxel_with_tool);

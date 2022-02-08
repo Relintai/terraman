@@ -29,19 +29,18 @@ SOFTWARE.
 #include "core/io/resource.h"
 #include "core/templates/hash_map.h"
 #else
-#include "core/resource.h"
 #include "core/hash_map.h"
+#include "core/resource.h"
 #endif
 
 #include "../defines.h"
 
 #include pool_vector_h
 include_pool_vector
-
 #include "core/math/aabb.h"
 #include "terra_chunk.h"
 
-class TerraStructure : public Resource {
+		class TerraStructure : public Resource {
 	GDCLASS(TerraStructure, Resource);
 
 public:
@@ -63,6 +62,10 @@ public:
 	void set_position(const int x, const int y, const int z);
 
 	void write_to_chunk(Ref<TerraChunk> chunk);
+
+#if VERSION_MAJOR >= 4
+	GDVIRTUAL1(_write_to_chunk, Ref<TerraChunk>);
+#endif
 
 	TerraStructure();
 	~TerraStructure();

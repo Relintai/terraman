@@ -255,7 +255,7 @@ void TerraChunk::job_set(int index, const Ref<TerraJob> &job) {
 void TerraChunk::job_remove(const int index) {
 	ERR_FAIL_INDEX(index, _jobs.size());
 
-	_jobs.remove(index);
+	_jobs.VREMOVE(index);
 }
 void TerraChunk::job_add(const Ref<TerraJob> &job) {
 	_jobs.push_back(job);
@@ -609,12 +609,12 @@ void TerraChunk::voxel_structure_remove(const Ref<TerraStructure> &structure) {
 	int index = _voxel_structures.find(structure);
 
 	if (index != -1)
-		_voxel_structures.remove(index);
+		_voxel_structures.VREMOVE(index);
 }
 void TerraChunk::voxel_structure_remove_index(const int index) {
 	ERR_FAIL_INDEX(index, _voxel_structures.size());
 
-	_voxel_structures.remove(index);
+	_voxel_structures.VREMOVE(index);
 }
 void TerraChunk::voxel_structure_clear() {
 	_voxel_structures.clear();
@@ -718,7 +718,7 @@ int TerraChunk::prop_get_count() const {
 void TerraChunk::prop_remove(const int index) {
 	ERR_FAIL_INDEX(index, _props.size());
 
-	_props.remove(index);
+	_props.VREMOVE(index);
 }
 void TerraChunk::props_clear() {
 	_props.clear();
@@ -876,7 +876,7 @@ int TerraChunk::mesh_data_resource_get_count() const {
 void TerraChunk::mesh_data_resource_remove(const int index) {
 	ERR_FAIL_INDEX(index, _mesh_data_resources.size());
 
-	_mesh_data_resources.remove(index);
+	_mesh_data_resources.VREMOVE(index);
 }
 void TerraChunk::mesh_data_resource_clear() {
 	_mesh_data_resources.clear();
@@ -951,7 +951,7 @@ int TerraChunk::collider_get_count() const {
 void TerraChunk::collider_remove(const int index) {
 	ERR_FAIL_INDEX(index, _colliders.size());
 
-	_colliders.remove(index);
+	_colliders.VREMOVE(index);
 }
 void TerraChunk::colliders_clear() {
 	_colliders.clear();

@@ -61,8 +61,9 @@ void TerraEnvironmentData::set_indirect_energy(const int index, const float valu
 }
 
 void TerraEnvironmentData::setup(WorldEnvironment *world_environment, DirectionalLight *primary_light, DirectionalLight *secondary_light) {
-	if (has_method("_setup"))
-		call("_setup", world_environment, primary_light, secondary_light);
+	if (has_method("_setup")) {
+		CALL(_setup, world_environment, primary_light, secondary_light);
+	}
 }
 void TerraEnvironmentData::setup_bind(Node *world_environment, Node *primary_light, Node *secondary_light) {
 	setup(Object::cast_to<WorldEnvironment>(world_environment), Object::cast_to<DirectionalLight>(primary_light), Object::cast_to<DirectionalLight>(secondary_light));
@@ -84,7 +85,11 @@ TerraEnvironmentData::~TerraEnvironmentData() {
 }
 
 void TerraEnvironmentData::_bind_methods() {
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_setup", PropertyInfo(Variant::OBJECT, "world_environment", PROPERTY_HINT_RESOURCE_TYPE, "WorldEnvironment"), PropertyInfo(Variant::OBJECT, "primary_light", PROPERTY_HINT_RESOURCE_TYPE, "DirectionalLight"), PropertyInfo(Variant::OBJECT, "secondary_light", PROPERTY_HINT_RESOURCE_TYPE, "DirectionalLight")));
+#else
+	GDVIRTUAL_BIND(_setup, "world_environment", "primary_light", "secondary_light");
+#endif
 
 	ClassDB::bind_method(D_METHOD("get_environment"), &TerraEnvironmentData::get_environment);
 	ClassDB::bind_method(D_METHOD("set_environment", "value"), &TerraEnvironmentData::set_environment);

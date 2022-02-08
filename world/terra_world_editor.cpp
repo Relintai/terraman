@@ -42,16 +42,17 @@ SOFTWARE.
 #include spatial_editor_plugin_h
 #include camera_h
 
+#if VERSION_MAJOR < 4
 bool TerraWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<InputEvent> &p_event) {
 	if (!_world || !_world->get_editable()) {
 		return false;
 	}
 
-	Ref<InputEventMouseButton> mb = p_event;
+	Ref<TerramanLibrary> mb = p_event;
 
 	if (mb.is_valid()) {
 		if (mb->is_pressed()) {
-			Ref<TerramanLibrary> lib = _world->get_library();
+			Ref<VoxelmanLibrary> lib = _world->get_library();
 
 			if (!lib.is_valid())
 				return false;
@@ -68,6 +69,39 @@ bool TerraWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<I
 
 	return false;
 }
+#else
+EditorPlugin::AfterGUIInput TerraWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<InputEvent> &p_event) {
+	if (!_world || !_world->get_editable()) {
+		return EditorPlugin::AFTER_GUI_INPUT_PASS;
+	}
+
+	Ref<InputEventMouseButton> mb = p_event;
+
+	if (mb.is_valid()) {
+		if (mb->is_pressed()) {
+			Ref<TerramanLibrary> lib = _world->get_library();
+
+			if (!lib.is_valid())
+				return EditorPlugin::AFTER_GUI_INPUT_PASS;
+
+			if (mb->get_button_index() == MouseButton::LEFT) {
+				if (do_input_action(p_camera, Point2(mb->get_position().x, mb->get_position().y), true)) {
+					return EditorPlugin::AFTER_GUI_INPUT_STOP;
+				} else {
+					return EditorPlugin::AFTER_GUI_INPUT_PASS;
+				}
+			} else {
+				return EditorPlugin::AFTER_GUI_INPUT_PASS;
+			}
+
+			//return do_input_action(p_camera, Point2(mb->get_position().x, mb->get_position().y), true);
+		}
+	}
+
+	return EditorPlugin::AFTER_GUI_INPUT_PASS;
+}
+
+#endif
 
 bool TerraWorldEditor::do_input_action(Camera *p_camera, const Point2 &p_point, bool p_click) {
 	if (!spatial_editor || !_world || !_world->is_inside_world())

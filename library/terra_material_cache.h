@@ -94,6 +94,10 @@ public:
 
 	void setup_material_albedo(Ref<Texture> texture);
 
+#if VERSION_MAJOR >= 4
+	GDVIRTUAL1(_setup_material_albedo, Ref<Texture>);
+#endif
+
 	TerraMaterialCache();
 	~TerraMaterialCache();
 

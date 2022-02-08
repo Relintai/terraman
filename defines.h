@@ -14,7 +14,8 @@
 #define spatial_editor_plugin_h "editor/plugins/node_3d_editor_plugin.h"
 #define camera_h "scene/3d/camera_3d.h"
 #define spatial_h "scene/3d/node_3d.h"
-#define navigation_h "scene/3d/navigation_3d.h"
+#define navigation_h "scene/3d/node_3d.h"
+#define Navigation3D Node3D
 #define light_h "scene/3d/light_3d.h"
 #define visual_server_h "servers/rendering_server.h"
 #define mesh_instance_h "scene/3d/mesh_instance_3d.h"
@@ -63,6 +64,7 @@
 #define Camera Camera3D
 #define ToolButton Button
 #define Shape Shape3D
+#define Reference RefCounted
 
 typedef class World3D World;
 
@@ -112,11 +114,87 @@ typedef class RenderingServer VS;
 #define CONNECT(sig, obj, target_method_class, method) connect(sig, callable_mp(obj, &target_method_class::method))
 #define DISCONNECT(sig, obj, target_method_class, method) disconnect(sig, callable_mp(obj, &target_method_class::method))
 #define GET_WORLD get_world_3d
+#define INSTANCE instantiate
+#define VREMOVE remove_at
+
+#define CALL(func, ...) \
+	_gdvirtual_##func##_call(__VA_ARGS__)
+
+#define RETURN_CALL(ret_type, func)                 \
+	ret_type _return_call_ret_var;                  \
+	_gdvirtual_##func##_call(_return_call_ret_var); \
+	return _return_call_ret_var;
+
+#define RETURN_CALLP(ret_type, func, ...)                        \
+	ret_type _return_call_ret_var;                               \
+	_gdvirtual_##func##_call(__VA_ARGS__, _return_call_ret_var); \
+	return _return_call_ret_var;
+
+#define GET_CALL(ret_type, ret_var, func) \
+	_gdvirtual_##func##_call(ret_var);
+
+#define GET_CALLP(ret_type, ret_var, func, ...) \
+	_gdvirtual_##func##_call(__VA_ARGS__, ret_var);
+
+#define RETURN_CALLD(ret_type, def_val, func)             \
+	ret_type _return_call_ret_var = def_val;              \
+	if (_gdvirtual_##func##_call(_return_call_ret_var)) { \
+		return _return_call_ret_var;                      \
+	}                                                     \
+	return def_val;
+
+#define RETURN_CALLPD(ret_type, def_val, func, ...)                    \
+	ret_type _return_call_ret_var = def_val;                           \
+	if (_gdvirtual_##func##_call(__VA_ARGS__, _return_call_ret_var)) { \
+		return _return_call_ret_var;                                   \
+	}                                                                  \
+	return def_val;
+
+#define GET_CALLD(ret_type, def_val, ret_var, func) \
+	if (!_gdvirtual_##func##_call(ret_var)) {       \
+		ret_var = def_val;                          \
+	}
+
+#define GET_CALLPD(ret_type, def_val, ret_var, func, ...)  \
+	if (!_gdvirtual_##func##_call(__VA_ARGS__, ret_var)) { \
+		ret_var = def_val;                                 \
+	}
+
 #else
 #define INSTANCE_VALIDATE(var) ObjectDB::instance_validate(var)
 #define CONNECT(sig, obj, target_method_class, method) connect(sig, obj, #method)
 #define DISCONNECT(sig, obj, target_method_class, method) disconnect(sig, obj, #method)
 #define GET_WORLD get_world
+#define INSTANCE instance
+#define VREMOVE remove
+
+#define CALL(func, ...) \
+	call(#func, ##__VA_ARGS__);
+
+#define RETURN_CALL(ret_type, func) \
+	return call(#func, ##__VA_ARGS__);
+
+#define RETURN_CALLP(ret_type, func, ...) \
+	return call(#func, ##__VA_ARGS__);
+
+#define GET_CALL(ret_type, ret_var, func) \
+	ret_var = call(#func);
+
+#define GET_CALLP(ret_type, ret_var, func, ...) \
+	ret_var = call(#func, ##__VA_ARGS__);
+
+#define RETURN_CALLD(ret_type, def_val, func) \
+	return call(#func, ##__VA_ARGS__);
+
+#define RETURN_CALLPD(ret_type, def_val, func, ...) \
+	return call(#func, ##__VA_ARGS__);
+
+#define GET_CALLD(ret_type, def_val, ret_var, func) \
+	ret_var = call(#func);
+
+#define GET_CALLPD(ret_type, def_val, ret_var, func, ...) \
+	return call(#func, ##__VA_ARGS__);
+
 #endif
 
 #endif

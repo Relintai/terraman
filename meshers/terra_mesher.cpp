@@ -374,7 +374,7 @@ void TerraMesher::remove_doubles() {
 		for (int j = 0; j < indices.size(); ++j) {
 			int index = indices[j];
 
-			_vertices.remove(index);
+			_vertices.VREMOVE(index);
 
 			//make all indices that were bigger than the one we replaced one lower
 			for (int k = 0; k < _indices.size(); ++k) {
@@ -426,8 +426,8 @@ void TerraMesher::remove_doubles_hashed() {
 		for (int j = 0; j < indices.size(); ++j) {
 			int index = indices[j];
 
-			hashes.remove(index);
-			_vertices.remove(index);
+			hashes.VREMOVE(index);
+			_vertices.VREMOVE(index);
 
 			//make all indices that were bigger than the one we replaced one lower
 			for (int k = 0; k < _indices.size(); ++k) {
@@ -470,7 +470,7 @@ void TerraMesher::add_chunk(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!has_method("_add_chunk"));
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	call("_add_chunk", chunk);
+	CALL(_add_chunk, chunk);
 }
 
 #ifdef MESH_DATA_RESOURCE_PRESENT
@@ -569,7 +569,7 @@ void TerraMesher::add_mesh_data_resource_transform_colored(Ref<MeshDataResource>
 #endif
 
 void TerraMesher::add_mesher(const Ref<TerraMesher> &mesher) {
-	call("_add_mesher", mesher);
+	CALL(_add_mesher, mesher);
 }
 void TerraMesher::_add_mesher(const Ref<TerraMesher> &mesher) {
 	int orig_size = _vertices.size();
@@ -592,15 +592,17 @@ void TerraMesher::_add_mesher(const Ref<TerraMesher> &mesher) {
 void TerraMesher::bake_colors(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	if (has_method("_bake_colors"))
-		call("_bake_colors", chunk);
+	if (has_method("_bake_colors")) {
+		CALL(_bake_colors, chunk);
+	}
 }
 
 void TerraMesher::bake_liquid_colors(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	if (has_method("_bake_liquid_colors"))
-		call("_bake_liquid_colors", chunk);
+	if (has_method("_bake_liquid_colors")) {
+		CALL(_bake_liquid_colors, chunk);
+	}
 }
 
 PoolVector<Vector3> TerraMesher::build_collider() const {
@@ -768,7 +770,7 @@ Vector3 TerraMesher::get_vertex(const int idx) const {
 }
 
 void TerraMesher::remove_vertex(const int idx) {
-	_vertices.remove(idx);
+	_vertices.VREMOVE(idx);
 }
 
 PoolVector<Vector3> TerraMesher::get_normals() const {
@@ -916,7 +918,7 @@ int TerraMesher::get_index(const int idx) const {
 }
 
 void TerraMesher::remove_index(const int idx) {
-	_indices.remove(idx);
+	_indices.VREMOVE(idx);
 }
 
 TerraMesher::TerraMesher(const Ref<TerramanLibrary> &library) {
@@ -954,9 +956,15 @@ TerraMesher::~TerraMesher() {
 }
 
 void TerraMesher::_bind_methods() {
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_add_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo("_bake_colors", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo("_bake_liquid_colors", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+#else
+	GDVIRTUAL_BIND(_add_chunk, "chunk");
+	GDVIRTUAL_BIND(_bake_colors, "chunk");
+	GDVIRTUAL_BIND(_bake_liquid_colors, "chunk");
+#endif
 
 	ClassDB::bind_method(D_METHOD("get_channel_index_type"), &TerraMesher::get_channel_index_type);
 	ClassDB::bind_method(D_METHOD("set_channel_index_type", "value"), &TerraMesher::set_channel_index_type);
@@ -1014,7 +1022,12 @@ void TerraMesher::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_mesh_data_resource_transform_colored", "mesh", "transform", "colors", "uv_rect"), &TerraMesher::add_mesh_data_resource_transform_colored, DEFVAL(Rect2(0, 0, 1, 1)));
 #endif
 
+
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_add_mesher", PropertyInfo(Variant::OBJECT, "mesher", PROPERTY_HINT_RESOURCE_TYPE, "TerraMesher")));
+#else
+	GDVIRTUAL_BIND(_add_mesher, "mesher");
+#endif
 	ClassDB::bind_method(D_METHOD("add_mesher", "mesher"), &TerraMesher::add_mesher);
 	ClassDB::bind_method(D_METHOD("_add_mesher", "mesher"), &TerraMesher::_add_mesher);
 

@@ -66,8 +66,9 @@ void TerraStructure::set_position(const int x, const int y, const int z) {
 void TerraStructure::write_to_chunk(Ref<TerraChunk> chunk) {
 	ERR_FAIL_COND(!chunk.is_valid());
 
-	if (has_method("_write_to_chunk"))
-		call("_write_to_chunk", chunk);
+	if (has_method("_write_to_chunk")) {
+		CALL(_write_to_chunk, chunk);
+	}
 }
 
 TerraStructure::TerraStructure() {
@@ -81,7 +82,11 @@ TerraStructure::~TerraStructure() {
 }
 
 void TerraStructure::_bind_methods() {
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_write_to_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
+#else
+	GDVIRTUAL_BIND(_write_to_chunk, "chunk");
+#endif
 
 	ClassDB::bind_method(D_METHOD("get_use_aabb"), &TerraStructure::get_use_aabb);
 	ClassDB::bind_method(D_METHOD("set_use_aabb", "value"), &TerraStructure::set_use_aabb);

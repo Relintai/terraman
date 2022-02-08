@@ -22,6 +22,8 @@ SOFTWARE.
 
 #include "terra_material_cache.h"
 
+#include "../defines.h"
+
 #ifdef PROPS_PRESENT
 #include "../../props/props/prop_data.h"
 #include "../../props/props/prop_data_prop.h"
@@ -85,7 +87,7 @@ void TerraMaterialCache::material_set(const int index, const Ref<Material> &valu
 }
 
 void TerraMaterialCache::material_remove(const int index) {
-	_materials.remove(index);
+	_materials.VREMOVE(index);
 }
 
 int TerraMaterialCache::material_get_num() const {
@@ -146,7 +148,7 @@ void TerraMaterialCache::surface_set(int index, Ref<TerraSurface> value) {
 	_surfaces.set(index, value);
 }
 void TerraMaterialCache::surface_remove(const int index) {
-	_surfaces.remove(index);
+	_surfaces.VREMOVE(index);
 }
 int TerraMaterialCache::surface_get_num() const {
 	return _surfaces.size();
@@ -161,7 +163,7 @@ void TerraMaterialCache::additional_texture_add(const Ref<Texture> &texture) {
 void TerraMaterialCache::additional_texture_remove(const Ref<Texture> &texture) {
 	for (int i = 0; i < _additional_textures.size(); ++i) {
 		if (_additional_textures[i] == texture) {
-			_additional_textures.remove(i);
+			_additional_textures.VREMOVE(i);
 			return;
 		}
 	}
@@ -169,7 +171,7 @@ void TerraMaterialCache::additional_texture_remove(const Ref<Texture> &texture) 
 void TerraMaterialCache::additional_texture_remove_index(const int index) {
 	ERR_FAIL_INDEX(index, _additional_textures.size());
 
-	_additional_textures.remove(index);
+	_additional_textures.VREMOVE(index);
 }
 void TerraMaterialCache::additional_textures_clear() {
 	_additional_textures.clear();
@@ -254,8 +256,13 @@ void TerraMaterialCache::refresh_rects() {
 }
 
 void TerraMaterialCache::setup_material_albedo(Ref<Texture> texture) {
-	if (has_method("_setup_material_albedo"))
+#if VERSION_MAJOR < 4
+	if (has_method("_setup_material_albedo")) {
 		call("_setup_material_albedo", texture);
+	}
+#else
+	GDVIRTUAL_CALL(_setup_material_albedo, texture);
+#endif
 }
 
 TerraMaterialCache::TerraMaterialCache() {
@@ -279,7 +286,11 @@ void TerraMaterialCache::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("inc_ref_count"), &TerraMaterialCache::inc_ref_count);
 	ClassDB::bind_method(D_METHOD("dec_ref_count"), &TerraMaterialCache::dec_ref_count);
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
+#else
+	GDVIRTUAL_BIND(_setup_material_albedo, "texture");
+#endif
 
 	ClassDB::bind_method(D_METHOD("material_get", "index"), &TerraMaterialCache::material_get);
 	ClassDB::bind_method(D_METHOD("material_lod_get", "index"), &TerraMaterialCache::material_lod_get);

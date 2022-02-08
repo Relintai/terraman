@@ -29,8 +29,8 @@ SOFTWARE.
 #include "core/io/resource.h"
 #include "core/math/color.h"
 #else
-#include "core/resource.h"
 #include "core/color.h"
+#include "core/resource.h"
 #endif
 
 #include "../defines.h"
@@ -56,6 +56,10 @@ public:
 
 	void setup(WorldEnvironment *world_environment, DirectionalLight *primary_light, DirectionalLight *secondary_light);
 	void setup_bind(Node *world_environment, Node *primary_light, Node *secondary_light);
+
+#if VERSION_MAJOR >= 4
+	GDVIRTUAL3(_setup, WorldEnvironment *, DirectionalLight *, DirectionalLight *);
+#endif
 
 	TerraEnvironmentData();
 	~TerraEnvironmentData();

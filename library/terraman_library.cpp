@@ -34,6 +34,117 @@ SOFTWARE.
 
 #include "../defines.h"
 
+#if VERSION_MAJOR > 3
+
+#define TMCGDVIRTUAL1(m_class, m_name, m_type1)                                                                                                                                                                 \
+	bool m_class::_gdvirtual_##m_name##_call(m_type1 arg1) {                                                                                                                                                    \
+		ScriptInstance *script_instance = ((Object *)(this))->get_script_instance();                                                                                                                            \
+		if (script_instance) {                                                                                                                                                                                  \
+			Callable::CallError ce;                                                                                                                                                                             \
+			Variant vargs[1] = { Variant(arg1) };                                                                                                                                                               \
+			const Variant *vargptrs[1] = { &vargs[0] };                                                                                                                                                         \
+                                                                                                                                                                                                                \
+			script_instance->call(_gdvirtual_##m_name##_sn, (const Variant **)vargptrs, 1, ce);                                                                                                                 \
+			if (ce.error == Callable::CallError::CALL_OK) {                                                                                                                                                     \
+				return true;                                                                                                                                                                                    \
+			}                                                                                                                                                                                                   \
+		}                                                                                                                                                                                                       \
+		if (unlikely(_get_extension() && !_gdvirtual_##m_name##_initialized)) {                                                                                                                                 \
+			_gdvirtual_##m_name = (_get_extension() && _get_extension()->get_virtual) ? _get_extension()->get_virtual(_get_extension()->class_userdata, #m_name) : (GDNativeExtensionClassCallVirtual) nullptr; \
+			_gdvirtual_##m_name##_initialized = true;                                                                                                                                                           \
+		}                                                                                                                                                                                                       \
+		if (_gdvirtual_##m_name) {                                                                                                                                                                              \
+			PtrToArg<m_type1>::EncodeT argval1 = arg1;                                                                                                                                                          \
+			const GDNativeTypePtr argptrs[1] = { &argval1 };                                                                                                                                                    \
+                                                                                                                                                                                                                \
+			_gdvirtual_##m_name(_get_extension_instance(), (const GDNativeTypePtr *)argptrs, nullptr);                                                                                                          \
+                                                                                                                                                                                                                \
+			return true;                                                                                                                                                                                        \
+		}                                                                                                                                                                                                       \
+                                                                                                                                                                                                                \
+		return false;                                                                                                                                                                                           \
+	}                                                                                                                                                                                                           \
+	bool m_class::_gdvirtual_##m_name##_overridden() const {                                                                                                                                                    \
+		ScriptInstance *script_instance = ((Object *)(this))->get_script_instance();                                                                                                                            \
+		if (script_instance) {                                                                                                                                                                                  \
+			return script_instance->has_method(_gdvirtual_##m_name##_sn);                                                                                                                                       \
+		}                                                                                                                                                                                                       \
+		if (unlikely(_get_extension() && !_gdvirtual_##m_name##_initialized)) {                                                                                                                                 \
+			_gdvirtual_##m_name = (_get_extension() && _get_extension()->get_virtual) ? _get_extension()->get_virtual(_get_extension()->class_userdata, #m_name) : (GDNativeExtensionClassCallVirtual) nullptr; \
+			_gdvirtual_##m_name##_initialized = true;                                                                                                                                                           \
+		}                                                                                                                                                                                                       \
+		if (_gdvirtual_##m_name) {                                                                                                                                                                              \
+			return true;                                                                                                                                                                                        \
+		}                                                                                                                                                                                                       \
+		return false;                                                                                                                                                                                           \
+	}                                                                                                                                                                                                           \
+                                                                                                                                                                                                                \
+	MethodInfo m_class::_gdvirtual_##m_name##_get_method_info() {                                                                                                                                               \
+		MethodInfo method_info;                                                                                                                                                                                 \
+		method_info.name = #m_name;                                                                                                                                                                             \
+		method_info.flags = METHOD_FLAG_VIRTUAL;                                                                                                                                                                \
+		method_info.arguments.push_back(GetTypeInfo<m_type1>::get_class_info());                                                                                                                                \
+                                                                                                                                                                                                                \
+		return method_info;                                                                                                                                                                                     \
+	}
+
+#define TMCGDVIRTUAL1R(m_class, m_ret, m_name, m_type1)                                                                                                                                                         \
+	bool m_class::_gdvirtual_##m_name##_call(m_type1 arg1, m_ret &r_ret) {                                                                                                                                      \
+		ScriptInstance *script_instance = ((Object *)(this))->get_script_instance();                                                                                                                            \
+		if (script_instance) {                                                                                                                                                                                  \
+			Callable::CallError ce;                                                                                                                                                                             \
+			Variant vargs[1] = { Variant(arg1) };                                                                                                                                                               \
+			const Variant *vargptrs[1] = { &vargs[0] };                                                                                                                                                         \
+                                                                                                                                                                                                                \
+			Variant ret = script_instance->call(_gdvirtual_##m_name##_sn, (const Variant **)vargptrs, 1, ce);                                                                                                   \
+			if (ce.error == Callable::CallError::CALL_OK) {                                                                                                                                                     \
+				r_ret = VariantCaster<m_ret>::cast(ret);                                                                                                                                                        \
+				return true;                                                                                                                                                                                    \
+			}                                                                                                                                                                                                   \
+		}                                                                                                                                                                                                       \
+		if (unlikely(_get_extension() && !_gdvirtual_##m_name##_initialized)) {                                                                                                                                 \
+			_gdvirtual_##m_name = (_get_extension() && _get_extension()->get_virtual) ? _get_extension()->get_virtual(_get_extension()->class_userdata, #m_name) : (GDNativeExtensionClassCallVirtual) nullptr; \
+			_gdvirtual_##m_name##_initialized = true;                                                                                                                                                           \
+		}                                                                                                                                                                                                       \
+		if (_gdvirtual_##m_name) {                                                                                                                                                                              \
+			PtrToArg<m_type1>::EncodeT argval1 = arg1;                                                                                                                                                          \
+			const GDNativeTypePtr argptrs[1] = { &argval1 };                                                                                                                                                    \
+                                                                                                                                                                                                                \
+			PtrToArg<m_ret>::EncodeT ret;                                                                                                                                                                       \
+			_gdvirtual_##m_name(_get_extension_instance(), (const GDNativeTypePtr *)argptrs, &ret);                                                                                                             \
+			r_ret = (m_ret)ret;                                                                                                                                                                                 \
+			return true;                                                                                                                                                                                        \
+		}                                                                                                                                                                                                       \
+                                                                                                                                                                                                                \
+		return false;                                                                                                                                                                                           \
+	}                                                                                                                                                                                                           \
+	bool m_class::_gdvirtual_##m_name##_overridden() const {                                                                                                                                                    \
+		ScriptInstance *script_instance = ((Object *)(this))->get_script_instance();                                                                                                                            \
+		if (script_instance) {                                                                                                                                                                                  \
+			return script_instance->has_method(_gdvirtual_##m_name##_sn);                                                                                                                                       \
+		}                                                                                                                                                                                                       \
+		if (unlikely(_get_extension() && !_gdvirtual_##m_name##_initialized)) {                                                                                                                                 \
+			_gdvirtual_##m_name = (_get_extension() && _get_extension()->get_virtual) ? _get_extension()->get_virtual(_get_extension()->class_userdata, #m_name) : (GDNativeExtensionClassCallVirtual) nullptr; \
+			_gdvirtual_##m_name##_initialized = true;                                                                                                                                                           \
+		}                                                                                                                                                                                                       \
+		if (_gdvirtual_##m_name) {                                                                                                                                                                              \
+			return true;                                                                                                                                                                                        \
+		}                                                                                                                                                                                                       \
+		return false;                                                                                                                                                                                           \
+	}                                                                                                                                                                                                           \
+                                                                                                                                                                                                                \
+	MethodInfo m_class::_gdvirtual_##m_name##_get_method_info() {                                                                                                                                               \
+		MethodInfo method_info;                                                                                                                                                                                 \
+		method_info.name = #m_name;                                                                                                                                                                             \
+		method_info.flags = METHOD_FLAG_VIRTUAL;                                                                                                                                                                \
+		method_info.return_val = GetTypeInfo<m_ret>::get_class_info();                                                                                                                                          \
+		method_info.arguments.push_back(GetTypeInfo<m_type1>::get_class_info());                                                                                                                                \
+                                                                                                                                                                                                                \
+		return method_info;                                                                                                                                                                                     \
+	}
+
+#endif
+
 bool TerramanLibrary::get_initialized() const {
 	return _initialized;
 }
@@ -42,7 +153,7 @@ void TerramanLibrary::set_initialized(const bool value) {
 }
 
 bool TerramanLibrary::supports_caching() {
-	return call("_supports_caching");
+	RETURN_CALLD(bool, false, _supports_caching);
 }
 bool TerramanLibrary::_supports_caching() {
 	return false;
@@ -70,14 +181,14 @@ Ref<Material> TerramanLibrary::material_lod_get(const int index) {
 }
 
 void TerramanLibrary::material_cache_get_key(Ref<TerraChunk> chunk) {
-	call("_material_cache_get_key", chunk);
+	CALL(_material_cache_get_key, chunk);
 }
 
 void TerramanLibrary::_material_cache_get_key(Ref<TerraChunk> chunk) {
 }
 
 Ref<TerraMaterialCache> TerramanLibrary::material_cache_get(const int key) {
-	return call("_material_cache_get", key);
+	RETURN_CALLP(Ref<TerraMaterialCache>, _material_cache_get, key);
 }
 
 Ref<TerraMaterialCache> TerramanLibrary::_material_cache_get(const int key) {
@@ -85,7 +196,7 @@ Ref<TerraMaterialCache> TerramanLibrary::_material_cache_get(const int key) {
 }
 
 void TerramanLibrary::material_cache_unref(const int key) {
-	call("_material_cache_unref", key);
+	CALL(_material_cache_unref, key);
 }
 void TerramanLibrary::_material_cache_unref(const int key) {
 }
@@ -103,7 +214,7 @@ void TerramanLibrary::material_set(const int index, const Ref<Material> &value) 
 }
 
 void TerramanLibrary::material_remove(const int index) {
-	_materials.remove(index);
+	_materials.VREMOVE(index);
 }
 
 int TerramanLibrary::material_get_num() const {
@@ -150,14 +261,14 @@ Ref<Material> TerramanLibrary::liquid_material_lod_get(const int index) {
 }
 
 void TerramanLibrary::liquid_material_cache_get_key(Ref<TerraChunk> chunk) {
-	call("_liquid_material_cache_get_key", chunk);
+	CALL(_liquid_material_cache_get_key, chunk);
 }
 
 void TerramanLibrary::_liquid_material_cache_get_key(Ref<TerraChunk> chunk) {
 }
 
 Ref<TerraMaterialCache> TerramanLibrary::liquid_material_cache_get(const int key) {
-	return call("_liquid_material_cache_get", key);
+	RETURN_CALLP(Ref<TerraMaterialCache>, _liquid_material_cache_get, key);
 }
 
 Ref<TerraMaterialCache> TerramanLibrary::_liquid_material_cache_get(const int key) {
@@ -165,7 +276,7 @@ Ref<TerraMaterialCache> TerramanLibrary::_liquid_material_cache_get(const int ke
 }
 
 void TerramanLibrary::liquid_material_cache_unref(const int key) {
-	call("_liquid_material_cache_unref", key);
+	CALL(_liquid_material_cache_unref, key);
 }
 void TerramanLibrary::_liquid_material_cache_unref(const int key) {
 }
@@ -183,7 +294,7 @@ void TerramanLibrary::liquid_material_set(const int index, const Ref<Material> &
 }
 
 void TerramanLibrary::liquid_material_remove(const int index) {
-	_liquid_materials.remove(index);
+	_liquid_materials.VREMOVE(index);
 }
 
 int TerramanLibrary::liquid_material_get_num() const {
@@ -230,14 +341,14 @@ Ref<Material> TerramanLibrary::prop_material_lod_get(const int index) {
 }
 
 void TerramanLibrary::prop_material_cache_get_key(Ref<TerraChunk> chunk) {
-	call("_prop_material_cache_get_key", chunk);
+	CALL(_prop_material_cache_get_key, chunk);
 }
 
 void TerramanLibrary::_prop_material_cache_get_key(Ref<TerraChunk> chunk) {
 }
 
 Ref<TerraMaterialCache> TerramanLibrary::prop_material_cache_get(const int key) {
-	return call("_prop_material_cache_get", key);
+	RETURN_CALLP(Ref<TerraMaterialCache>, _prop_material_cache_get, key);
 }
 
 Ref<TerraMaterialCache> TerramanLibrary::_prop_material_cache_get(const int key) {
@@ -245,7 +356,7 @@ Ref<TerraMaterialCache> TerramanLibrary::_prop_material_cache_get(const int key)
 }
 
 void TerramanLibrary::prop_material_cache_unref(const int key) {
-	call("_prop_material_cache_unref", key);
+	CALL(_prop_material_cache_unref, key);
 }
 void TerramanLibrary::_prop_material_cache_unref(const int key) {
 }
@@ -263,7 +374,7 @@ void TerramanLibrary::prop_material_set(const int index, const Ref<Material> &va
 }
 
 void TerramanLibrary::prop_material_remove(const int index) {
-	_prop_materials.remove(index);
+	_prop_materials.VREMOVE(index);
 }
 
 int TerramanLibrary::prop_material_get_num() const {
@@ -343,8 +454,9 @@ void TerramanLibrary::refresh_rects() {
 }
 
 void TerramanLibrary::setup_material_albedo(int material_index, Ref<Texture> texture) {
-	if (has_method("_setup_material_albedo"))
-		call("_setup_material_albedo", material_index, texture);
+	if (has_method("_setup_material_albedo")) {
+		CALL(_setup_material_albedo, material_index, texture);
+	}
 }
 
 TerramanLibrary::TerramanLibrary() {
@@ -357,20 +469,49 @@ TerramanLibrary::~TerramanLibrary() {
 	_prop_materials.clear();
 }
 
+#if VERSION_MAJOR >= 4
+TMCGDVIRTUAL1(TerramanLibrary, _material_cache_get_key, Ref<TerraChunk>);
+TMCGDVIRTUAL1R(TerramanLibrary, Ref<TerraMaterialCache>, _material_cache_get, int);
+TMCGDVIRTUAL1(TerramanLibrary, _material_cache_unref, int);
+
+TMCGDVIRTUAL1(TerramanLibrary, _liquid_material_cache_get_key, Ref<TerraChunk>);
+TMCGDVIRTUAL1R(TerramanLibrary, Ref<TerraMaterialCache>, _liquid_material_cache_get, int);
+TMCGDVIRTUAL1(TerramanLibrary, _liquid_material_cache_unref, int);
+
+TMCGDVIRTUAL1(TerramanLibrary, _prop_material_cache_get_key, Ref<TerraChunk>);
+TMCGDVIRTUAL1R(TerramanLibrary, Ref<TerraMaterialCache>, _prop_material_cache_get, int);
+TMCGDVIRTUAL1(TerramanLibrary, _prop_material_cache_unref, int);
+#endif
+
 void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_initialized"), &TerramanLibrary::get_initialized);
 	ClassDB::bind_method(D_METHOD("set_initialized", "value"), &TerramanLibrary::set_initialized);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "initialized", PROPERTY_HINT_NONE, "", 0), "set_initialized", "get_initialized");
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::BOOL, "ret"), "_supports_caching"));
+#else
+	GDVIRTUAL_BIND(_supports_caching);
+#endif
+
 	ClassDB::bind_method(D_METHOD("_supports_caching"), &TerramanLibrary::_supports_caching);
 	ClassDB::bind_method(D_METHOD("supports_caching"), &TerramanLibrary::supports_caching);
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_setup_material_albedo", PropertyInfo(Variant::INT, "material_index"), PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture")));
+#else
+	GDVIRTUAL_BIND(_setup_material_albedo, "material_index", "texture");
+#endif
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_material_cache_get_key", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache"), "_material_cache_get", PropertyInfo(Variant::INT, "key")));
 	BIND_VMETHOD(MethodInfo("_material_cache_unref", PropertyInfo(Variant::INT, "key")));
+#else
+	GDVIRTUAL_BIND(_material_cache_get_key, "chunk", "texture");
+	GDVIRTUAL_BIND(_material_cache_get, "key");
+	GDVIRTUAL_BIND(_material_cache_unref, "key");
+#endif
 
 	ClassDB::bind_method(D_METHOD("material_get", "index"), &TerramanLibrary::material_get);
 	ClassDB::bind_method(D_METHOD("material_lod_get", "index"), &TerramanLibrary::material_lod_get);
@@ -392,9 +533,15 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("materials_set"), &TerramanLibrary::materials_set);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "materials_set", "materials_get");
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_liquid_material_cache_get_key", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache"), "_liquid_material_cache_get", PropertyInfo(Variant::INT, "key")));
 	BIND_VMETHOD(MethodInfo("_liquid_material_cache_unref", PropertyInfo(Variant::INT, "key")));
+#else
+	GDVIRTUAL_BIND(_liquid_material_cache_get_key, "chunk", "texture");
+	GDVIRTUAL_BIND(_liquid_material_cache_get, "key");
+	GDVIRTUAL_BIND(_liquid_material_cache_unref, "key");
+#endif
 
 	ClassDB::bind_method(D_METHOD("liquid_material_get", "index"), &TerramanLibrary::liquid_material_get);
 	ClassDB::bind_method(D_METHOD("liquid_material_lod_get", "index"), &TerramanLibrary::liquid_material_lod_get);
@@ -416,9 +563,15 @@ void TerramanLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("liquid_materials_set"), &TerramanLibrary::liquid_materials_set);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "liquid_materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "liquid_materials_set", "liquid_materials_get");
 
+#if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_prop_material_cache_get_key", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerraChunk")));
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "ret", PROPERTY_HINT_RESOURCE_TYPE, "TerraMaterialCache"), "_prop_material_cache_get", PropertyInfo(Variant::INT, "key")));
 	BIND_VMETHOD(MethodInfo("_prop_material_cache_unref", PropertyInfo(Variant::INT, "key")));
+#else
+	GDVIRTUAL_BIND(_prop_material_cache_get_key, "chunk", "texture");
+	GDVIRTUAL_BIND(_prop_material_cache_get, "key");
+	GDVIRTUAL_BIND(_prop_material_cache_unref, "key");
+#endif
 
 	ClassDB::bind_method(D_METHOD("prop_material_get", "index"), &TerramanLibrary::prop_material_get);
 	ClassDB::bind_method(D_METHOD("prop_material_lod_get", "index"), &TerramanLibrary::prop_material_lod_get);

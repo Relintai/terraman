@@ -26,13 +26,16 @@ SOFTWARE.
 #include "core/version.h"
 
 #if VERSION_MAJOR > 3
-#include "core/math/color.h"
-#include "core/object/reference.h"
+#include "core/object/ref_counted.h"
+#ifndef Reference
+#define Reference RefCounted
+#endif
 #include "core/templates/vector.h"
+#include "core/math/color.h"
 #else
-#include "core/color.h"
 #include "core/reference.h"
 #include "core/vector.h"
+#include "core/color.h"
 #endif
 
 #include "../defines.h"
@@ -190,6 +193,13 @@ public:
 	int get_index(const int idx) const;
 	void remove_index(const int idx);
 	void add_indices(const int index);
+
+#if VERSION_MAJOR >= 4
+	GDVIRTUAL1(_add_chunk, Ref<TerraChunk>);
+	GDVIRTUAL1(_bake_colors, Ref<TerraChunk>);
+	GDVIRTUAL1(_bake_liquid_colors, Ref<TerraChunk>);
+	GDVIRTUAL1(_add_mesher, Ref<TerraChunk>);
+#endif
 
 	TerraMesher(const Ref<TerramanLibrary> &library);
 	TerraMesher();
