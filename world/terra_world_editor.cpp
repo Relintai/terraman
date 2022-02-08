@@ -48,11 +48,11 @@ bool TerraWorldEditor::forward_spatial_input_event(Camera *p_camera, const Ref<I
 		return false;
 	}
 
-	Ref<TerramanLibrary> mb = p_event;
+	Ref<InputEventMouseButton> mb = p_event;
 
 	if (mb.is_valid()) {
 		if (mb->is_pressed()) {
-			Ref<VoxelmanLibrary> lib = _world->get_library();
+			Ref<TerramanLibrary> lib = _world->get_library();
 
 			if (!lib.is_valid())
 				return false;

@@ -172,7 +172,7 @@ typedef class RenderingServer VS;
 	call(#func, ##__VA_ARGS__);
 
 #define RETURN_CALL(ret_type, func) \
-	return call(#func, ##__VA_ARGS__);
+	return call(#func);
 
 #define RETURN_CALLP(ret_type, func, ...) \
 	return call(#func, ##__VA_ARGS__);
@@ -184,7 +184,7 @@ typedef class RenderingServer VS;
 	ret_var = call(#func, ##__VA_ARGS__);
 
 #define RETURN_CALLD(ret_type, def_val, func) \
-	return call(#func, ##__VA_ARGS__);
+	return call(#func);
 
 #define RETURN_CALLPD(ret_type, def_val, func, ...) \
 	return call(#func, ##__VA_ARGS__);

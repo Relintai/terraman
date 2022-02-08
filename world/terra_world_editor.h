@@ -33,7 +33,7 @@ SOFTWARE.
 typedef class Transform3D Transform;
 #endif
 
-class VoxelWorld;
+class TerraWorld;
 class SpatialEditorPlugin;
 
 class TerraWorldEditor : public PanelContainer {
