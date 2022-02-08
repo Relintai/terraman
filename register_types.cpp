@@ -22,102 +22,102 @@ SOFTWARE.
 
 #include "register_types.h"
 
-#include "library/terra_surface.h"
-#include "library/terra_surface_simple.h"
+#include "library/terrain_surface.h"
+#include "library/terrain_surface_simple.h"
 
-#include "library/terra_material_cache.h"
-#include "library/terraman_library.h"
-#include "library/terraman_library_simple.h"
+#include "library/terrain_material_cache.h"
+#include "library/terrain_library.h"
+#include "library/terrain_library_simple.h"
 
 #ifdef TEXTURE_PACKER_PRESENT
-#include "library/terra_surface_merger.h"
-#include "library/terraman_library_merger.h"
-#include "library/terraman_library_merger_pcm.h"
-#include "library/terra_material_cache_pcm.h"
+#include "library/terrain_surface_merger.h"
+#include "library/terrain_library_merger.h"
+#include "library/terrain_library_merger_pcm.h"
+#include "library/terrain_material_cache_pcm.h"
 #endif
 
-#include "data/terra_light.h"
-#include "meshers/terra_mesher.h"
+#include "data/terrain_light.h"
+#include "meshers/terrain_mesher.h"
 
-#include "world/block_terra_structure.h"
-#include "world/terra_chunk.h"
-#include "world/terra_environment_data.h"
-#include "world/terra_structure.h"
-#include "world/terra_world.h"
+#include "world/block_terrain_structure.h"
+#include "world/terrain_chunk.h"
+#include "world/terrain_environment_data.h"
+#include "world/terrain_structure.h"
+#include "world/terrain_world.h"
 
-#include "world/default/terra_chunk_default.h"
-#include "world/default/terra_world_default.h"
+#include "world/default/terrain_chunk_default.h"
+#include "world/default/terrain_world_default.h"
 
-#include "level_generator/terraman_level_generator.h"
-#include "level_generator/terraman_level_generator_flat.h"
+#include "level_generator/terrain_level_generator.h"
+#include "level_generator/terrain_level_generator_flat.h"
 
-#include "areas/terra_world_area.h"
+#include "areas/terrain_world_area.h"
 
-#include "world/terra_world_editor.h"
+#include "world/terrain_world_editor.h"
 
-#include "meshers/blocky/terra_mesher_blocky.h"
-#include "meshers/blocky/terra_mesher_liquid_blocky.h"
+#include "meshers/blocky/terrain_mesher_blocky.h"
+#include "meshers/blocky/terrain_mesher_liquid_blocky.h"
 
-#include "world/blocky/terra_chunk_blocky.h"
-#include "world/blocky/terra_world_blocky.h"
+#include "world/blocky/terrain_chunk_blocky.h"
+#include "world/blocky/terrain_world_blocky.h"
 
-#include "nodes/terraman_light.h"
+#include "nodes/terrain_light_node.h"
 
-#include "world/jobs/terra_job.h"
-#include "world/jobs/terra_light_job.h"
-#include "world/jobs/terra_mesher_job_step.h"
-#include "world/jobs/terra_prop_job.h"
-#include "world/jobs/terra_terrarin_job.h"
+#include "world/jobs/terrain_job.h"
+#include "world/jobs/terrain_light_job.h"
+#include "world/jobs/terrain_mesher_job_step.h"
+#include "world/jobs/terrain_prop_job.h"
+#include "world/jobs/terrain_terrain_job.h"
 
 void register_terraman_types() {
-	ClassDB::register_class<TerraMesher>();
-	ClassDB::register_class<TerraMesherDefault>();
+	ClassDB::register_class<TerrainMesher>();
+	ClassDB::register_class<TerrainMesherDefault>();
 
-	ClassDB::register_class<TerraSurface>();
-	ClassDB::register_class<TerraSurfaceSimple>();
+	ClassDB::register_class<TerrainSurface>();
+	ClassDB::register_class<TerrainSurfaceSimple>();
 
-	ClassDB::register_class<TerramanLibrary>();
-	ClassDB::register_class<TerramanLibrarySimple>();
+	ClassDB::register_class<TerrainLibrary>();
+	ClassDB::register_class<TerrainLibrarySimple>();
 
-	ClassDB::register_class<TerraMaterialCache>();
+	ClassDB::register_class<TerrainMaterialCache>();
 
 #ifdef TEXTURE_PACKER_PRESENT
-	ClassDB::register_class<TerraSurfaceMerger>();
-	ClassDB::register_class<TerramanLibraryMerger>();
-	ClassDB::register_class<TerramanLibraryMergerPCM>();
-	ClassDB::register_class<TerraMaterialCachePCM>();
+	ClassDB::register_class<TerrainSurfaceMerger>();
+	ClassDB::register_class<TerrainLibraryMerger>();
+	ClassDB::register_class<TerrainLibraryMergerPCM>();
+	ClassDB::register_class<TerrainMaterialCachePCM>();
 #endif
 
-	ClassDB::register_class<TerraLight>();
-	ClassDB::register_class<TerramanLight>();
+	ClassDB::register_class<TerrainLight>();
+	ClassDB::register_class<TerrainLightNode>();
 
-	ClassDB::register_class<TerraWorld>();
-	ClassDB::register_class<TerraChunk>();
-	ClassDB::register_class<TerraStructure>();
-	ClassDB::register_class<BlockTerraStructure>();
-	ClassDB::register_class<TerraEnvironmentData>();
+	ClassDB::register_class<TerrainWorld>();
+	ClassDB::register_class<TerrainChunk>();
+	ClassDB::register_class<TerrainStructure>();
+	ClassDB::register_class<BlockTerrainStructure>();
+	ClassDB::register_class<TerrainEnvironmentData>();
 
-	ClassDB::register_class<TerraChunkDefault>();
-	ClassDB::register_class<TerraWorldDefault>();
+	ClassDB::register_class<TerrainChunkDefault>();
+	ClassDB::register_class<TerrainWorldDefault>();
 
-	ClassDB::register_class<TerraMesherBlocky>();
-	ClassDB::register_class<TerraWorldBlocky>();
-	ClassDB::register_class<TerraChunkBlocky>();
-	ClassDB::register_class<TerraMesherLiquidBlocky>();
+	ClassDB::register_class<TerrainMesherBlocky>();
+	ClassDB::register_class<TerrainWorldBlocky>();
+	ClassDB::register_class<TerrainChunkBlocky>();
+	ClassDB::register_class<TerrainMesherLiquidBlocky>();
 
-	ClassDB::register_class<TerramanLevelGenerator>();
-	ClassDB::register_class<TerramanLevelGeneratorFlat>();
+	ClassDB::register_class<TerrainLevelGenerator>();
+	ClassDB::register_class<TerrainLevelGeneratorFlat>();
 
-	ClassDB::register_class<TerraWorldArea>();
+	ClassDB::register_class<TerrainWorldArea>();
 
-	ClassDB::register_class<TerraJob>();
-	ClassDB::register_class<TerraTerrarinJob>();
-	ClassDB::register_class<TerraMesherJobStep>();
-	ClassDB::register_class<TerraLightJob>();
-	ClassDB::register_class<TerraPropJob>();
+	ClassDB::register_class<TerrainJob>();
+	ClassDB::register_class<TerrainTerrainJob>();
+	ClassDB::register_class<TerrainMesherJobStep>();
+	ClassDB::register_class<TerrainLightJob>();
+	ClassDB::register_class<TerrainPropJob>();
 
 #ifdef TOOLS_ENABLED
-	EditorPlugins::add_by_type<TerraWorldEditorPlugin>();
+	EditorPlugins::add_by_type<TerrainWorldEditorPlugin>();
 #endif
 }
 

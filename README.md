@@ -18,7 +18,7 @@ check whether it works from time to time.
 ## Optional Dependencies
 
 `https://github.com/Relintai/thread_pool`: Threaded chunk generation. Without this Terraman is single threaded! \
-`https://github.com/Relintai/texture_packer`: You get access to [TerramanLibraryMerger](#voxelmanlibrarymerger). \
+`https://github.com/Relintai/texture_packer`: You get access to [TerrainLibraryMerger](#voxelmanlibrarymerger). \
 `https://github.com/Relintai/mesh_data_resource`: You get access to a bunch of properties, and methods that can manipulate meshes.\
 `https://github.com/Relintai/props`: You get access to a bunch of properties, and methods that can manipulate, and use props.\
 `https://github.com/Relintai/mesh_utils`: Lets you use lod levels higher than 4 by default.
@@ -30,29 +30,29 @@ repo. From 0.3.4 and onwards it contain this module instead of voxelman.
 
 ## Usage
 
-First create a scene, and add a TerraWorldBlocky node into it. Create a TerramanLibrary, and assign it to the Library property.
-Also, add a TerraSurface into your library.
+First create a scene, and add a TerrainWorldBlocky node into it. Create a TerrainLibrary, and assign it to the Library property.
+Also, add a TerrainSurface into your library.
 
-(TerraWorldBlocky is the only one that works properly for now, this will soon be fixed!)
+(TerrainWorldBlocky is the only one that works properly for now, this will soon be fixed!)
 
 Tick the editable property, deselect, then select the world again, and click the insert button at the top toolbar, or press B to insert a
 voxel at the inspector's camera's location.
 
 Select the add button, and now you can just add voxels with the mouse, by clicking on the newly added voxel.
 
-## TerramanLibrary
+## TerrainLibrary
 
-This class stores the materials, and the TerraSurfaces.
+This class stores the materials, and the TerrainSurfaces.
 
 Note: If you want lods, assign equal (or more) materials than your maximum lod level. If you only want one material just assign it 
 multiple times. If you don't then your meshes won't have materials (They will be white).
 
-### TerramanLibrarySimple
+### TerrainLibrarySimple
 
 The simplest library, just assign a material with a texture, and using the atlas_rows and atlas_culomns properties to tell the system
 how the UVs should be divided.
 
-### TerramanLibraryMerger
+### TerrainLibraryMerger
 
 You will only have this if your godot also contains https://github.com/Relintai/texture_packer
 
@@ -62,18 +62,18 @@ You can assign any texture to your surfaces with this, and it will merge them to
 
 The 2 base classes:
 
-TerraWorld: Basic world, does not do anything until you implemnent the required virtual methods!\
-TerraWorldDefault: This adds threading, and LoD storage support to TerraWorld. Will not create meshes for you!
+TerrainWorld: Basic world, does not do anything until you implemnent the required virtual methods!\
+TerrainWorldDefault: This adds threading, and LoD storage support to TerrainWorld. Will not create meshes for you!
 
-### TerraWorldBlocky
+### TerrainWorldBlocky
 
 The most basic world. It is the Minecraft-style world.
 
-### TerraWorldMarchingCubes
+### TerrainWorldMarchingCubes
 
 A marching cubes based Terra World. Actually it uses a modified version of the Transvoxel tables. It is UV mapped.
 
-### TerraWorldCubic
+### TerrainWorldCubic
 
 This is my own meshing algorithm, it's basicly a Minecraft style mesher that can take isolevel into account.
 
@@ -81,22 +81,22 @@ This is my own meshing algorithm, it's basicly a Minecraft style mesher that can
 
 Assign a TerraManLevelGenerator to the `World`'s `Level Generator` property.
 
-You can write your own algorithm by implementing the ``` void _generate_chunk(chunk: TerraChunk) virtual ``` method.
+You can write your own algorithm by implementing the ``` void _generate_chunk(chunk: TerrainChunk) virtual ``` method.
 
 `TerraManLevelGeneratorFlat` is also available, it will generate a floor for you, if you use it.
 
-## TerraJobs
+## TerrainJobs
 
-Producing just a terrarin mesh for a chunk is not that hard by itself. However when you start adding layers/features
+Producing just a terrain mesh for a chunk is not that hard by itself. However when you start adding layers/features
 like lod generation, collision meshes (especially since manipulating the physics server is not threadsafe), 
 vertex volumetric lights, props, snapping props, props with vertex lights, etc
 chunk mesh generation can quicly become a serious mess.
 
-TerraJobs are meant to solve the issue with this complexity.
+TerrainJobs are meant to solve the issue with this complexity.
 
 They also provide a way to easily modularize mesh generation.
 
-### TerraJob
+### TerrainJob
 
 Base class for jobs.
 
@@ -107,43 +107,43 @@ A job has a reference to it's owner chunk.
 
 If you implement your own jobs, when your job finishes call `next_job()`.
 
-### TerraLightJob
+### TerrainLightJob
 
-This is the job that will generate vertex light based ao, random ao, and will bake your `TerraLight`s.
+This is the job that will generate vertex light based ao, random ao, and will bake your `TerrainLight`s.
 
-### TerraTerrarinJob
+### TerrainTerrainJob
 
-This will generate your terrarin collider and mesh (with lods) for you, using the meshers that you add into it.
+This will generate your terrain collider and mesh (with lods) for you, using the meshers that you add into it.
 
-### TerraPropJob
+### TerrainPropJob
 
 This will generate your prop meshes (with lods).
 
 ### Internal workings
 
-#### TerraWorld
+#### TerrainWorld
 
-Whenever you want to spawn a chunk your World will create it using the ``` TerraChunk _create_chunk(x: int, y: int, z: int, chunk: TerraChunk) virtual ``` method.
+Whenever you want to spawn a chunk your World will create it using the ``` TerrainChunk _create_chunk(x: int, y: int, z: int, chunk: TerrainChunk) virtual ``` method.
 
 Since properly initializing a chunk usually takes quite a few steps that you probably don't want to repeat everywhere the `chunk`
 parameter was added. This means you can just call the super `_create_chunk` methods, and you won't need to worry about your chunk
 getting overridden. Like:
 
 Note that `_create_chunk` is also responsible for initializing chunks if you have them stored inside a scene. 
-This is done by `setup_chunk(shunk)` in `TerraWorld`.
+This is done by `setup_chunk(shunk)` in `TerrainWorld`.
 
 ``` 
-    func _create_chunk(x : int, y : int, z : int, chunk : TerraChunk) -> TerraChunk:
+    func _create_chunk(x : int, y : int, z : int, chunk : TerrainChunk) -> TerrainChunk:
         if !chunk:
             chunk = MyChunk.new()
 
         # We need to check whether or not we need to initialize jobs
         if chunk.job_get_count() == 0:
             # Setup a blocky (minecratf like) mesher job
-            var tj : TerraTerrarinJob = TerraTerrarinJob.new()
+            var tj : TerrainTerrainJob = TerrainTerrainJob.new()
 
-            tj.add_mesher(TerraMesherBlocky.new())
-            tj.add_liquid_mesher(TerraMesherLiquidBlocky.new())
+            tj.add_mesher(TerrainMesherBlocky.new())
+            tj.add_liquid_mesher(TerrainMesherLiquidBlocky.new())
 
             chunk.job_add(tj);
 
@@ -152,17 +152,17 @@ This is done by `setup_chunk(shunk)` in `TerraWorld`.
         return ._create_chunk(x, y, z, chunk)
 ```
 
-#### TerraChunk
+#### TerrainChunk
 
-Stores terrarin data, prop data. And mesh data (TerraChunkDefault), and the mesh generation jobs.
+Stores terrain data, prop data. And mesh data (TerrainChunkDefault), and the mesh generation jobs.
 
 When it starts building meshes it will start submitting jobs to thread_pool (if present) one by one.
 
-#### TerraMesher
+#### TerrainMesher
 
-If you want to implement your own meshing algorithm you can do so by overriding ``` void _add_chunk(chunk: TerraChunk) virtual ```.
+If you want to implement your own meshing algorithm you can do so by overriding ``` void _add_chunk(chunk: TerrainChunk) virtual ```.
 
-TerraMesher works similarly to SurfaceTool, so first you need to set colors, uvs, etc and then call add_vertex.
+TerrainMesher works similarly to SurfaceTool, so first you need to set colors, uvs, etc and then call add_vertex.
 They won't get reset, so for exaple if you want all your vertices to have a certain color, you can get away with setting it only once.
 
 ## Compiling

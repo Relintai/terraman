@@ -20,10 +20,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TERRAIN_REGISTER_TYPES_H
-#define TERRAIN_REGISTER_TYPES_H
+#ifndef TERRAIN_LEVEL_GENERATOR_H
+#define TERRAIN_LEVEL_GENERATOR_H
 
-void register_terraman_types();
-void unregister_terraman_types();
+#include "core/version.h"
+
+#if VERSION_MAJOR > 3
+#include "core/io/resource.h"
+#else
+#include "core/resource.h"
+#endif
+
+class TerrainChunk;
+
+class TerrainLevelGenerator : public Resource {
+	GDCLASS(TerrainLevelGenerator, Resource);
+
+public:
+	void generate_chunk(Ref<TerrainChunk> chunk);
+
+	TerrainLevelGenerator();
+	~TerrainLevelGenerator();
+
+protected:
+	static void _bind_methods();
+};
 
 #endif

@@ -20,10 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TERRAIN_REGISTER_TYPES_H
-#define TERRAIN_REGISTER_TYPES_H
+#include "terrain_level_generator.h"
 
-void register_terraman_types();
-void unregister_terraman_types();
+#include "../world/terrain_chunk.h"
 
-#endif
+void TerrainLevelGenerator::generate_chunk(Ref<TerrainChunk> chunk) {
+	if (has_method("_generate_chunk")) {
+		call("_generate_chunk", chunk);
+	}
+}
+
+TerrainLevelGenerator::TerrainLevelGenerator() {
+}
+
+TerrainLevelGenerator::~TerrainLevelGenerator() {
+}
+
+void TerrainLevelGenerator::_bind_methods() {
+	BIND_VMETHOD(MethodInfo("_generate_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerrainChunk")));
+
+	ClassDB::bind_method(D_METHOD("generate_chunk", "chunk"), &TerrainLevelGenerator::generate_chunk);
+}

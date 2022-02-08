@@ -1,6 +1,6 @@
 
-#ifndef TERRAMAN_DEFINES_H
-#define TERRAMAN_DEFINES_H
+#ifndef TERRAIN_DEFINES_H
+#define TERRAIN_DEFINES_H
 
 #include "core/version.h"
 

@@ -10,63 +10,63 @@ def configure(env):
 
 def get_doc_classes():
     return [
-        "TerraWorldArea",
+        "TerrainWorldArea",
 
-        "TerraLight",
-        "TerramanLight",
+        "TerrainLight",
+        "TerrainLight",
 
-        "TerramanLevelGenerator",
-        "TerramanLevelGeneratorFlat",
+        "TerrainLevelGenerator",
+        "TerrainLevelGeneratorFlat",
 
-        "TerraSurfaceMerger",
-        "TerraSurfaceSimple",
-        "TerraSurface",
-        "TerramanLibraryMerger",
-        "TerramanLibrarySimple",
-        "TerramanLibrary",
-        "TerramanLibraryMergerPCM",
+        "TerrainSurfaceMerger",
+        "TerrainSurfaceSimple",
+        "TerrainSurface",
+        "TerrainLibraryMerger",
+        "TerrainLibrarySimple",
+        "TerrainLibrary",
+        "TerrainLibraryMergerPCM",
 
-        "TerraMaterialCache",
-        "TerraMaterialCachePCM",
+        "TerrainMaterialCache",
+        "TerrainMaterialCachePCM",
 
         "TerraCubePoints",
-        "TerraMesherCubic",
-        "TerraMeshData",
+        "TerrainMesherCubic",
+        "TerrainMeshData",
 
         "MarchingCubesCellData",
-        "TerraMesherMarchingCubes",
+        "TerrainMesherMarchingCubes",
 
-        "TerraMesher",
+        "TerrainMesher",
 
         "EnvironmentData",
-        "TerraChunk",
-        "TerraChunkDefault",
-        "TerraStructure",
-        "BlockTerraStructure",
-        "TerraWorld",
+        "TerrainChunk",
+        "TerrainChunkDefault",
+        "TerrainStructure",
+        "BlockTerrainStructure",
+        "TerrainWorld",
 
-        "TerraMesherBlocky",
-        "TerraWorldBlocky",
-        "TerraChunkBlocky",
-        "TerraMesherLiquidBlocky",
+        "TerrainMesherBlocky",
+        "TerrainWorldBlocky",
+        "TerrainChunkBlocky",
+        "TerrainMesherLiquidBlocky",
 
-        "TerraWorldMarchingCubes",
-        "TerraChunkMarchingCubes",
+        "TerrainWorldMarchingCubes",
+        "TerrainChunkMarchingCubes",
     
-        "TerraMesherCubic",
-        "TerraWorldCubic",
-        "TerraChunkCubic",
+        "TerrainMesherCubic",
+        "TerrainWorldCubic",
+        "TerrainChunkCubic",
 
-        "TerraMesherDefault",
-        "TerraWorldDefault",
+        "TerrainMesherDefault",
+        "TerrainWorldDefault",
 
-        "TerraJob",
-        "TerraTerrarinJob",
-        "TerraLightJob",
-        "TerraPropJob",
+        "TerrainJob",
+        "TerrainTerrainJob",
+        "TerrainLightJob",
+        "TerrainPropJob",
 
-        "TerraEnvironmentData",
-        "TerraMesherJobStep",
+        "TerrainEnvironmentData",
+        "TerrainMesherJobStep",
         
     ]
 

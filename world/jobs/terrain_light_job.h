@@ -20,10 +20,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TERRAIN_REGISTER_TYPES_H
-#define TERRAIN_REGISTER_TYPES_H
+#ifndef TERRAIN_LIGHT_JOB_H
+#define TERRAIN_LIGHT_JOB_H
 
-void register_terraman_types();
-void unregister_terraman_types();
+#include "terrain_job.h"
+
+class TerrainMesher;
+
+class TerrainLightJob : public TerrainJob {
+	GDCLASS(TerrainLightJob, TerrainJob);
+
+public:
+	void phase_light();
+
+	void _execute_phase();
+
+	TerrainLightJob();
+	~TerrainLightJob();
+
+protected:
+	static void _bind_methods();
+};
 
 #endif

@@ -20,10 +20,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TERRAIN_REGISTER_TYPES_H
-#define TERRAIN_REGISTER_TYPES_H
+#ifndef TERRAIN_MESHER_DEFAULT_H
+#define TERRAIN_MESHER_DEFAULT_H
 
-void register_terraman_types();
-void unregister_terraman_types();
+#include "core/version.h"
+
+#if VERSION_MAJOR > 3
+#include "core/math/color.h"
+#else
+#include "core/color.h"
+#endif
+
+#include "core/math/vector2.h"
+#include "core/math/vector3.h"
+
+#include "../terrain_mesher.h"
+
+class TerrainMesherDefault : public TerrainMesher {
+	GDCLASS(TerrainMesherDefault, TerrainMesher);
+
+public:
+	int get_build_flags() const;
+	void set_build_flags(const int flags);
+
+	TerrainMesherDefault();
+	~TerrainMesherDefault();
+
+protected:
+	virtual void _bake_colors(Ref<TerrainChunk> p_chunk);
+	virtual void _bake_liquid_colors(Ref<TerrainChunk> p_chunk);
+
+	static void _bind_methods();
+
+private:
+	int _build_flags;
+};
 
 #endif

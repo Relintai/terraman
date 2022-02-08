@@ -20,10 +20,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TERRAIN_REGISTER_TYPES_H
-#define TERRAIN_REGISTER_TYPES_H
+#ifndef TERRAIN_WORLD_BLOCKY_H
+#define TERRAIN_WORLD_BLOCKY_H
 
-void register_terraman_types();
-void unregister_terraman_types();
+#include "../default/terrain_world_default.h"
+
+class TerrainWorldBlocky : public TerrainWorldDefault {
+	GDCLASS(TerrainWorldBlocky, TerrainWorldDefault);
+
+public:
+	TerrainWorldBlocky();
+	~TerrainWorldBlocky();
+
+protected:
+	Ref<TerrainChunk> _create_chunk(int x, int z, Ref<TerrainChunk> p_chunk);
+
+	static void _bind_methods();
+};
 
 #endif
