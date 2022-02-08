@@ -390,7 +390,7 @@
 		</member>
 	</members>
 	<constants>
-		<constant name="MATERIAL_INDEX_TERRAS" value="0">
+		<constant name="MATERIAL_INDEX_TERRAIN" value="0">
 		</constant>
 		<constant name="MATERIAL_INDEX_LIQUID" value="1">
 		</constant>

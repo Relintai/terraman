@@ -621,7 +621,7 @@ void TerrainLibrary::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("setup_material_albedo", "material_index", "texture"), &TerrainLibrary::setup_material_albedo);
 
-	BIND_CONSTANT(MATERIAL_INDEX_TERRAS);
+	BIND_CONSTANT(MATERIAL_INDEX_TERRAIN);
 	BIND_CONSTANT(MATERIAL_INDEX_LIQUID);
 	BIND_CONSTANT(MATERIAL_INDEX_PROP);
 }

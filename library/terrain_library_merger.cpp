@@ -256,7 +256,7 @@ void TerrainLibraryMerger::refresh_rects() {
 
 		Ref<Texture> tex = _packer->get_generated_texture(0);
 
-		setup_material_albedo(MATERIAL_INDEX_TERRAS, tex);
+		setup_material_albedo(MATERIAL_INDEX_TERRAIN, tex);
 		setup_material_albedo(MATERIAL_INDEX_LIQUID, tex);
 	}
 
@@ -301,7 +301,7 @@ void TerrainLibraryMerger::_setup_material_albedo(const int material_index, cons
 	int count = 0;
 
 	switch (material_index) {
-		case MATERIAL_INDEX_TERRAS:
+		case MATERIAL_INDEX_TERRAIN:
 			count = material_get_num();
 			break;
 		case MATERIAL_INDEX_LIQUID:
@@ -314,7 +314,7 @@ void TerrainLibraryMerger::_setup_material_albedo(const int material_index, cons
 
 	for (int i = 0; i < count; ++i) {
 		switch (material_index) {
-			case MATERIAL_INDEX_TERRAS:
+			case MATERIAL_INDEX_TERRAIN:
 				mat = material_get(i);
 				break;
 			case MATERIAL_INDEX_LIQUID:
@@ -335,7 +335,7 @@ void TerrainLibraryMerger::_setup_material_albedo(const int material_index, cons
 		Ref<ShaderMaterial> shmat;
 
 		switch (material_index) {
-			case MATERIAL_INDEX_TERRAS:
+			case MATERIAL_INDEX_TERRAIN:
 				shmat = material_get(i);
 				break;
 			case MATERIAL_INDEX_LIQUID:

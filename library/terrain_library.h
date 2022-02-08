@@ -76,7 +76,7 @@ class TerrainLibrary : public Resource {
 
 public:
 	enum {
-		MATERIAL_INDEX_TERRAS = 0,
+		MATERIAL_INDEX_TERRAIN = 0,
 		MATERIAL_INDEX_LIQUID = 1,
 		MATERIAL_INDEX_PROP = 2,
 	};
