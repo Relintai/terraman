@@ -424,7 +424,7 @@ TerrainWorldEditorPlugin::TerrainWorldEditorPlugin(EditorNode *p_node) {
 			add_control_to_container(CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, voxel_world_editor);
 		} break;
 	}
-	voxel_world_editor->hide();
+	make_visible(false);
 }
 
 TerrainWorldEditorPlugin::~TerrainWorldEditorPlugin() {
