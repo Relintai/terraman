@@ -10,7 +10,7 @@ So I ended up creating this. Everything works the same as in voxelman, but the a
 
 This is an engine module! Which means that you will need to compile it into Godot! [See the compiling section here.](#compiling)
 
-You can find a demonstration project (with pre-built binaries) here: https://github.com/Relintai/the_tower
+You can grab pre-built binaries (even editor + export templates) from the [Broken Seals](https://github.com/Relintai/broken_seals) repo.
 
 ## Godot Version Support
 
