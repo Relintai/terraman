@@ -4,7 +4,7 @@ A terrain engine for godot, focusing more on editor integration, gameplay-relate
 
 It is a spinoff of [Voxelman](https://github.com/Relintai/voxelman). I started working on it when I realized that not only a full 3d voxel engine is too hard for me to use properly for an rpg (just think about how hard it is to do smooth zone - zone and dungeon transitions with the proper fidelity for an rpg), it's also unnecessary.
 
-I could have technically implemented all of this into voxelman, as having only have one row of chunks, and then setting chunk height to 1, and creating a mesher that reads isolevel values as a normal height map will achieve the same effect. However as voxelman has lots of features with noises, lights and vertices, so adding this on top of that module would have ended up being been messy just for this reason alone (and also let's not forget the 3d apis).
+I could have technically implemented all of this into voxelman, as having only have one row of chunks, and then setting chunk height to 1, and creating a mesher that reads isolevel values as a normal height map will achieve the same effect. However as voxelman has lots of features with noises, lights and vertices, adding this on top of that module would have ended up being been messy just for this reason alone (and also let's not forget the 3d apis).
 
 So I ended up creating this. Everything works the same as in voxelman, but the apis have been simplified to make UX a bit better.
 
