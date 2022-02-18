@@ -48,7 +48,6 @@ def get_doc_classes():
         "TerrainMesherBlocky",
         "TerrainWorldBlocky",
         "TerrainChunkBlocky",
-        "TerrainMesherLiquidBlocky",
 
         "TerrainWorldMarchingCubes",
         "TerrainChunkMarchingCubes",

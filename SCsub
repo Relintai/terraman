@@ -39,7 +39,6 @@ sources = [
     "meshers/terrain_mesher.cpp",
 
     "meshers/blocky/terrain_mesher_blocky.cpp",
-    "meshers/blocky/terrain_mesher_liquid_blocky.cpp",
     "meshers/default/terrain_mesher_default.cpp",
 
     "world/terrain_world.cpp",

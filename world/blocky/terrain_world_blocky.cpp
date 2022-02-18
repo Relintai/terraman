@@ -25,7 +25,6 @@ SOFTWARE.
 #include "terrain_chunk_blocky.h"
 
 #include "../../meshers/blocky/terrain_mesher_blocky.h"
-#include "../../meshers/blocky/terrain_mesher_liquid_blocky.h"
 #include "../jobs/terrain_light_job.h"
 #include "../jobs/terrain_prop_job.h"
 #include "../jobs/terrain_terrain_job.h"
@@ -66,7 +65,12 @@ Ref<TerrainChunk> TerrainWorldBlocky::_create_chunk(int x, int z, Ref<TerrainChu
 		tj->add_jobs_step(s);
 
 		tj->set_mesher(Ref<TerrainMesher>(memnew(TerrainMesherBlocky())));
-		tj->set_liquid_mesher(Ref<TerrainMesher>(memnew(TerrainMesherLiquidBlocky())));
+
+		Ref<TerrainMesherBlocky> liquid_mesher;
+		liquid_mesher.instance();
+		liquid_mesher->set_channel_index_type(TerrainChunkDefault::DEFAULT_CHANNEL_LIQUID_TYPE);
+		liquid_mesher->set_channel_index_isolevel(TerrainChunkDefault::DEFAULT_CHANNEL_LIQUID_ISOLEVEL);
+		tj->set_liquid_mesher(liquid_mesher);
 
 		Ref<TerrainPropJob> pj;
 		pj.instance();

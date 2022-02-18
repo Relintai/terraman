@@ -56,7 +56,6 @@ SOFTWARE.
 #include "world/terrain_world_editor.h"
 
 #include "meshers/blocky/terrain_mesher_blocky.h"
-#include "meshers/blocky/terrain_mesher_liquid_blocky.h"
 
 #include "world/blocky/terrain_chunk_blocky.h"
 #include "world/blocky/terrain_world_blocky.h"
@@ -103,7 +102,6 @@ void register_terraman_types() {
 	ClassDB::register_class<TerrainMesherBlocky>();
 	ClassDB::register_class<TerrainWorldBlocky>();
 	ClassDB::register_class<TerrainChunkBlocky>();
-	ClassDB::register_class<TerrainMesherLiquidBlocky>();
 
 	ClassDB::register_class<TerrainLevelGenerator>();
 	ClassDB::register_class<TerrainLevelGeneratorFlat>();
