@@ -67,8 +67,8 @@ void TerrainMesherLiquidBlocky::_add_chunk(Ref<TerrainChunk> p_chunk) {
 	}
 
 	Vector<uint8_t> liquids;
-	for (int i = 0; i < _library->voxel_surface_get_num(); ++i) {
-		Ref<TerrainSurface> surface = _library->voxel_surface_get(i);
+	for (int i = 0; i < _library->terra_surface_get_num(); ++i) {
+		Ref<TerrainSurface> surface = _library->terra_surface_get(i);
 
 		if (!surface.is_valid())
 			continue;
@@ -94,7 +94,7 @@ void TerrainMesherLiquidBlocky::_add_chunk(Ref<TerrainChunk> p_chunk) {
 			if (liquids.find(type) == -1)
 				continue;
 
-			Ref<TerrainSurface> surface = _library->voxel_surface_get(type - 1);
+			Ref<TerrainSurface> surface = _library->terra_surface_get(type - 1);
 
 			if (!surface.is_valid())
 				continue;

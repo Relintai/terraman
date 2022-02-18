@@ -182,8 +182,8 @@ void TerrainWorldEditor::edit(TerrainWorld *p_world) {
 		library->refresh_rects();
 
 	bool f = false;
-	for (int i = 0; i < library->voxel_surface_get_num(); ++i) {
-		Ref<TerrainSurface> surface = library->voxel_surface_get(i);
+	for (int i = 0; i < library->terra_surface_get_num(); ++i) {
+		Ref<TerrainSurface> surface = library->terra_surface_get(i);
 
 		if (!surface.is_valid())
 			continue;

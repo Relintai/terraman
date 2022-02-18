@@ -51,15 +51,15 @@ public:
 	int get_atlas_rows() const;
 	void set_atlas_rows(int s);
 
-	Ref<TerrainSurface> voxel_surface_get(const int index);
-	void voxel_surface_add(Ref<TerrainSurface> value);
-	void voxel_surface_set(const int index, Ref<TerrainSurface> value);
-	void voxel_surface_remove(const int index);
-	int voxel_surface_get_num() const;
-	void voxel_surfaces_clear();
+	Ref<TerrainSurface> terra_surface_get(const int index);
+	void terra_surface_add(Ref<TerrainSurface> value);
+	void terra_surface_set(const int index, Ref<TerrainSurface> value);
+	void terra_surface_remove(const int index);
+	int terra_surface_get_num() const;
+	void terra_surfaces_clear();
 
-	Vector<Variant> get_voxel_surfaces();
-	void set_voxel_surfaces(const Vector<Variant> &surfaces);
+	Vector<Variant> get_terra_surfaces();
+	void set_terra_surfaces(const Vector<Variant> &surfaces);
 
 	void refresh_rects();
 
@@ -70,7 +70,7 @@ protected:
 	static void _bind_methods();
 
 private:
-	Vector<Ref<TerrainSurfaceSimple> > _voxel_surfaces;
+	Vector<Ref<TerrainSurfaceSimple> > _terra_surfaces;
 
 	//atlas
 	int _atlas_columns;

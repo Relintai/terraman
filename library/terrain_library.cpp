@@ -394,19 +394,19 @@ void TerrainLibrary::prop_materials_set(const Vector<Variant> &materials) {
 }
 
 //Surfaces
-Ref<TerrainSurface> TerrainLibrary::voxel_surface_get(const int index) {
+Ref<TerrainSurface> TerrainLibrary::terra_surface_get(const int index) {
 	return Ref<TerrainSurface>();
 }
-void TerrainLibrary::voxel_surface_add(Ref<TerrainSurface> value) {
+void TerrainLibrary::terra_surface_add(Ref<TerrainSurface> value) {
 }
-void TerrainLibrary::voxel_surface_set(int index, Ref<TerrainSurface> value) {
+void TerrainLibrary::terra_surface_set(int index, Ref<TerrainSurface> value) {
 }
-void TerrainLibrary::voxel_surface_remove(const int index) {
+void TerrainLibrary::terra_surface_remove(const int index) {
 }
-int TerrainLibrary::voxel_surface_get_num() const {
+int TerrainLibrary::terra_surface_get_num() const {
 	return 0;
 }
-void TerrainLibrary::voxel_surfaces_clear() {
+void TerrainLibrary::terra_surfaces_clear() {
 }
 
 Ref<PackedScene> TerrainLibrary::scene_get(const int id) {
@@ -593,12 +593,12 @@ void TerrainLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("prop_materials_set"), &TerrainLibrary::prop_materials_set);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "prop_materials", PROPERTY_HINT_NONE, "17/17:Material", PROPERTY_USAGE_DEFAULT, "Material"), "prop_materials_set", "prop_materials_get");
 
-	ClassDB::bind_method(D_METHOD("voxel_surface_get", "index"), &TerrainLibrary::voxel_surface_get);
-	ClassDB::bind_method(D_METHOD("voxel_surface_add", "value"), &TerrainLibrary::voxel_surface_add);
-	ClassDB::bind_method(D_METHOD("voxel_surface_set", "index", "surface"), &TerrainLibrary::voxel_surface_set);
-	ClassDB::bind_method(D_METHOD("voxel_surface_remove", "index"), &TerrainLibrary::voxel_surface_remove);
-	ClassDB::bind_method(D_METHOD("voxel_surface_get_num"), &TerrainLibrary::voxel_surface_get_num);
-	ClassDB::bind_method(D_METHOD("voxel_surfaces_clear"), &TerrainLibrary::voxel_surfaces_clear);
+	ClassDB::bind_method(D_METHOD("terra_surface_get", "index"), &TerrainLibrary::terra_surface_get);
+	ClassDB::bind_method(D_METHOD("terra_surface_add", "value"), &TerrainLibrary::terra_surface_add);
+	ClassDB::bind_method(D_METHOD("terra_surface_set", "index", "surface"), &TerrainLibrary::terra_surface_set);
+	ClassDB::bind_method(D_METHOD("terra_surface_remove", "index"), &TerrainLibrary::terra_surface_remove);
+	ClassDB::bind_method(D_METHOD("terra_surface_get_num"), &TerrainLibrary::terra_surface_get_num);
+	ClassDB::bind_method(D_METHOD("terra_surfaces_clear"), &TerrainLibrary::terra_surfaces_clear);
 
 	ClassDB::bind_method(D_METHOD("scene_get", "index"), &TerrainLibrary::scene_get);
 	ClassDB::bind_method(D_METHOD("scene_add", "value"), &TerrainLibrary::scene_add);

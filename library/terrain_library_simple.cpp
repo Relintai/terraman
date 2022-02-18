@@ -43,57 +43,57 @@ void TerrainLibrarySimple::set_atlas_rows(int s) {
 }
 
 //Surfaces
-Ref<TerrainSurface> TerrainLibrarySimple::voxel_surface_get(const int index) {
-	ERR_FAIL_INDEX_V(index, _voxel_surfaces.size(), Ref<TerrainSurface>(NULL));
+Ref<TerrainSurface> TerrainLibrarySimple::terra_surface_get(const int index) {
+	ERR_FAIL_INDEX_V(index, _terra_surfaces.size(), Ref<TerrainSurface>(NULL));
 
-	return _voxel_surfaces[index];
+	return _terra_surfaces[index];
 }
 
-void TerrainLibrarySimple::voxel_surface_add(Ref<TerrainSurface> value) {
+void TerrainLibrarySimple::terra_surface_add(Ref<TerrainSurface> value) {
 	ERR_FAIL_COND(!value.is_valid());
 
 	value->set_library(Ref<TerrainLibrarySimple>(this));
-	value->set_id(_voxel_surfaces.size());
+	value->set_id(_terra_surfaces.size());
 
-	_voxel_surfaces.push_back(value);
+	_terra_surfaces.push_back(value);
 }
 
-void TerrainLibrarySimple::voxel_surface_set(const int index, Ref<TerrainSurface> value) {
+void TerrainLibrarySimple::terra_surface_set(const int index, Ref<TerrainSurface> value) {
 	ERR_FAIL_COND(index < 0);
 
-	if (_voxel_surfaces.size() < index) {
-		_voxel_surfaces.resize(index + 1);
+	if (_terra_surfaces.size() < index) {
+		_terra_surfaces.resize(index + 1);
 	}
 
-	if (_voxel_surfaces[index].is_valid()) {
-		_voxel_surfaces.get(index)->set_library(Ref<TerrainLibrarySimple>(NULL));
+	if (_terra_surfaces[index].is_valid()) {
+		_terra_surfaces.get(index)->set_library(Ref<TerrainLibrarySimple>(NULL));
 	}
 
 	if (value.is_valid()) {
 		value->set_library(Ref<TerrainLibrarySimple>(this));
 
-		_voxel_surfaces.set(index, value);
+		_terra_surfaces.set(index, value);
 	}
 }
 
-void TerrainLibrarySimple::voxel_surface_remove(const int index) {
-	_voxel_surfaces.VREMOVE(index);
+void TerrainLibrarySimple::terra_surface_remove(const int index) {
+	_terra_surfaces.VREMOVE(index);
 }
 
-int TerrainLibrarySimple::voxel_surface_get_num() const {
-	return _voxel_surfaces.size();
+int TerrainLibrarySimple::terra_surface_get_num() const {
+	return _terra_surfaces.size();
 }
 
-void TerrainLibrarySimple::voxel_surfaces_clear() {
-	_voxel_surfaces.clear();
+void TerrainLibrarySimple::terra_surfaces_clear() {
+	_terra_surfaces.clear();
 }
 
-Vector<Variant> TerrainLibrarySimple::get_voxel_surfaces() {
-	VARIANT_ARRAY_GET(_voxel_surfaces);
+Vector<Variant> TerrainLibrarySimple::get_terra_surfaces() {
+	VARIANT_ARRAY_GET(_terra_surfaces);
 }
 
-void TerrainLibrarySimple::set_voxel_surfaces(const Vector<Variant> &surfaces) {
-	_voxel_surfaces.clear();
+void TerrainLibrarySimple::set_terra_surfaces(const Vector<Variant> &surfaces) {
+	_terra_surfaces.clear();
 
 	for (int i = 0; i < surfaces.size(); i++) {
 		Ref<TerrainSurfaceSimple> surface = Ref<TerrainSurfaceSimple>(surfaces[i]);
@@ -103,15 +103,15 @@ void TerrainLibrarySimple::set_voxel_surfaces(const Vector<Variant> &surfaces) {
 			surface->refresh_rects();
 		}
 
-		_voxel_surfaces.push_back(surface);
+		_terra_surfaces.push_back(surface);
 	}
 
 	set_initialized(true);
 }
 
 void TerrainLibrarySimple::refresh_rects() {
-	for (int i = 0; i < _voxel_surfaces.size(); i++) {
-		Ref<TerrainSurfaceSimple> surface = Ref<TerrainSurfaceSimple>(_voxel_surfaces[i]);
+	for (int i = 0; i < _terra_surfaces.size(); i++) {
+		Ref<TerrainSurfaceSimple> surface = Ref<TerrainSurfaceSimple>(_terra_surfaces[i]);
 
 		if (surface.is_valid()) {
 			surface->refresh_rects();
@@ -125,15 +125,15 @@ TerrainLibrarySimple::TerrainLibrarySimple() {
 }
 
 TerrainLibrarySimple::~TerrainLibrarySimple() {
-	for (int i = 0; i < _voxel_surfaces.size(); ++i) {
-		Ref<TerrainSurface> surface = _voxel_surfaces[i];
+	for (int i = 0; i < _terra_surfaces.size(); ++i) {
+		Ref<TerrainSurface> surface = _terra_surfaces[i];
 
 		if (surface.is_valid()) {
 			surface->set_library(Ref<TerrainLibrarySimple>());
 		}
 	}
 
-	_voxel_surfaces.clear();
+	_terra_surfaces.clear();
 }
 
 void TerrainLibrarySimple::_bind_methods() {
@@ -145,7 +145,7 @@ void TerrainLibrarySimple::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_atlas_rows", "value"), &TerrainLibrarySimple::set_atlas_rows);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "atlas_rows"), "set_atlas_rows", "get_atlas_rows");
 
-	ClassDB::bind_method(D_METHOD("get_voxel_surfaces"), &TerrainLibrarySimple::get_voxel_surfaces);
-	ClassDB::bind_method(D_METHOD("set_voxel_surfaces"), &TerrainLibrarySimple::set_voxel_surfaces);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "voxel_surfaces", PROPERTY_HINT_NONE, "17/17:TerrainSurfaceSimple", PROPERTY_USAGE_DEFAULT, "TerrainSurfaceSimple"), "set_voxel_surfaces", "get_voxel_surfaces");
+	ClassDB::bind_method(D_METHOD("get_terra_surfaces"), &TerrainLibrarySimple::get_terra_surfaces);
+	ClassDB::bind_method(D_METHOD("set_terra_surfaces"), &TerrainLibrarySimple::set_terra_surfaces);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "terra_surfaces", PROPERTY_HINT_NONE, "17/17:TerrainSurfaceSimple", PROPERTY_USAGE_DEFAULT, "TerrainSurfaceSimple"), "set_terra_surfaces", "get_terra_surfaces");
 }

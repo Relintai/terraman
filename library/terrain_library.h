@@ -145,12 +145,12 @@ public:
 	Vector<Variant> prop_materials_get();
 	void prop_materials_set(const Vector<Variant> &materials);
 
-	virtual Ref<TerrainSurface> voxel_surface_get(const int index);
-	virtual void voxel_surface_add(Ref<TerrainSurface> value);
-	virtual void voxel_surface_set(const int index, Ref<TerrainSurface> value);
-	virtual void voxel_surface_remove(const int index);
-	virtual int voxel_surface_get_num() const;
-	virtual void voxel_surfaces_clear();
+	virtual Ref<TerrainSurface> terra_surface_get(const int index);
+	virtual void terra_surface_add(Ref<TerrainSurface> value);
+	virtual void terra_surface_set(const int index, Ref<TerrainSurface> value);
+	virtual void terra_surface_remove(const int index);
+	virtual int terra_surface_get_num() const;
+	virtual void terra_surfaces_clear();
 
 	virtual Ref<PackedScene> scene_get(const int id);
 	virtual void scene_add(Ref<PackedScene> value);

@@ -120,7 +120,7 @@ void TerrainMesherBlocky::add_chunk_normal(Ref<TerrainChunkDefault> chunk) {
 			Ref<TerrainSurface> surface;
 
 			if (!mcache.is_valid()) {
-				surface = _library->voxel_surface_get(type - 1);
+				surface = _library->terra_surface_get(type - 1);
 			} else {
 				surface = mcache->surface_id_get(type - 1);
 			}
@@ -287,7 +287,7 @@ void TerrainMesherBlocky::add_chunk_lod(Ref<TerrainChunkDefault> chunk) {
 			Ref<TerrainSurface> surface;
 
 			if (!mcache.is_valid()) {
-				surface = _library->voxel_surface_get(type - 1);
+				surface = _library->terra_surface_get(type - 1);
 			} else {
 				surface = mcache->surface_id_get(type - 1);
 			}
@@ -456,7 +456,7 @@ void TerrainMesherBlocky::create_margin_zmin(Ref<TerrainChunkDefault> chunk) {
 		Ref<TerrainSurface> surface;
 
 		if (!mcache.is_valid()) {
-			surface = _library->voxel_surface_get(type - 1);
+			surface = _library->terra_surface_get(type - 1);
 		} else {
 			surface = mcache->surface_id_get(type - 1);
 		}
@@ -628,7 +628,7 @@ void TerrainMesherBlocky::create_margin_zmax(Ref<TerrainChunkDefault> chunk) {
 		Ref<TerrainSurface> surface;
 
 		if (!mcache.is_valid()) {
-			surface = _library->voxel_surface_get(type - 1);
+			surface = _library->terra_surface_get(type - 1);
 		} else {
 			surface = mcache->surface_id_get(type - 1);
 		}
@@ -800,7 +800,7 @@ void TerrainMesherBlocky::create_margin_xmin(Ref<TerrainChunkDefault> chunk) {
 		Ref<TerrainSurface> surface;
 
 		if (!mcache.is_valid()) {
-			surface = _library->voxel_surface_get(type - 1);
+			surface = _library->terra_surface_get(type - 1);
 		} else {
 			surface = mcache->surface_id_get(type - 1);
 		}
@@ -970,7 +970,7 @@ void TerrainMesherBlocky::create_margin_xmax(Ref<TerrainChunkDefault> chunk) {
 		Ref<TerrainSurface> surface;
 
 		if (!mcache.is_valid()) {
-			surface = _library->voxel_surface_get(type - 1);
+			surface = _library->terra_surface_get(type - 1);
 		} else {
 			surface = mcache->surface_id_get(type - 1);
 		}
@@ -1133,7 +1133,7 @@ void TerrainMesherBlocky::create_face(Ref<TerrainChunkDefault> chunk, int dataxm
 	Ref<TerrainSurface> surface;
 
 	if (!mcache.is_valid()) {
-		surface = _library->voxel_surface_get(type - 1);
+		surface = _library->terra_surface_get(type - 1);
 	} else {
 		surface = mcache->surface_id_get(type - 1);
 	}

@@ -78,15 +78,15 @@ public:
 	int get_margin() const;
 	void set_margin(const int margin);
 
-	Ref<TerrainSurface> voxel_surface_get(const int index);
-	void voxel_surface_add(Ref<TerrainSurface> value);
-	void voxel_surface_set(const int index, Ref<TerrainSurface> value);
-	void voxel_surface_remove(const int index);
-	int voxel_surface_get_num() const;
-	void voxel_surfaces_clear();
+	Ref<TerrainSurface> terra_surface_get(const int index);
+	void terra_surface_add(Ref<TerrainSurface> value);
+	void terra_surface_set(const int index, Ref<TerrainSurface> value);
+	void terra_surface_remove(const int index);
+	int terra_surface_get_num() const;
+	void terra_surfaces_clear();
 
-	Vector<Variant> get_voxel_surfaces();
-	void set_voxel_surfaces(const Vector<Variant> &surfaces);
+	Vector<Variant> get_terra_surfaces();
+	void set_terra_surfaces(const Vector<Variant> &surfaces);
 
 #ifdef PROPS_PRESENT
 	Ref<PropData> get_prop(const int index);
@@ -122,7 +122,7 @@ protected:
 	Map<int, Ref<TerrainMaterialCachePCM> > _material_cache;
 	Map<int, Ref<TerrainMaterialCachePCM> > _prop_material_cache;
 
-	Vector<Ref<TerrainSurfaceMerger> > _voxel_surfaces;
+	Vector<Ref<TerrainSurfaceMerger> > _terra_surfaces;
 #ifdef PROPS_PRESENT
 	Vector<Ref<PropData> > _props;
 #endif

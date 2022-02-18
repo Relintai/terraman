@@ -132,11 +132,11 @@ void TerrainLibraryMergerPCM::_material_cache_get_key(Ref<TerrainChunk> chunk) {
 	for (int i = 0; i < surfaces.size(); ++i) {
 		int s = surfaces[i] - 1;
 
-		if (_voxel_surfaces.size() <= s) {
+		if (_terra_surfaces.size() <= s) {
 			continue;
 		}
 
-		Ref<TerrainSurfaceMerger> ms = _voxel_surfaces[s];
+		Ref<TerrainSurfaceMerger> ms = _terra_surfaces[s];
 
 		if (!ms.is_valid()) {
 			continue;
@@ -421,67 +421,67 @@ void TerrainLibraryMergerPCM::set_margin(const int margin) {
 }
 
 //Surfaces
-Ref<TerrainSurface> TerrainLibraryMergerPCM::voxel_surface_get(const int index) {
-	ERR_FAIL_INDEX_V(index, _voxel_surfaces.size(), Ref<TerrainSurface>(NULL));
+Ref<TerrainSurface> TerrainLibraryMergerPCM::terra_surface_get(const int index) {
+	ERR_FAIL_INDEX_V(index, _terra_surfaces.size(), Ref<TerrainSurface>(NULL));
 
-	return _voxel_surfaces[index];
+	return _terra_surfaces[index];
 }
 
-void TerrainLibraryMergerPCM::voxel_surface_add(Ref<TerrainSurface> value) {
+void TerrainLibraryMergerPCM::terra_surface_add(Ref<TerrainSurface> value) {
 	ERR_FAIL_COND(!value.is_valid());
 
 	value->set_library(Ref<TerrainLibraryMergerPCM>(this));
-	value->set_id(_voxel_surfaces.size());
+	value->set_id(_terra_surfaces.size());
 
-	_voxel_surfaces.push_back(value);
+	_terra_surfaces.push_back(value);
 }
 
-void TerrainLibraryMergerPCM::voxel_surface_set(const int index, Ref<TerrainSurface> value) {
+void TerrainLibraryMergerPCM::terra_surface_set(const int index, Ref<TerrainSurface> value) {
 	ERR_FAIL_COND(index < 0);
 
-	if (_voxel_surfaces.size() < index) {
-		_voxel_surfaces.resize(index + 1);
+	if (_terra_surfaces.size() < index) {
+		_terra_surfaces.resize(index + 1);
 	}
 
-	if (_voxel_surfaces[index].is_valid()) {
-		_voxel_surfaces.get(index)->set_library(Ref<TerrainLibraryMergerPCM>(NULL));
+	if (_terra_surfaces[index].is_valid()) {
+		_terra_surfaces.get(index)->set_library(Ref<TerrainLibraryMergerPCM>(NULL));
 	}
 
 	if (value.is_valid()) {
 		value->set_library(Ref<TerrainLibraryMergerPCM>(this));
 
-		_voxel_surfaces.set(index, value);
+		_terra_surfaces.set(index, value);
 	}
 }
 
-void TerrainLibraryMergerPCM::voxel_surface_remove(const int index) {
-	_voxel_surfaces.remove(index);
+void TerrainLibraryMergerPCM::terra_surface_remove(const int index) {
+	_terra_surfaces.remove(index);
 }
 
-int TerrainLibraryMergerPCM::voxel_surface_get_num() const {
-	return _voxel_surfaces.size();
+int TerrainLibraryMergerPCM::terra_surface_get_num() const {
+	return _terra_surfaces.size();
 }
 
-void TerrainLibraryMergerPCM::voxel_surfaces_clear() {
+void TerrainLibraryMergerPCM::terra_surfaces_clear() {
 	_packer->clear();
 
-	for (int i = 0; i < _voxel_surfaces.size(); i++) {
-		Ref<TerrainSurfaceMerger> surface = _voxel_surfaces[i];
+	for (int i = 0; i < _terra_surfaces.size(); i++) {
+		Ref<TerrainSurfaceMerger> surface = _terra_surfaces[i];
 
 		if (surface.is_valid()) {
 			surface->set_library(NULL);
 		}
 	}
 
-	_voxel_surfaces.clear();
+	_terra_surfaces.clear();
 }
 
-Vector<Variant> TerrainLibraryMergerPCM::get_voxel_surfaces() {
-	VARIANT_ARRAY_GET(_voxel_surfaces);
+Vector<Variant> TerrainLibraryMergerPCM::get_terra_surfaces() {
+	VARIANT_ARRAY_GET(_terra_surfaces);
 }
 
-void TerrainLibraryMergerPCM::set_voxel_surfaces(const Vector<Variant> &surfaces) {
-	_voxel_surfaces.clear();
+void TerrainLibraryMergerPCM::set_terra_surfaces(const Vector<Variant> &surfaces) {
+	_terra_surfaces.clear();
 
 	for (int i = 0; i < surfaces.size(); i++) {
 		Ref<TerrainSurfaceMerger> surface = Ref<TerrainSurfaceMerger>(surfaces[i]);
@@ -490,7 +490,7 @@ void TerrainLibraryMergerPCM::set_voxel_surfaces(const Vector<Variant> &surfaces
 			surface->set_library(Ref<TerrainLibraryMergerPCM>(this));
 		}
 
-		_voxel_surfaces.push_back(surface);
+		_terra_surfaces.push_back(surface);
 	}
 }
 
@@ -572,8 +572,8 @@ Ref<TexturePacker> TerrainLibraryMergerPCM::get_prop_packer() {
 
 void TerrainLibraryMergerPCM::refresh_rects() {
 	bool texture_added = false;
-	for (int i = 0; i < _voxel_surfaces.size(); i++) {
-		Ref<TerrainSurfaceMerger> surface = Ref<TerrainSurfaceMerger>(_voxel_surfaces[i]);
+	for (int i = 0; i < _terra_surfaces.size(); i++) {
+		Ref<TerrainSurfaceMerger> surface = Ref<TerrainSurfaceMerger>(_terra_surfaces[i]);
 
 		if (surface.is_valid()) {
 			for (int j = 0; j < TerrainSurface::TERRAIN_SIDES_COUNT; ++j) {
@@ -627,8 +627,8 @@ void TerrainLibraryMergerPCM::refresh_rects() {
 	}
 #endif
 
-	for (int i = 0; i < _voxel_surfaces.size(); i++) {
-		Ref<TerrainSurfaceMerger> surface = _voxel_surfaces[i];
+	for (int i = 0; i < _terra_surfaces.size(); i++) {
+		Ref<TerrainSurfaceMerger> surface = _terra_surfaces[i];
 
 		if (surface.is_valid()) {
 			surface->refresh_rects();
@@ -734,15 +734,15 @@ TerrainLibraryMergerPCM::TerrainLibraryMergerPCM() {
 }
 
 TerrainLibraryMergerPCM::~TerrainLibraryMergerPCM() {
-	for (int i = 0; i < _voxel_surfaces.size(); ++i) {
-		Ref<TerrainSurface> surface = _voxel_surfaces[i];
+	for (int i = 0; i < _terra_surfaces.size(); ++i) {
+		Ref<TerrainSurface> surface = _terra_surfaces[i];
 
 		if (surface.is_valid()) {
 			surface->set_library(Ref<TerrainLibraryMergerPCM>());
 		}
 	}
 
-	_voxel_surfaces.clear();
+	_terra_surfaces.clear();
 
 	_packer->clear();
 	_packer.unref();
@@ -807,9 +807,9 @@ void TerrainLibraryMergerPCM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_margin", "size"), &TerrainLibraryMergerPCM::set_margin);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "margin"), "set_margin", "get_margin");
 
-	ClassDB::bind_method(D_METHOD("get_voxel_surfaces"), &TerrainLibraryMergerPCM::get_voxel_surfaces);
-	ClassDB::bind_method(D_METHOD("set_voxel_surfaces"), &TerrainLibraryMergerPCM::set_voxel_surfaces);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "voxel_surfaces", PROPERTY_HINT_NONE, "17/17:TerrainSurfaceMerger", PROPERTY_USAGE_DEFAULT, "TerrainSurfaceMerger"), "set_voxel_surfaces", "get_voxel_surfaces");
+	ClassDB::bind_method(D_METHOD("get_terra_surfaces"), &TerrainLibraryMergerPCM::get_terra_surfaces);
+	ClassDB::bind_method(D_METHOD("set_terra_surfaces"), &TerrainLibraryMergerPCM::set_terra_surfaces);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "terra_surfaces", PROPERTY_HINT_NONE, "17/17:TerrainSurfaceMerger", PROPERTY_USAGE_DEFAULT, "TerrainSurfaceMerger"), "set_terra_surfaces", "get_terra_surfaces");
 
 #ifdef PROPS_PRESENT
 	ClassDB::bind_method(D_METHOD("get_props"), &TerrainLibraryMergerPCM::get_props);

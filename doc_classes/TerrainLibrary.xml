@@ -343,37 +343,37 @@
 			<description>
 			</description>
 		</method>
-		<method name="voxel_surface_add">
+		<method name="terra_surface_add">
 			<return type="void" />
 			<argument index="0" name="value" type="TerrainSurface" />
 			<description>
 			</description>
 		</method>
-		<method name="voxel_surface_get">
+		<method name="terra_surface_get">
 			<return type="TerrainSurface" />
 			<argument index="0" name="index" type="int" />
 			<description>
 			</description>
 		</method>
-		<method name="voxel_surface_get_num" qualifiers="const">
+		<method name="terra_surface_get_num" qualifiers="const">
 			<return type="int" />
 			<description>
 			</description>
 		</method>
-		<method name="voxel_surface_remove">
+		<method name="terra_surface_remove">
 			<return type="void" />
 			<argument index="0" name="index" type="int" />
 			<description>
 			</description>
 		</method>
-		<method name="voxel_surface_set">
+		<method name="terra_surface_set">
 			<return type="void" />
 			<argument index="0" name="index" type="int" />
 			<argument index="1" name="surface" type="TerrainSurface" />
 			<description>
 			</description>
 		</method>
-		<method name="voxel_surfaces_clear">
+		<method name="terra_surfaces_clear">
 			<return type="void" />
 			<description>
 			</description>
