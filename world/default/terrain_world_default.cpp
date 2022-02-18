@@ -244,7 +244,7 @@ int TerrainWorldDefault::_get_channel_index_info(const TerrainWorld::ChannelType
 		case CHANNEL_TYPE_INFO_ISOLEVEL:
 			return TerrainChunkDefault::DEFAULT_CHANNEL_ISOLEVEL;
 		case CHANNEL_TYPE_INFO_LIQUID_FLOW:
-			return TerrainChunkDefault::DEFAULT_CHANNEL_LIQUID_FLOW;
+			return -1;
 		default:
 			return -1;
 	}
