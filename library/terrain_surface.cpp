@@ -29,27 +29,6 @@ void TerrainSurface::set_id(const int value) {
 	_id = value;
 }
 
-int TerrainSurface::get_mesher_index() const {
-	return _mesher_index;
-}
-void TerrainSurface::set_mesher_index(const int value) {
-	_mesher_index = value;
-}
-
-bool TerrainSurface::get_transparent() const {
-	return _transparent;
-}
-void TerrainSurface::set_transparent(const bool transparent) {
-	_transparent = transparent;
-}
-
-bool TerrainSurface::get_liquid() const {
-	return _liquid;
-}
-void TerrainSurface::set_liquid(const bool value) {
-	_liquid = value;
-}
-
 Rect2 TerrainSurface::get_rect(const TerrainSurfaceSides side) const {
 	return _rects[side];
 }
@@ -115,19 +94,7 @@ void TerrainSurface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_id", "value"), &TerrainSurface::set_id);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "id"), "set_id", "get_id");
 
-	ClassDB::bind_method(D_METHOD("get_mesher_index"), &TerrainSurface::get_mesher_index);
-	ClassDB::bind_method(D_METHOD("set_mesher_index", "value"), &TerrainSurface::set_mesher_index);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "mesher_index"), "set_mesher_index", "get_mesher_index");
-
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "voxel_name"), "set_name", "get_name");
-
-	ClassDB::bind_method(D_METHOD("get_transparent"), &TerrainSurface::get_transparent);
-	ClassDB::bind_method(D_METHOD("set_transparent", "transparent"), &TerrainSurface::set_transparent);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "transparent"), "set_transparent", "get_transparent");
-
-	ClassDB::bind_method(D_METHOD("get_liquid"), &TerrainSurface::get_liquid);
-	ClassDB::bind_method(D_METHOD("set_liquid", "transparent"), &TerrainSurface::set_liquid);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "liquid"), "set_liquid", "get_liquid");
 
 	ClassDB::bind_method(D_METHOD("get_rect", "side"), &TerrainSurface::get_rect);
 	ClassDB::bind_method(D_METHOD("set_rect", "side", "rect"), &TerrainSurface::set_rect);

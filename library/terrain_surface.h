@@ -76,15 +76,6 @@ public:
 	int get_id() const;
 	void set_id(const int value);
 
-	int get_mesher_index() const;
-	void set_mesher_index(const int value);
-
-	bool get_transparent() const;
-	void set_transparent(const bool value);
-
-	bool get_liquid() const;
-	void set_liquid(const bool value);
-
 	Rect2 get_rect(const TerrainSurfaceSides side) const;
 	void set_rect(const TerrainSurfaceSides side, const Rect2 &rect);
 
