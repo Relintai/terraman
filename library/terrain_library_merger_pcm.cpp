@@ -36,13 +36,11 @@ SOFTWARE.
 #endif
 #endif
 
-#include "terrain_material_cache_pcm.h"
-
 #include "../defines.h"
-
 #include "../world/default/terrain_chunk_default.h"
-
 #include "core/hashfuncs.h"
+#include "core/message_queue.h"
+#include "terrain_material_cache_pcm.h"
 
 bool TerrainLibraryMergerPCM::_supports_caching() {
 	return true;
@@ -208,7 +206,18 @@ Ref<TerrainMaterialCache> TerrainLibraryMergerPCM::_material_cache_get(const int
 }
 
 void TerrainLibraryMergerPCM::_material_cache_unref(const int key) {
-	_material_cache_mutex.lock();
+	if (_material_cache_mutex.try_lock() != OK) {
+		// If we don't get the lock try again later
+		// This is needed, because when duplicating materials the VisualServer apparently
+		// needs synchronization with the main thread. So if _material_cache_unref holds the mutex
+		// and is duplicating the materials, trying to get the lock from the main thread will deadlock
+		// the game. This can happen when chungs are spawned and despawned really fast.
+		// E.g. when flying around in the editor.
+		MessageQueue::get_singleton()->push_call(this, "_material_cache_unref", key, 1);
+		return;
+	}
+
+	//_material_cache_mutex.lock();
 
 	if (!_material_cache.has(key)) {
 		return;
@@ -384,7 +393,18 @@ Ref<TerrainMaterialCache> TerrainLibraryMergerPCM::_prop_material_cache_get(cons
 	return c;
 }
 void TerrainLibraryMergerPCM::_prop_material_cache_unref(const int key) {
-	_prop_material_cache_mutex.lock();
+	if (_prop_material_cache_mutex.try_lock() != OK) {
+		// If we don't get the lock try again later
+		// This is needed, because when duplicating materials the VisualServer apparently
+		// needs synchronization with the main thread. So if _prop_material_cache_get_key holds the mutex
+		// and is duplicating the materials, trying to get the lock from the main thread will deadlock
+		// the game. This can happen when chungs are spawned and despawned really fast.
+		// E.g. when flying around in the editor.
+		MessageQueue::get_singleton()->push_call(this, "_prop_material_cache_unref", key, 1);
+		return;
+	}
+
+	//_prop_material_cache_mutex.lock();
 
 	if (!_prop_material_cache.has(key)) {
 		return;
