@@ -95,6 +95,8 @@ public:
 	bool get_is_generating() const;
 	void set_is_generating(const bool value);
 
+	bool is_build_aborted() const;
+
 	bool is_in_tree() const;
 
 	bool get_dirty() const;
@@ -222,6 +224,7 @@ public:
 	void build();
 	void clear();
 	void finalize_build();
+	void cancel_build();
 
 	void _build();
 
@@ -303,6 +306,8 @@ public:
 	Transform get_global_transform() const;
 	Vector3 to_local(Vector3 p_global) const;
 	Vector3 to_global(Vector3 p_local) const;
+
+	bool is_safe_to_delete();
 
 	TerrainChunk();
 	~TerrainChunk();

@@ -732,7 +732,10 @@ void TerrainChunkDefault::_visibility_changed(bool visible) {
 void TerrainChunkDefault::_exit_tree() {
 	TerrainChunk::_exit_tree();
 
-	rids_free();
+	if (!_is_generating) {
+		rids_free();
+		rids_clear();
+	}
 }
 
 void TerrainChunkDefault::_world_transform_changed() {
@@ -874,6 +877,9 @@ TerrainChunkDefault::~TerrainChunkDefault() {
 	_lights.clear();
 
 	debug_mesh_free();
+
+	rids_free();
+	rids_clear();
 }
 
 void TerrainChunkDefault::_channel_setup() {

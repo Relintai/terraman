@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include "core/version.h"
 
+#include "core/message_queue.h"
 #include "terrain_chunk.h"
 #include "terrain_structure.h"
 
@@ -291,10 +292,13 @@ Ref<TerrainChunk> TerrainWorld::chunk_get(const int x, const int z) {
 Ref<TerrainChunk> TerrainWorld::chunk_remove(const int x, const int z) {
 	IntPos pos(x, z);
 
-	if (!_chunks.has(pos))
+	if (!_chunks.has(pos)) {
 		return NULL;
+	}
 
 	Ref<TerrainChunk> chunk = _chunks.get(pos);
+
+	chunk->exit_tree();
 
 	for (int i = 0; i < _chunks_vector.size(); ++i) {
 		if (_chunks_vector.get(i) == chunk) {
@@ -303,7 +307,14 @@ Ref<TerrainChunk> TerrainWorld::chunk_remove(const int x, const int z) {
 		}
 	}
 
-	chunk->exit_tree();
+	_generation_queue.erase(chunk);
+
+	if (chunk->get_is_generating()) {
+		chunk->cancel_build();
+	}
+
+	//never remove from this here
+	//_generating.erase(chunk);
 
 	_chunks.erase(pos);
 
@@ -315,9 +326,18 @@ Ref<TerrainChunk> TerrainWorld::chunk_remove_index(const int index) {
 	ERR_FAIL_INDEX_V(index, _chunks_vector.size(), NULL);
 
 	Ref<TerrainChunk> chunk = _chunks_vector.get(index);
+	chunk->exit_tree();
+
 	_chunks_vector.VREMOVE(index);
 	_chunks.erase(IntPos(chunk->get_position_x(), chunk->get_position_z()));
-	chunk->exit_tree();
+	_generation_queue.erase(chunk);
+
+	if (chunk->get_is_generating()) {
+		chunk->cancel_build();
+	}
+
+	//never remove from this here
+	//_generating.erase(chunk);
 
 	emit_signal("chunk_removed", chunk);
 
@@ -343,11 +363,19 @@ void TerrainWorld::chunks_clear() {
 	}
 
 	_chunks_vector.clear();
-
 	_chunks.clear();
-
 	_generation_queue.clear();
-	_generating.clear();
+
+	for (int i = 0; i < _generating.size(); ++i) {
+		Ref<TerrainChunk> chunk = _generating[i];
+
+		if (chunk->get_is_generating()) {
+			chunk->cancel_build();
+		}
+	}
+
+	//never remove from this here
+	//_generating.clear();
 }
 
 Ref<TerrainChunk> TerrainWorld::chunk_get_or_create(int x, int z) {
@@ -433,7 +461,16 @@ void TerrainWorld::chunks_set(const Vector<Variant> &chunks) {
 			if (chunks.find(chunk) == -1) {
 				chunk_remove_index(i);
 				_generation_queue.erase(chunk);
-				_generating.erase(chunk);
+
+				chunk->exit_tree();
+
+				if (chunk->get_is_generating()) {
+					chunk->cancel_build();
+				}
+
+				//never remove from this here
+				//_generating.erase(chunk);
+
 				--i;
 			}
 		}
@@ -963,7 +1000,19 @@ void TerrainWorld::_notification(int p_what) {
 			for (int i = 0; i < _generating.size(); ++i) {
 				Ref<TerrainChunk> chunk = _generating.get(i);
 
-				if (!chunk.is_valid() || !chunk->get_is_generating()) {
+				if (!chunk.is_valid()) {
+					_generating.VREMOVE(i);
+					--i;
+					continue;
+				}
+
+				if (!chunk->get_is_generating()) {
+					_generating.VREMOVE(i);
+					--i;
+					continue;
+				}
+
+				if (chunk->is_build_aborted() && chunk->is_safe_to_delete()) {
 					_generating.VREMOVE(i);
 					--i;
 					continue;

@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "../defines.h"
 
+#include "core/message_queue.h"
 #include "jobs/terrain_job.h"
 #include "terrain_structure.h"
 
@@ -63,6 +64,10 @@ _FORCE_INLINE_ bool TerrainChunk::get_is_generating() const {
 }
 _FORCE_INLINE_ void TerrainChunk::set_is_generating(const bool value) {
 	_is_generating = value;
+}
+
+bool TerrainChunk::is_build_aborted() const {
+	return _abort_build;
 }
 
 bool TerrainChunk::is_in_tree() const {
@@ -268,6 +273,12 @@ int TerrainChunk::job_get_current_index() {
 	return _current_job;
 }
 void TerrainChunk::job_next() {
+	if (_abort_build) {
+		_is_generating = false;
+		_current_job = -1;
+		return;
+	}
+
 	_THREAD_SAFE_METHOD_
 
 	++_current_job;
@@ -676,6 +687,22 @@ void TerrainChunk::finalize_build() {
 	}
 }
 
+void TerrainChunk::cancel_build() {
+	_queued_generation = false;
+
+	_abort_build = true;
+
+#if THREAD_POOL_PRESENT
+	if (_is_generating) {
+		Ref<TerrainJob> job = job_get_current();
+
+		if (job.is_valid()) {
+			ThreadPool::get_singleton()->cancel_job(job);
+		}
+	}
+#endif
+}
+
 void TerrainChunk::bake_lights() {
 	if (has_method("_bake_lights"))
 		call("_bake_lights");
@@ -966,12 +993,6 @@ void TerrainChunk::enter_tree() {
 void TerrainChunk::exit_tree() {
 	_is_in_tree = false;
 
-	if (_library.is_valid() && _library->supports_caching()) {
-		if (material_cache_key_has()) {
-			_library->material_cache_unref(material_cache_key_get());
-		}
-	}
-
 	if (has_method("_exit_tree"))
 		call("_exit_tree");
 }
@@ -1024,6 +1045,24 @@ Vector3 TerrainChunk::to_local(Vector3 p_global) const {
 
 Vector3 TerrainChunk::to_global(Vector3 p_local) const {
 	return get_global_transform().xform(p_local);
+}
+
+bool TerrainChunk::is_safe_to_delete() {
+#if THREAD_POOL_PRESENT
+	if (!_is_generating) {
+		return true;
+	}
+
+	Ref<TerrainJob> job = job_get_current();
+
+	if (!job.is_valid()) {
+		return true;
+	}
+
+	return !ThreadPool::get_singleton()->has_job(job);
+#else
+	return true;
+#endif
 }
 
 TerrainChunk::TerrainChunk() {
@@ -1110,7 +1149,9 @@ void TerrainChunk::_enter_tree() {
 }
 
 void TerrainChunk::_exit_tree() {
-	_abort_build = true;
+	if (_is_generating) {
+		cancel_build();
+	}
 
 	for (int i = 0; i < _jobs.size(); ++i) {
 		Ref<TerrainJob> j = _jobs[i];
@@ -1119,9 +1160,19 @@ void TerrainChunk::_exit_tree() {
 			j->chunk_exit_tree();
 		}
 	}
+
+	if (_library.is_valid() && _library->supports_caching()) {
+		if (material_cache_key_has()) {
+			_library->material_cache_unref(material_cache_key_get());
+		}
+	}
 }
 
 void TerrainChunk::_generation_process(const float delta) {
+	if (_abort_build) {
+		return;
+	}
+
 	_THREAD_SAFE_METHOD_
 
 	if (_current_job < 0 || _current_job >= _jobs.size())
@@ -1147,6 +1198,10 @@ void TerrainChunk::_generation_process(const float delta) {
 	}
 }
 void TerrainChunk::_generation_physics_process(const float delta) {
+	if (_abort_build) {
+		return;
+	}
+
 	_THREAD_SAFE_METHOD_
 
 	if (_current_job < 0 || _current_job >= _jobs.size())
@@ -1270,6 +1325,8 @@ void TerrainChunk::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("finalize_build"), &TerrainChunk::finalize_build);
 
+	ClassDB::bind_method(D_METHOD("cancel_build"), &TerrainChunk::cancel_build);
+
 	ClassDB::bind_method(D_METHOD("get_process"), &TerrainChunk::get_process);
 	ClassDB::bind_method(D_METHOD("set_process", "value"), &TerrainChunk::set_process);
 
@@ -1289,6 +1346,8 @@ void TerrainChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_is_generating"), &TerrainChunk::get_is_generating);
 	ClassDB::bind_method(D_METHOD("set_is_generating", "value"), &TerrainChunk::set_is_generating);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_generating", PROPERTY_HINT_NONE, "", 0), "set_is_generating", "get_is_generating");
+
+	ClassDB::bind_method(D_METHOD("is_build_aborted"), &TerrainChunk::is_build_aborted);
 
 	ClassDB::bind_method(D_METHOD("get_dirty"), &TerrainChunk::get_dirty);
 	ClassDB::bind_method(D_METHOD("set_dirty", "value"), &TerrainChunk::set_dirty);
@@ -1498,4 +1557,6 @@ void TerrainChunk::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("_generation_process"), &TerrainChunk::_generation_process);
 	ClassDB::bind_method(D_METHOD("_generation_physics_process"), &TerrainChunk::_generation_physics_process);
+
+	ClassDB::bind_method(D_METHOD("is_safe_to_delete"), &TerrainChunk::is_safe_to_delete);
 }
