@@ -192,6 +192,8 @@ public:
 
 	int get_channel_index_info(const ChannelTypeInfo channel_type);
 
+	Spatial *get_editor_camera();
+
 #if VERSION_MAJOR >= 4
 	GDVIRTUAL1(_chunk_added, Ref<TerrainChunk>);
 

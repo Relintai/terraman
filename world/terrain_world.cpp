@@ -41,6 +41,11 @@ SOFTWARE.
 #include "../../mesh_data_resource/props/prop_data_mesh_data.h"
 #endif
 
+#if TOOLS_ENABLED
+#include "editor/plugins/spatial_editor_plugin.h"
+#include "scene/3d/camera.h"
+#endif
+
 const String TerrainWorld::BINDING_STRING_CHANNEL_TYPE_INFO = "Type,Isolevel,Liquid,Liquid Level";
 
 bool TerrainWorld::get_active() const {
@@ -820,6 +825,27 @@ int TerrainWorld::get_channel_index_info(const TerrainWorld::ChannelTypeInfo cha
 	RETURN_CALLP(int, _get_channel_index_info, channel_type);
 }
 
+Spatial *TerrainWorld::get_editor_camera() {
+#if TOOLS_ENABLED
+	SpatialEditor *se = SpatialEditor::get_singleton();
+
+	if (!se) {
+		return nullptr;
+	}
+
+	SpatialEditorViewport *wp = se->get_editor_viewport(0);
+
+	if (!wp) {
+		return nullptr;
+	}
+
+	return wp->get_camera();
+
+#else
+	return nullptr;
+#endif
+}
+
 TerrainWorld::TerrainWorld() {
 	_active = true;
 	_editable = false;
@@ -1171,6 +1197,8 @@ void TerrainWorld::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_channel_index_info", "channel_type"), &TerrainWorld::get_channel_index_info);
 	ClassDB::bind_method(D_METHOD("_get_channel_index_info", "channel_type"), &TerrainWorld::_get_channel_index_info);
+
+	ClassDB::bind_method(D_METHOD("get_editor_camera"), &TerrainWorld::get_editor_camera);
 
 #if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_set_voxel_with_tool",
