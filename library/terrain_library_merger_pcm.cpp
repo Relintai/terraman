@@ -616,6 +616,7 @@ Ref<TexturePacker> TerrainLibraryMergerPCM::get_prop_packer() {
 #endif
 
 void TerrainLibraryMergerPCM::refresh_rects() {
+	/*
 	bool texture_added = false;
 	for (int i = 0; i < _terra_surfaces.size(); i++) {
 		Ref<TerrainSurfaceMerger> surface = Ref<TerrainSurfaceMerger>(_terra_surfaces[i]);
@@ -679,11 +680,12 @@ void TerrainLibraryMergerPCM::refresh_rects() {
 			surface->refresh_rects();
 		}
 	}
-
+*/
 	set_initialized(true);
 }
 
 void TerrainLibraryMergerPCM::_setup_material_albedo(const int material_index, const Ref<Texture> &texture) {
+	/*
 	Ref<SpatialMaterial> mat;
 
 	int count = 0;
@@ -750,6 +752,7 @@ void TerrainLibraryMergerPCM::_setup_material_albedo(const int material_index, c
 			shmat->set_shader_param("texture_albedo", texture);
 		}
 	}
+	*/
 }
 
 TerrainLibraryMergerPCM::TerrainLibraryMergerPCM() {
@@ -798,6 +801,7 @@ TerrainLibraryMergerPCM::~TerrainLibraryMergerPCM() {
 
 #ifdef PROPS_PRESENT
 bool TerrainLibraryMergerPCM::process_prop_textures(Ref<PropData> prop) {
+	/*
 	if (!prop.is_valid()) {
 		return false;
 	}
@@ -828,6 +832,9 @@ bool TerrainLibraryMergerPCM::process_prop_textures(Ref<PropData> prop) {
 	}
 
 	return texture_added;
+	*/
+
+	return false;
 }
 #endif
 
