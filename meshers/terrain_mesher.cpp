@@ -161,6 +161,13 @@ void TerrainMesher::set_uv_margin(const Rect2 margin) {
 	_uv_margin = margin;
 }
 
+bool TerrainMesher::get_is_liquid_mesher() const {
+	return _is_liquid_mesher;
+}
+void TerrainMesher::set_is_liquid_mesher(const bool value) {
+	_is_liquid_mesher = value;
+}
+
 Array TerrainMesher::build_mesh() {
 	Array a;
 	a.resize(VisualServer::ARRAY_MAX);
@@ -677,13 +684,13 @@ void TerrainMesher::bake_lights(MeshInstance *node, Vector<Ref<TerrainLight>> &l
 			v_lightDiffuse += value;
 
 			/*
-                    float dist2 = Mathf.Clamp(Vector3.Distance(transformedLights[i], vertices), 0f, 15f);
-                    dist2 /= 35f;
+					float dist2 = Mathf.Clamp(Vector3.Distance(transformedLights[i], vertices), 0f, 15f);
+					dist2 /= 35f;
 
-                    Vector3 value = Vector3.one;
-                    value *= ((float) lights[i].Strength) / 255f;
-                    value *= (1 - dist2);
-                    v_lightDiffuse += value;*/
+					Vector3 value = Vector3.one;
+					value *= ((float) lights[i].Strength) / 255f;
+					value *= (1 - dist2);
+					v_lightDiffuse += value;*/
 		}
 
 		Color f = vertexv.color;
@@ -934,6 +941,7 @@ TerrainMesher::TerrainMesher(const Ref<TerrainLibrary> &library) {
 
 	_format = 0;
 	_texture_scale = 1;
+	_is_liquid_mesher = false;
 }
 
 TerrainMesher::TerrainMesher() {
@@ -947,6 +955,7 @@ TerrainMesher::TerrainMesher() {
 	_channel_index_isolevel = 0;
 	_texture_scale = 1;
 	_lod_index = 0;
+	_is_liquid_mesher = false;
 }
 
 TerrainMesher::~TerrainMesher() {
@@ -1014,6 +1023,10 @@ void TerrainMesher::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_uv_margin", "value"), &TerrainMesher::set_uv_margin);
 	ADD_PROPERTY(PropertyInfo(Variant::RECT2, "uv_margin"), "set_uv_margin", "get_uv_margin");
 
+	ClassDB::bind_method(D_METHOD("get_is_liquid_mesher"), &TerrainMesher::get_is_liquid_mesher);
+	ClassDB::bind_method(D_METHOD("set_is_liquid_mesher", "value"), &TerrainMesher::set_is_liquid_mesher);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_liquid_mesher"), "set_is_liquid_mesher", "get_is_liquid_mesher");
+
 	ClassDB::bind_method(D_METHOD("add_chunk", "chunk"), &TerrainMesher::add_chunk);
 
 #ifdef MESH_DATA_RESOURCE_PRESENT
@@ -1021,7 +1034,6 @@ void TerrainMesher::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_mesh_data_resource_transform", "mesh", "transform", "uv_rect"), &TerrainMesher::add_mesh_data_resource_transform, DEFVAL(Rect2(0, 0, 1, 1)));
 	ClassDB::bind_method(D_METHOD("add_mesh_data_resource_transform_colored", "mesh", "transform", "colors", "uv_rect"), &TerrainMesher::add_mesh_data_resource_transform_colored, DEFVAL(Rect2(0, 0, 1, 1)));
 #endif
-
 
 #if VERSION_MAJOR < 4
 	BIND_VMETHOD(MethodInfo("_add_mesher", PropertyInfo(Variant::OBJECT, "mesher", PROPERTY_HINT_RESOURCE_TYPE, "TerrainMesher")));

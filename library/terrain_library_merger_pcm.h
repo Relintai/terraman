@@ -59,6 +59,10 @@ public:
 	Ref<TerrainMaterialCache> _material_cache_get(const int key);
 	void _material_cache_unref(const int key);
 
+	void _liquid_material_cache_get_key(Ref<TerrainChunk> chunk);
+	Ref<TerrainMaterialCache> _liquid_material_cache_get(const int key);
+	void _liquid_material_cache_unref(const int key);
+
 	void _prop_material_cache_get_key(Ref<TerrainChunk> chunk);
 	Ref<TerrainMaterialCache> _prop_material_cache_get(const int key);
 	void _prop_material_cache_unref(const int key);
@@ -120,6 +124,7 @@ protected:
 	static void _bind_methods();
 
 	Map<int, Ref<TerrainMaterialCachePCM> > _material_cache;
+	Map<int, Ref<TerrainMaterialCachePCM> > _liquid_material_cache;
 	Map<int, Ref<TerrainMaterialCachePCM> > _prop_material_cache;
 
 	Vector<Ref<TerrainSurfaceMerger> > _terra_surfaces;
@@ -132,6 +137,7 @@ protected:
 	Ref<TexturePacker> _prop_packer;
 
 	Mutex _material_cache_mutex;
+	Mutex _liquid_material_cache_mutex;
 	Mutex _prop_material_cache_mutex;
 };
 

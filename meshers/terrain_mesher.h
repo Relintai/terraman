@@ -133,6 +133,9 @@ public:
 	Rect2 get_uv_margin() const;
 	void set_uv_margin(const Rect2 margin);
 
+	bool get_is_liquid_mesher() const;
+	void set_is_liquid_mesher(const bool value);
+	
 	void reset();
 
 	void add_chunk(Ref<TerrainChunk> chunk);
@@ -218,6 +221,8 @@ protected:
 	int _texture_scale;
 
 	int _lod_index;
+
+	bool _is_liquid_mesher;
 
 	PoolVector<Vertex> _vertices;
 	PoolVector<int> _indices;

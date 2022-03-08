@@ -97,8 +97,14 @@ void TerrainMesherBlocky::add_chunk_normal(Ref<TerrainChunkDefault> chunk) {
 
 	Ref<TerrainMaterialCache> mcache;
 
-	if (chunk->material_cache_key_has()) {
-		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	if (!get_is_liquid_mesher()) {
+		if (chunk->material_cache_key_has()) {
+			mcache = _library->material_cache_get(chunk->material_cache_key_get());
+		}
+	} else {
+		if (chunk->liquid_material_cache_key_has()) {
+			mcache = _library->liquid_material_cache_get(chunk->liquid_material_cache_key_get());
+		}
 	}
 
 	int margin_start = chunk->get_margin_start();
@@ -260,8 +266,14 @@ void TerrainMesherBlocky::add_chunk_lod(Ref<TerrainChunkDefault> chunk) {
 
 	Ref<TerrainMaterialCache> mcache;
 
-	if (chunk->material_cache_key_has()) {
-		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	if (!get_is_liquid_mesher()) {
+		if (chunk->material_cache_key_has()) {
+			mcache = _library->material_cache_get(chunk->material_cache_key_get());
+		}
+	} else {
+		if (chunk->liquid_material_cache_key_has()) {
+			mcache = _library->liquid_material_cache_get(chunk->liquid_material_cache_key_get());
+		}
 	}
 
 	//todo this should be calculated from size's factors
@@ -421,8 +433,14 @@ void TerrainMesherBlocky::create_margin_zmin(Ref<TerrainChunkDefault> chunk) {
 
 	Ref<TerrainMaterialCache> mcache;
 
-	if (chunk->material_cache_key_has()) {
-		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	if (!get_is_liquid_mesher()) {
+		if (chunk->material_cache_key_has()) {
+			mcache = _library->material_cache_get(chunk->material_cache_key_get());
+		}
+	} else {
+		if (chunk->liquid_material_cache_key_has()) {
+			mcache = _library->liquid_material_cache_get(chunk->liquid_material_cache_key_get());
+		}
 	}
 
 	int margin_start = chunk->get_margin_start();
@@ -595,8 +613,14 @@ void TerrainMesherBlocky::create_margin_zmax(Ref<TerrainChunkDefault> chunk) {
 
 	Ref<TerrainMaterialCache> mcache;
 
-	if (chunk->material_cache_key_has()) {
-		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	if (!get_is_liquid_mesher()) {
+		if (chunk->material_cache_key_has()) {
+			mcache = _library->material_cache_get(chunk->material_cache_key_get());
+		}
+	} else {
+		if (chunk->liquid_material_cache_key_has()) {
+			mcache = _library->liquid_material_cache_get(chunk->liquid_material_cache_key_get());
+		}
 	}
 
 	int margin_start = chunk->get_margin_start();
@@ -767,8 +791,14 @@ void TerrainMesherBlocky::create_margin_xmin(Ref<TerrainChunkDefault> chunk) {
 
 	Ref<TerrainMaterialCache> mcache;
 
-	if (chunk->material_cache_key_has()) {
-		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	if (!get_is_liquid_mesher()) {
+		if (chunk->material_cache_key_has()) {
+			mcache = _library->material_cache_get(chunk->material_cache_key_get());
+		}
+	} else {
+		if (chunk->liquid_material_cache_key_has()) {
+			mcache = _library->liquid_material_cache_get(chunk->liquid_material_cache_key_get());
+		}
 	}
 
 	int margin_start = chunk->get_margin_start();
@@ -939,8 +969,14 @@ void TerrainMesherBlocky::create_margin_xmax(Ref<TerrainChunkDefault> chunk) {
 
 	Ref<TerrainMaterialCache> mcache;
 
-	if (chunk->material_cache_key_has()) {
-		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	if (!get_is_liquid_mesher()) {
+		if (chunk->material_cache_key_has()) {
+			mcache = _library->material_cache_get(chunk->material_cache_key_get());
+		}
+	} else {
+		if (chunk->liquid_material_cache_key_has()) {
+			mcache = _library->liquid_material_cache_get(chunk->liquid_material_cache_key_get());
+		}
 	}
 
 	int margin_start = chunk->get_margin_start();
@@ -1114,8 +1150,14 @@ void TerrainMesherBlocky::create_face(Ref<TerrainChunkDefault> chunk, int dataxm
 
 	Ref<TerrainMaterialCache> mcache;
 
-	if (chunk->material_cache_key_has()) {
-		mcache = _library->material_cache_get(chunk->material_cache_key_get());
+	if (!get_is_liquid_mesher()) {
+		if (chunk->material_cache_key_has()) {
+			mcache = _library->material_cache_get(chunk->material_cache_key_get());
+		}
+	} else {
+		if (chunk->liquid_material_cache_key_has()) {
+			mcache = _library->liquid_material_cache_get(chunk->liquid_material_cache_key_get());
+		}
 	}
 
 	int indexes[4] = {

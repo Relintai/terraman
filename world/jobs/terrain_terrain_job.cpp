@@ -22,9 +22,9 @@ SOFTWARE.
 
 #include "terrain_terrain_job.h"
 
+#include "../../library/terrain_library.h"
 #include "../../library/terrain_material_cache.h"
 #include "../../library/terrain_surface.h"
-#include "../../library/terrain_library.h"
 
 #include "../../meshers/default/terrain_mesher_default.h"
 #include "../../meshers/terrain_mesher.h"
@@ -79,6 +79,7 @@ void TerrainTerrainJob::phase_setup() {
 
 	if (_liquid_mesher.is_valid()) {
 		_liquid_mesher->set_library(_chunk->get_library());
+		_liquid_mesher->set_is_liquid_mesher(true);
 		_liquid_mesher->reset();
 	}
 
@@ -103,16 +104,28 @@ void TerrainTerrainJob::phase_library_setup() {
 		} else {
 			Ref<TerrainMaterialCache> cache = lib->material_cache_get(_chunk->material_cache_key_get());
 
-			if (!cache.is_valid()) {
-				next_phase();
-				return;
+			if (cache.is_valid()) {
+				//Note: without threadpool and threading none of this can happen, as cache will get initialized the first time a thread requests it!
+				while (!cache->get_initialized()) {
+					//Means it's currently merging the atlases on a different thread.
+					//Let's just wait
+					OS::get_singleton()->delay_usec(100);
+				}
 			}
+		}
 
-			//Note: without threadpool and threading none of this can happen, as cache will get initialized the first time a thread requests it!
-			while (!cache->get_initialized()) {
-				//Means it's currently merging the atlases on a different thread.
-				//Let's just wait
-				OS::get_singleton()->delay_usec(100);
+		if (!_chunk->liquid_material_cache_key_has()) {
+			lib->liquid_material_cache_get_key(_chunk);
+		} else {
+			Ref<TerrainMaterialCache> cache = lib->liquid_material_cache_get(_chunk->liquid_material_cache_key_get());
+
+			if (cache.is_valid()) {
+				//Note: without threadpool and threading none of this can happen, as cache will get initialized the first time a thread requests it!
+				while (!cache->get_initialized()) {
+					//Means it's currently merging the atlases on a different thread.
+					//Let's just wait
+					OS::get_singleton()->delay_usec(100);
+				}
 			}
 		}
 	}
@@ -386,16 +399,19 @@ void TerrainTerrainJob::phase_terrain_mesh() {
 			}
 		}
 
-		//	if (should_do()) {
 		VS::get_singleton()->mesh_add_surface_from_arrays(mesh_rid, VisualServer::PRIMITIVE_TRIANGLES, temp_mesh_arr);
 
-		if (chunk->get_library()->liquid_material_lod_get(0).is_valid())
-			VS::get_singleton()->mesh_surface_set_material(mesh_rid, 0, chunk->get_library()->liquid_material_lod_get(0)->get_rid());
+		Ref<Material> lmat;
 
-		//	if (should_return()) {
-		//		return;
-		//	}
-		//}
+		if (chunk->liquid_material_cache_key_has()) {
+			lmat = chunk->get_library()->liquid_material_cache_get(_chunk->liquid_material_cache_key_get())->material_get(0);
+		} else {
+			lmat = chunk->get_library()->liquid_material_get(0);
+		}
+
+		if (lmat.is_valid()) {
+			VisualServer::get_singleton()->mesh_surface_set_material(mesh_rid, 0, lmat->get_rid());
+		}
 	}
 
 	reset_stages();

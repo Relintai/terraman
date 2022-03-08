@@ -81,31 +81,6 @@ void TerrainLibraryMergerPCM::_material_cache_get_key(Ref<TerrainChunk> chunk) {
 		}
 	}
 
-	uint8_t *liquid_ch = chunk->channel_get(TerrainChunkDefault::DEFAULT_CHANNEL_LIQUID_TYPE);
-
-	if (liquid_ch) {
-		for (uint32_t i = 0; i < size; ++i) {
-			uint8_t v = liquid_ch[i];
-
-			if (v == 0) {
-				continue;
-			}
-
-			int ssize = surfaces.size();
-			bool found = false;
-			for (uint8_t j = 0; j < ssize; ++j) {
-				if (surfaces[j] == v) {
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				surfaces.push_back(v);
-			}
-		}
-	}
-
 	if (surfaces.size() == 0) {
 		chunk->material_cache_key_set(0);
 		chunk->material_cache_key_has_set(false);
@@ -194,13 +169,13 @@ void TerrainLibraryMergerPCM::_material_cache_get_key(Ref<TerrainChunk> chunk) {
 }
 
 Ref<TerrainMaterialCache> TerrainLibraryMergerPCM::_material_cache_get(const int key) {
+	Ref<TerrainMaterialCache> c;
+
 	_material_cache_mutex.lock();
-
-	ERR_FAIL_COND_V(!_material_cache.has(key), Ref<TerrainMaterialCache>());
-
-	Ref<TerrainMaterialCache> c = _material_cache[key];
-
+	c = _material_cache[key];
 	_material_cache_mutex.unlock();
+
+	ERR_FAIL_COND_V(!c.is_valid(), Ref<TerrainMaterialCache>());
 
 	return c;
 }
@@ -226,6 +201,7 @@ void TerrainLibraryMergerPCM::_material_cache_unref(const int key) {
 	Ref<TerrainMaterialCachePCM> cc = _material_cache[key];
 
 	if (!cc.is_valid()) {
+		_material_cache_mutex.unlock();
 		return;
 	}
 
@@ -238,6 +214,176 @@ void TerrainLibraryMergerPCM::_material_cache_unref(const int key) {
 	_material_cache_mutex.unlock();
 }
 
+//Liquids
+void TerrainLibraryMergerPCM::_liquid_material_cache_get_key(Ref<TerrainChunk> chunk) {
+	uint8_t *ch = chunk->channel_get(TerrainChunkDefault::DEFAULT_CHANNEL_LIQUID_TYPE);
+
+	if (!ch) {
+		chunk->liquid_material_cache_key_set(0);
+		chunk->liquid_material_cache_key_has_set(false);
+
+		return;
+	}
+
+	Vector<uint8_t> surfaces;
+
+	uint32_t size = chunk->get_data_size();
+
+	for (uint32_t i = 0; i < size; ++i) {
+		uint8_t v = ch[i];
+
+		if (v == 0) {
+			continue;
+		}
+
+		int ssize = surfaces.size();
+		bool found = false;
+		for (uint8_t j = 0; j < ssize; ++j) {
+			if (surfaces[j] == v) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			surfaces.push_back(v);
+		}
+	}
+
+	if (surfaces.size() == 0) {
+		chunk->liquid_material_cache_key_set(0);
+		chunk->liquid_material_cache_key_has_set(false);
+
+		return;
+	}
+
+	surfaces.sort();
+
+	String hstr;
+
+	for (int i = 0; i < surfaces.size(); ++i) {
+		hstr += String::num(surfaces[i]) + "|";
+	}
+
+	int hash = static_cast<int>(hstr.hash());
+
+	chunk->liquid_material_cache_key_set(hash);
+	chunk->liquid_material_cache_key_has_set(true);
+
+	_liquid_material_cache_mutex.lock();
+
+	if (_liquid_material_cache.has(hash)) {
+		Ref<TerrainMaterialCachePCM> cc = _liquid_material_cache[hash];
+
+		if (cc.is_valid()) {
+			cc->inc_ref_count();
+		}
+
+		_liquid_material_cache_mutex.unlock();
+
+		return;
+	}
+
+	//print_error("New cache: " + hstr);
+
+	Ref<TerrainMaterialCachePCM> cache;
+	cache.instance();
+	cache->inc_ref_count();
+
+	cache->set_texture_flags(get_texture_flags());
+	cache->set_max_atlas_size(get_max_atlas_size());
+	cache->set_keep_original_atlases(get_keep_original_atlases());
+	cache->set_background_color(get_background_color());
+	cache->set_margin(get_margin());
+
+	for (int i = 0; i < surfaces.size(); ++i) {
+		int s = surfaces[i] - 1;
+
+		if (_terra_surfaces.size() <= s) {
+			continue;
+		}
+
+		Ref<TerrainSurfaceMerger> ms = _terra_surfaces[s];
+
+		if (!ms.is_valid()) {
+			continue;
+		}
+
+		Ref<TerrainSurfaceMerger> nms = ms->duplicate();
+		nms->set_library(Ref<TerrainLibraryMergerPCM>(this));
+		nms->set_id(s);
+
+		cache->surface_add(nms);
+	}
+
+	for (int i = 0; i < _liquid_materials.size(); ++i) {
+		Ref<Material> m = _liquid_materials[i];
+
+		if (!m.is_valid()) {
+			continue;
+		}
+
+		Ref<Material> nm = m->duplicate();
+
+		cache->material_add(nm);
+	}
+
+	_liquid_material_cache[hash] = cache;
+
+	//unlock here, so if a different thread need the cache it will be able to immediately access the materials and surfaces when it gets it.
+	_liquid_material_cache_mutex.unlock();
+
+	//this will generate the atlases
+	cache->refresh_rects();
+}
+
+Ref<TerrainMaterialCache> TerrainLibraryMergerPCM::_liquid_material_cache_get(const int key) {
+	Ref<TerrainMaterialCache> c;
+
+	_liquid_material_cache_mutex.lock();
+	c = _liquid_material_cache[key];
+	_liquid_material_cache_mutex.unlock();
+
+	ERR_FAIL_COND_V(!c.is_valid(), Ref<TerrainMaterialCache>());
+
+	return c;
+}
+
+void TerrainLibraryMergerPCM::_liquid_material_cache_unref(const int key) {
+	if (_liquid_material_cache_mutex.try_lock() != OK) {
+		// If we don't get the lock try again later
+		// This is needed, because when duplicating materials the VisualServer apparently
+		// needs synchronization with the main thread. So if _material_cache_unref holds the mutex
+		// and is duplicating the materials, trying to get the lock from the main thread will deadlock
+		// the game. This can happen when chungs are spawned and despawned really fast.
+		// E.g. when flying around in the editor.
+		MessageQueue::get_singleton()->push_call(this, "_liquid_material_cache_unref", key, 1);
+		return;
+	}
+
+	//_material_cache_mutex.lock();
+
+	if (!_liquid_material_cache.has(key)) {
+		return;
+	}
+
+	Ref<TerrainMaterialCachePCM> cc = _liquid_material_cache[key];
+
+	if (!cc.is_valid()) {
+		_liquid_material_cache_mutex.unlock();
+		return;
+	}
+
+	cc->dec_ref_count();
+
+	if (cc->get_ref_count() <= 0) {
+		_liquid_material_cache.erase(key);
+	}
+
+	_liquid_material_cache_mutex.unlock();
+}
+
+//Props
 void TerrainLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerrainChunk> chunk) {
 	Vector<uint64_t> props;
 
@@ -382,13 +528,13 @@ void TerrainLibraryMergerPCM::_prop_material_cache_get_key(Ref<TerrainChunk> chu
 	cache->refresh_rects();
 }
 Ref<TerrainMaterialCache> TerrainLibraryMergerPCM::_prop_material_cache_get(const int key) {
+	Ref<TerrainMaterialCache> c;
+
 	_prop_material_cache_mutex.lock();
-
-	ERR_FAIL_COND_V(!_prop_material_cache.has(key), Ref<TerrainMaterialCache>());
-
-	Ref<TerrainMaterialCache> c = _prop_material_cache[key];
-
+	c = _prop_material_cache[key];
 	_prop_material_cache_mutex.unlock();
+
+	ERR_FAIL_COND_V(!c.is_valid(), Ref<TerrainMaterialCache>());
 
 	return c;
 }
@@ -413,6 +559,7 @@ void TerrainLibraryMergerPCM::_prop_material_cache_unref(const int key) {
 	Ref<TerrainMaterialCachePCM> cc = _prop_material_cache[key];
 
 	if (!cc.is_valid()) {
+		_prop_material_cache_mutex.unlock();
 		return;
 	}
 
