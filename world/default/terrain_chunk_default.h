@@ -90,6 +90,7 @@ public:
 		MESH_TYPE_INDEX_AREA,
 	};
 
+	//TODO these should be removed, as it would be easier to customize these during World's _create_chunk.
 	enum BuildFlags {
 		BUILD_FLAG_USE_ISOLEVEL = 1 << 0,
 		BUILD_FLAG_USE_LIGHTING = 1 << 1,
