@@ -25,15 +25,15 @@ SOFTWARE.
 #include "library/terrain_surface.h"
 #include "library/terrain_surface_simple.h"
 
-#include "library/terrain_material_cache.h"
 #include "library/terrain_library.h"
 #include "library/terrain_library_simple.h"
+#include "library/terrain_material_cache.h"
 
 #ifdef TEXTURE_PACKER_PRESENT
-#include "library/terrain_surface_merger.h"
 #include "library/terrain_library_merger.h"
 #include "library/terrain_library_merger_pcm.h"
 #include "library/terrain_material_cache_pcm.h"
+#include "library/terrain_surface_merger.h"
 #endif
 
 #include "data/terrain_light.h"
@@ -68,56 +68,60 @@ SOFTWARE.
 #include "world/jobs/terrain_prop_job.h"
 #include "world/jobs/terrain_terrain_job.h"
 
-void register_terraman_types() {
-	ClassDB::register_class<TerrainMesher>();
-	ClassDB::register_class<TerrainMesherDefault>();
+void initialize_terraman_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+		GDREGISTER_CLASS(TerrainMesher);
+		GDREGISTER_CLASS(TerrainMesherDefault);
 
-	ClassDB::register_class<TerrainSurface>();
-	ClassDB::register_class<TerrainSurfaceSimple>();
+		GDREGISTER_CLASS(TerrainSurface);
+		GDREGISTER_CLASS(TerrainSurfaceSimple);
 
-	ClassDB::register_class<TerrainLibrary>();
-	ClassDB::register_class<TerrainLibrarySimple>();
+		GDREGISTER_CLASS(TerrainLibrary);
+		GDREGISTER_CLASS(TerrainLibrarySimple);
 
-	ClassDB::register_class<TerrainMaterialCache>();
+		GDREGISTER_CLASS(TerrainMaterialCache);
 
 #ifdef TEXTURE_PACKER_PRESENT
-	ClassDB::register_class<TerrainSurfaceMerger>();
-	ClassDB::register_class<TerrainLibraryMerger>();
-	ClassDB::register_class<TerrainLibraryMergerPCM>();
-	ClassDB::register_class<TerrainMaterialCachePCM>();
+		GDREGISTER_CLASS(TerrainSurfaceMerger);
+		GDREGISTER_CLASS(TerrainLibraryMerger);
+		GDREGISTER_CLASS(TerrainLibraryMergerPCM);
+		GDREGISTER_CLASS(TerrainMaterialCachePCM);
 #endif
 
-	ClassDB::register_class<TerrainLight>();
-	ClassDB::register_class<TerrainLightNode>();
+		GDREGISTER_CLASS(TerrainLight);
+		GDREGISTER_CLASS(TerrainLightNode);
 
-	ClassDB::register_class<TerrainWorld>();
-	ClassDB::register_class<TerrainChunk>();
-	ClassDB::register_class<TerrainStructure>();
-	ClassDB::register_class<BlockTerrainStructure>();
-	ClassDB::register_class<TerrainEnvironmentData>();
+		GDREGISTER_CLASS(TerrainWorld);
+		GDREGISTER_CLASS(TerrainChunk);
+		GDREGISTER_CLASS(TerrainStructure);
+		GDREGISTER_CLASS(BlockTerrainStructure);
+		GDREGISTER_CLASS(TerrainEnvironmentData);
 
-	ClassDB::register_class<TerrainChunkDefault>();
-	ClassDB::register_class<TerrainWorldDefault>();
+		GDREGISTER_CLASS(TerrainChunkDefault);
+		GDREGISTER_CLASS(TerrainWorldDefault);
 
-	ClassDB::register_class<TerrainMesherBlocky>();
-	ClassDB::register_class<TerrainWorldBlocky>();
-	ClassDB::register_class<TerrainChunkBlocky>();
+		GDREGISTER_CLASS(TerrainMesherBlocky);
+		GDREGISTER_CLASS(TerrainWorldBlocky);
+		GDREGISTER_CLASS(TerrainChunkBlocky);
 
-	ClassDB::register_class<TerrainLevelGenerator>();
-	ClassDB::register_class<TerrainLevelGeneratorFlat>();
+		GDREGISTER_CLASS(TerrainLevelGenerator);
+		GDREGISTER_CLASS(TerrainLevelGeneratorFlat);
 
-	ClassDB::register_class<TerrainWorldArea>();
+		GDREGISTER_CLASS(TerrainWorldArea);
 
-	ClassDB::register_class<TerrainJob>();
-	ClassDB::register_class<TerrainTerrainJob>();
-	ClassDB::register_class<TerrainMesherJobStep>();
-	ClassDB::register_class<TerrainLightJob>();
-	ClassDB::register_class<TerrainPropJob>();
+		GDREGISTER_CLASS(TerrainJob);
+		GDREGISTER_CLASS(TerrainTerrainJob);
+		GDREGISTER_CLASS(TerrainMesherJobStep);
+		GDREGISTER_CLASS(TerrainLightJob);
+		GDREGISTER_CLASS(TerrainPropJob);
+	}
 
 #ifdef TOOLS_ENABLED
-	EditorPlugins::add_by_type<TerrainWorldEditorPlugin>();
+	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+		EditorPlugins::add_by_type<TerrainWorldEditorPlugin>();
+	}
 #endif
 }
 
-void unregister_terraman_types() {
+void uninitialize_terraman_module(ModuleInitializationLevel p_level) {
 }
