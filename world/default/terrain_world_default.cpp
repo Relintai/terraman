@@ -345,7 +345,7 @@ void TerrainWorldDefault::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_num_lods", "value"), &TerrainWorldDefault::set_num_lods);
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "num_lods"), "set_num_lods", "get_num_lods");
 
-	BIND_VMETHOD(MethodInfo("_update_lods"));
+	//BIND_VMETHOD(MethodInfo("_update_lods"));
 	ClassDB::bind_method(D_METHOD("update_lods"), &TerrainWorldDefault::update_lods);
 	ClassDB::bind_method(D_METHOD("_update_lods"), &TerrainWorldDefault::_update_lods);
 

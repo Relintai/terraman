@@ -1285,31 +1285,31 @@ void TerrainChunk::_get_property_list(List<PropertyInfo> *p_list) const {
 void TerrainChunk::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("mesh_generation_finished", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerrainChunk")));
 
-	BIND_VMETHOD(MethodInfo("_mesh_data_resource_added", PropertyInfo(Variant::INT, "index")));
+	//BIND_VMETHOD(MethodInfo("_mesh_data_resource_added", PropertyInfo(Variant::INT, "index")));
 
-	BIND_VMETHOD(MethodInfo("_channel_setup"));
+	//BIND_VMETHOD(MethodInfo("_channel_setup"));
 
-	BIND_VMETHOD(MethodInfo("_bake_lights"));
-	BIND_VMETHOD(MethodInfo("_bake_light", PropertyInfo(Variant::OBJECT, "light", PROPERTY_HINT_RESOURCE_TYPE, "TerrainLight")));
-	BIND_VMETHOD(MethodInfo("_clear_baked_lights"));
+	//BIND_VMETHOD(MethodInfo("_bake_lights"));
+	//BIND_VMETHOD(MethodInfo("_bake_light", PropertyInfo(Variant::OBJECT, "light", PROPERTY_HINT_RESOURCE_TYPE, "TerrainLight")));
+	//BIND_VMETHOD(MethodInfo("_clear_baked_lights"));
 
 	ClassDB::bind_method(D_METHOD("bake_lights"), &TerrainChunk::bake_lights);
 	ClassDB::bind_method(D_METHOD("bake_light", "light"), &TerrainChunk::bake_light);
 	ClassDB::bind_method(D_METHOD("clear_baked_lights"), &TerrainChunk::clear_baked_lights);
 
-	BIND_VMETHOD(MethodInfo("_enter_tree"));
-	BIND_VMETHOD(MethodInfo("_exit_tree"));
-	BIND_VMETHOD(MethodInfo("_process", PropertyInfo(Variant::REAL, "delta")));
-	BIND_VMETHOD(MethodInfo("_physics_process", PropertyInfo(Variant::REAL, "delta")));
-	BIND_VMETHOD(MethodInfo("_world_transform_changed"));
-	BIND_VMETHOD(MethodInfo("_visibility_changed", PropertyInfo(Variant::BOOL, "visible")));
-	BIND_VMETHOD(MethodInfo("_world_light_added", PropertyInfo(Variant::OBJECT, "light", PROPERTY_HINT_RESOURCE_TYPE, "TerrainLight")));
-	BIND_VMETHOD(MethodInfo("_world_light_removed", PropertyInfo(Variant::OBJECT, "light", PROPERTY_HINT_RESOURCE_TYPE, "TerrainLight")));
+	//BIND_VMETHOD(MethodInfo("_enter_tree"));
+	//BIND_VMETHOD(MethodInfo("_exit_tree"));
+	//BIND_VMETHOD(MethodInfo("_process", PropertyInfo(Variant::REAL, "delta")));
+	//BIND_VMETHOD(MethodInfo("_physics_process", PropertyInfo(Variant::REAL, "delta")));
+	//BIND_VMETHOD(MethodInfo("_world_transform_changed"));
+	//BIND_VMETHOD(MethodInfo("_visibility_changed", PropertyInfo(Variant::BOOL, "visible")));
+	//BIND_VMETHOD(MethodInfo("_world_light_added", PropertyInfo(Variant::OBJECT, "light", PROPERTY_HINT_RESOURCE_TYPE, "TerrainLight")));
+	//BIND_VMETHOD(MethodInfo("_world_light_removed", PropertyInfo(Variant::OBJECT, "light", PROPERTY_HINT_RESOURCE_TYPE, "TerrainLight")));
 
-	BIND_VMETHOD(MethodInfo("_generation_process", PropertyInfo(Variant::REAL, "delta")));
-	BIND_VMETHOD(MethodInfo("_generation_physics_process", PropertyInfo(Variant::REAL, "delta")));
+	//BIND_VMETHOD(MethodInfo("_generation_process", PropertyInfo(Variant::REAL, "delta")));
+	//BIND_VMETHOD(MethodInfo("_generation_physics_process", PropertyInfo(Variant::REAL, "delta")));
 
-	BIND_VMETHOD(MethodInfo("_finalize_build"));
+	//BIND_VMETHOD(MethodInfo("_finalize_build"));
 
 	ClassDB::bind_method(D_METHOD("enter_tree"), &TerrainChunk::enter_tree);
 	ClassDB::bind_method(D_METHOD("exit_tree"), &TerrainChunk::exit_tree);
@@ -1543,7 +1543,7 @@ void TerrainChunk::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("collider_remove", "index"), &TerrainChunk::collider_remove);
 	ClassDB::bind_method(D_METHOD("colliders_clear"), &TerrainChunk::colliders_clear);
 
-	BIND_VMETHOD(MethodInfo("_build"));
+	//BIND_VMETHOD(MethodInfo("_build"));
 	ClassDB::bind_method(D_METHOD("build"), &TerrainChunk::build);
 	ClassDB::bind_method(D_METHOD("_build"), &TerrainChunk::_build);
 

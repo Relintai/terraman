@@ -37,7 +37,6 @@ SOFTWARE.
 
 class TerrainLightNode : public Spatial {
 	GDCLASS(TerrainLightNode, Spatial);
-	OBJ_CATEGORY("Props");
 
 public:
 	//make it turn into a normal light if voxelman isn't present?

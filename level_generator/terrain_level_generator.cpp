@@ -37,7 +37,7 @@ TerrainLevelGenerator::~TerrainLevelGenerator() {
 }
 
 void TerrainLevelGenerator::_bind_methods() {
-	BIND_VMETHOD(MethodInfo("_generate_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerrainChunk")));
+	//BIND_VMETHOD(MethodInfo("_generate_chunk", PropertyInfo(Variant::OBJECT, "chunk", PROPERTY_HINT_RESOURCE_TYPE, "TerrainChunk")));
 
 	ClassDB::bind_method(D_METHOD("generate_chunk", "chunk"), &TerrainLevelGenerator::generate_chunk);
 }
