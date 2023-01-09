@@ -14,11 +14,11 @@ You can grab pre-built binaries (even editor + export templates) from the [Broke
 
 ## Godot Version Support
 
-3.2 - Will likely work, probably needs changes by now. (TODO check.)\
-3.3 - Will more likely work, might need smaller changes by now. (TODO check.)\
-3.4 - Should work without any issues. (TODO check.)\
-3.x - Works.\
-4.0 - Have been fixing support from time to time. Currently it won't build. Mostly done with the fix though.
+This branch tries to follow godot's master branch (as much as I have time).
+
+For different godot versions look at the other branches.
+
+Status for this branch: Update for 4.0 is work in progress.
 
 ## Optional Dependencies
 
