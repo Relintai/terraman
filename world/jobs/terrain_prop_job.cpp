@@ -529,7 +529,7 @@ void TerrainPropJob::step_type_bake_texture() {
 	Ref<Texture> tex;
 
 	if (mat.is_valid()) {
-		tex = mat->get_shader_param("texture_albedo");
+		tex = mat->get_shader_parameter("texture_albedo");
 	} else if (spmat.is_valid()) {
 		tex = spmat->get_texture(SpatialMaterial::TEXTURE_ALBEDO);
 	}

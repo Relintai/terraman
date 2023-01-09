@@ -36,63 +36,63 @@ Ref<TerrainChunk> TerrainWorldBlocky::_create_chunk(int x, int z, Ref<TerrainChu
 
 	if (chunk->job_get_count() == 0) {
 		Ref<TerrainTerrainJob> tj;
-		tj.instance();
+		tj.instantiate();
 
 		Ref<TerrainLightJob> lj;
-		lj.instance();
+		lj.instantiate();
 
 		Ref<TerrainMesherJobStep> s;
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_NORMAL);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_NORMAL_LOD);
 		s->set_lod_index(1);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_NORMAL_LOD);
 		s->set_lod_index(2);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_MERGE_VERTS);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_BAKE_TEXTURE);
 		tj->add_jobs_step(s);
 
 		tj->set_mesher(Ref<TerrainMesher>(memnew(TerrainMesherBlocky())));
 
 		Ref<TerrainMesherBlocky> liquid_mesher;
-		liquid_mesher.instance();
+		liquid_mesher.instantiate();
 		liquid_mesher->set_channel_index_type(TerrainChunkDefault::DEFAULT_CHANNEL_LIQUID_TYPE);
 		liquid_mesher->set_channel_index_isolevel(TerrainChunkDefault::DEFAULT_CHANNEL_LIQUID_ISOLEVEL);
 		tj->set_liquid_mesher(liquid_mesher);
 
 		Ref<TerrainPropJob> pj;
-		pj.instance();
+		pj.instantiate();
 		pj->set_prop_mesher(Ref<TerrainMesher>(memnew(TerrainMesherBlocky)));
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_NORMAL);
 		pj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_MERGE_VERTS);
 		pj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_BAKE_TEXTURE);
 		pj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_SIMPLIFY_MESH);
 #ifdef MESH_UTILS_PRESENT
 		Ref<FastQuadraticMeshSimplifier> fqms;
-		fqms.instance();
+		fqms.instantiate();
 		s->set_fqms(fqms);
 		s->set_simplification_steps(2);
 #endif

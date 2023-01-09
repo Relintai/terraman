@@ -182,35 +182,35 @@ Ref<TerrainChunk> TerrainWorldDefault::_create_chunk(int x, int z, Ref<TerrainCh
 
 	if (chunk->job_get_count() == 0) {
 		Ref<TerrainTerrainJob> tj;
-		tj.instance();
+		tj.instantiate();
 
 		Ref<TerrainLightJob> lj;
-		lj.instance();
+		lj.instantiate();
 
 		Ref<TerrainPropJob> pj;
-		pj.instance();
+		pj.instantiate();
 		pj->set_prop_mesher(Ref<TerrainMesher>(memnew(TerrainMesherDefault)));
 
 		Ref<TerrainMesherJobStep> s;
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_NORMAL);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_NORMAL_LOD);
 		s->set_lod_index(1);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_NORMAL_LOD);
 		s->set_lod_index(2);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_MERGE_VERTS);
 		tj->add_jobs_step(s);
 
-		s.instance();
+		s.instantiate();
 		s->set_job_type(TerrainMesherJobStep::TYPE_BAKE_TEXTURE);
 		tj->add_jobs_step(s);
 

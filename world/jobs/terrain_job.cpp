@@ -153,7 +153,7 @@ void TerrainJob::generate_random_ao(int seed, int octaves, int period, float per
 	int position_z = _chunk->get_position_z();
 
 	Ref<OpenSimplexNoise> noise;
-	noise.instance();
+	noise.instantiate();
 
 	noise->set_seed(seed);
 	noise->set_octaves(octaves);

@@ -171,7 +171,7 @@ void TerrainLibraryMerger::set_prop(const int index, const Ref<PropData> &value)
 void TerrainLibraryMerger::remove_prop(const int index) {
 	ERR_FAIL_INDEX(index, _props.size());
 
-	_props.remove(index);
+	_props.remove_at(index);
 }
 int TerrainLibraryMerger::get_num_props() const {
 	return _props.size();
@@ -365,7 +365,7 @@ void TerrainLibraryMerger::_setup_material_albedo(const int material_index, cons
 }
 
 TerrainLibraryMerger::TerrainLibraryMerger() {
-	_packer.instance();
+	_packer.instantiate();
 
 #if GODOT4
 #warning implement
@@ -377,7 +377,7 @@ TerrainLibraryMerger::TerrainLibraryMerger() {
 	_packer->set_keep_original_atlases(false);
 	_packer->set_margin(0);
 
-	_prop_packer.instance();
+	_prop_packer.instantiate();
 
 #if GODOT4
 #warning implement
