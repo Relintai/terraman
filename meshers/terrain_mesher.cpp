@@ -482,7 +482,7 @@ void TerrainMesher::add_chunk(Ref<TerrainChunk> chunk) {
 
 #ifdef MESH_DATA_RESOURCE_PRESENT
 void TerrainMesher::add_mesh_data_resource(Ref<MeshDataResource> mesh, const Vector3 position, const Vector3 rotation, const Vector3 scale, const Rect2 uv_rect) {
-	Transform transform = Transform(Basis(rotation).scaled(scale), position);
+	Transform3D transform = Transform3D(Basis::from_euler(rotation).scaled(scale), position);
 
 	add_mesh_data_resource_transform(mesh, transform, uv_rect);
 }
